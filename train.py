@@ -175,6 +175,9 @@ def create_sample_data():
     df['user_gender'] = df['user_gender'].astype('category')
     df['item_category'] = df['item_category'].astype('category')
     
+    # Timestamp sütununu Unix timestamp'e dönüştür
+    df['timestamp'] = pd.to_datetime(df['timestamp']).astype(np.int64) // 10**9
+    
     if not os.path.exists('data'):
         os.makedirs('data')
     df.to_csv('data/ratings.csv', index=False)
@@ -236,13 +239,12 @@ def train_model_version(version_name, model_type=None, params=None):
               data=df,
               
               # Tahmin edilecek hedef degisken
-              # Örnek: rating = [4.2, 3.7, 2.1, 5.0, ...] (1-5 arası puanlar)
               target='rating',
               
+              # Timestamp sütununu model eğitiminde kullanma
+              ignore_features=['timestamp'],
+              
               # Egitim seti oranı: %75 egitim, %25 test
-              # Örnek: 1000 satırlık veri için
-              # - İlk 750 satır: Egitim seti
-              # - Son 250 satır: Test seti
               train_size=0.75,
               
               # 5-fold cross validation: Veriyi 5 parçaya böler
@@ -424,8 +426,7 @@ def train_model_version(version_name, model_type=None, params=None):
                 "threshold_rmse": 1.0,                # Hedeflenen RMSE değeri
                 "threshold_r2": 0.6                   # Hedeflenen R2 değeri
             })
-        
-        # MLflow'a kayıt
+                # MLflow'a kayıt
         # Tüm model bilgileri ve metrikleri MLflow'a kaydedilir
         mlflow.log_params(base_info)      # Model parametreleri ve konfigürasyonu
         mlflow.log_metrics(all_metrics)   # Performans metrikleri
@@ -433,27 +434,116 @@ def train_model_version(version_name, model_type=None, params=None):
         try:
             # Model dosyası kaydetme
             # Başarılı ve başarısız modeller farklı isimlerle kaydedilir
-            model_filename = "model.pkl" if base_info["validation_status"] == "passed" else "failed_model.pkl"
-            save_model(final_model, model_filename)
-            
-            # Model artifactlarını MLflow'a kaydet
-            mlflow.log_artifact(model_filename)
+            model_filename = None
+            try:
+                # Model dosyası adını belirle (uzantısız)
+                base_filename = "model" if base_info["validation_status"] == "passed" else "failed_model"
+                model_filename = f"{base_filename}.pkl"
+                
+                # Eğer dosya zaten varsa sil
+                if os.path.exists(model_filename):
+                    os.remove(model_filename)
+                if os.path.exists(f"{model_filename}.pkl"):  # PyCaret'in oluşturduğu dosya
+                    os.remove(f"{model_filename}.pkl")
+                
+                # Modeli kaydet
+                save_model(final_model, base_filename)  # PyCaret otomatik .pkl ekleyecek
+                
+                # Eğer PyCaret .pkl uzantısını eklediyse, dosyayı doğru isimle yeniden adlandır
+                if os.path.exists(f"{base_filename}.pkl"):
+                    os.rename(f"{base_filename}.pkl", model_filename)
+                
+                # Model artifactlarını MLflow'a kaydet
+                if os.path.exists(model_filename):
+                    mlflow.log_artifact(model_filename)
+                    print(f"Model başarıyla kaydedildi: {model_filename}")
+                else:
+                    print(f"Uyarı: Model dosyası bulunamadı: {model_filename}")
+            except Exception as model_error:
+                print(f"Model kaydedilirken hata oluştu: {str(model_error)}")
             
             # Veri özeti kaydetme
             # Veri seti hakkında detaylı istatistikler ve bilgiler
+            def convert_to_serializable(obj):
+                if isinstance(obj, (np.int64, np.float64)):
+                    return float(obj)
+                if isinstance(obj, pd.Timestamp):
+                    return obj.strftime("%Y-%m-%d %H:%M:%S")
+                if isinstance(obj, np.dtype):
+                    return str(obj)
+                if isinstance(obj, pd.Categorical):
+                    return str(obj)
+                if pd.isna(obj):  # NaN değerleri için kontrol
+                    return None
+                return str(obj) if not isinstance(obj, (int, float, bool, str, list, dict)) else obj
+
+            # Timestamp ve kategorik sütunları geçici olarak kaldır
+            temp_cols = {}
+            for col in df.columns:
+                if col == 'timestamp' or df[col].dtype.name == 'category':
+                    temp_cols[col] = df[col].copy()
+                    df = df.drop(col, axis=1)
+
+            # Sayısal veriler için özet istatistikler
             data_summary = {
-                "data_statistics": df.describe().to_dict(),     # Sayısal istatistikler
-                "missing_values": df.isnull().sum().to_dict(),  # Eksik değer sayıları
-                "feature_correlations": df.corr()['rating'].to_dict(),  # Hedef degiskenle korelasyonlar
-                "data_types": df.dtypes.to_dict(),             # Sütun veri tipleri
-                "categorical_features": df.select_dtypes(include=['category', 'object']).columns.tolist(),  # Kategorik özellikler
-                "numerical_features": df.select_dtypes(include=['int64', 'float64']).columns.tolist()      # Sayısal özellikler
+                "data_statistics": {
+                    col: {k: convert_to_serializable(v) for k, v in stats.items()}
+                    for col, stats in df.describe().to_dict().items()
+                },
+                "missing_values": {
+                    k: int(v) for k, v in df.isnull().sum().to_dict().items()
+                },
+                "feature_correlations": {
+                    k: convert_to_serializable(v)
+                    for k, v in df.select_dtypes(include=['int64', 'float64']).corr()['rating'].dropna().to_dict().items()  # Sadece sayısal sütunlar için korelasyon
+                },
+                "data_types": {
+                    k: str(v) for k, v in df.dtypes.to_dict().items()
+                },
+                "numerical_features": df.select_dtypes(include=['int64', 'float64']).columns.tolist()
             }
+
+            # Kategorik değişkenler için özet
+            categorical_summary = {}
+            for col, series in temp_cols.items():
+                if col != 'timestamp':
+                    value_counts = series.value_counts()
+                    categorical_summary[col] = {
+                        "unique_values": value_counts.index.tolist(),
+                        "counts": value_counts.values.tolist(),
+                        "null_count": int(series.isnull().sum())
+                    }
+
+            data_summary["categorical_features"] = {
+                "columns": [col for col in temp_cols if col != 'timestamp'],
+                "summaries": categorical_summary
+            }
+
+            # Timestamp istatistiklerini ekle
+            if 'timestamp' in temp_cols:
+                timestamp_col = temp_cols['timestamp']
+                data_summary["timestamp_info"] = {
+                    "min": convert_to_serializable(timestamp_col.min()),
+                    "max": convert_to_serializable(timestamp_col.max()),
+                    "unique_count": len(timestamp_col.unique()),
+                    "null_count": int(timestamp_col.isnull().sum())
+                }
+
+            # Geçici olarak kaldırılan sütunları geri ekle
+            for col, series in temp_cols.items():
+                df[col] = series
             
             # Veri özetini JSON formatında kaydet
-            with open("data_summary.json", "w") as f:
-                json.dump(data_summary, f)
-            mlflow.log_artifact("data_summary.json")  # Veri özetini MLflow'a kaydet
+            try:
+                with open("data_summary.json", "w") as f:
+                    json.dump(data_summary, f, indent=2)
+                if os.path.exists("data_summary.json"):
+                    mlflow.log_artifact("data_summary.json")
+                    print("Veri özeti başarıyla kaydedildi")
+                else:
+                    print("Uyarı: Veri özeti dosyası bulunamadı")
+            except Exception as summary_error:
+                print(f"Veri özeti kaydedilirken hata oluştu: {str(summary_error)}")
             
         except Exception as e:
             print(f"Model ve veri özeti kaydedilirken hata oluştu: {str(e)}")

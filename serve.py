@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from pycaret.regression import load_model as pycaret_load_model
 import pandas as pd
 import uvicorn
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime, timedelta
 import random
 import numpy as np

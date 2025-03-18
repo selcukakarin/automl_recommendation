@@ -1,243 +1,265 @@
-# PyCaret MLflow Öneri Sistemi
+# E-ticaret Ürün Öneri Sistemi 🛒
 
-Bu proje, modern makine öğrenimi teknolojilerini kullanarak gelişmiş bir öneri sistemi oluşturur. PyCaret'in otomatik makine öğrenimi özellikleri kullanılarak farklı model versiyonları eğitilir, MLflow ile versiyonlanır ve FastAPI ile serve edilir.
+## Proje Özeti
 
-## 1. Proje Genel Bakış
+Bu proje, MLflow kullanarak bir e-ticaret ürün öneri sistemi geliştirmeyi, deployment süreçlerini yönetmeyi ve REST API aracılığıyla servis etmeyi göstermektedir. Sistem, kullanıcı-ürün etkileşimlerini analiz ederek kişiselleştirilmiş öneriler sunmaktadır.
 
-Projede kullanılan temel teknolojiler:
+![MLflow Recommendation System](https://i.imgur.com/YOUR_IMAGE_ID.png) <!-- Sunum için bir görsel ekleyebilirsiniz -->
 
-- **PyCaret**: Otomatik makine öğrenimi (AutoML) için
-- **MLflow**: Model versiyonlama ve deney takibi için
-- **FastAPI**: Model servis etme ve API yönetimi için
+## 🌟 Geliştirilmiş Özellikler
 
-### 1.1 Temel Özellikler
+Bu projede yakın zamanda eklenen iyileştirmeler:
 
-1. **Otomatik Model Geliştirme**
-   - Farklı algoritmaların otomatik karşılaştırılması
-   - Hiperparametre optimizasyonu
-   - Cross-validation ve model değerlendirme
+- **Daha Detaylı Dökümantasyon**: Tüm kod dosyalarına kapsamlı dokümantasyon eklendi
+- **Model Versiyon Bilgilerinin Zenginleştirilmesi**: `/versions` endpoint'i artık her modelin hangi API endpoint'i için kullanıldığı bilgisini de içeriyor
+- **Gelişmiş Test Scripti**: Test senaryoları ve hata yakalama geliştirildi
+- **Hata Yönetimi**: Ürün bulunamadığında ve benzer durumlarda daha açıklayıcı hata mesajları eklendi
+- **Değerlendirme Algoritması İyileştirmesi**: İki aşamalı tahmin modeli (benzerlik ağırlıklı ortalama + fallback)
+- **Detaylı Sunum Dokümanı**: Projeyi adım adım açıklayan kapsamlı bir sunum rehberi
+- **Model Fallback Mekanizması**: Hatalı model yüklendiğinde otomatik olarak önceki sağlıklı modele geri dönüş yapabilme
 
-2. **Model Versiyonlama**
-   - Farklı model versiyonlarını saklama
-   - Versiyonlar arası geçiş yapabilme
-   - A/B testing desteği
+## 🔧 Kurulum
 
-3. **Gerçek Zamanlı İzleme**
-   - Model performans metrikleri
-   - Sağlık kontrolleri
-   - Tahmin güvenilirliği analizi
+### Gereksinimler
 
-## 2. Kurulum
-
-### 2.1 Sistem Gereksinimleri
-- Python 3.8 veya üzeri
-- pip paket yöneticisi
-- Git (opsiyonel)
-
-### 2.2 Kurulum Adımları
-
-1. Projeyi klonlayın (veya ZIP olarak indirin):
-```bash
-git clone <proje-url>
-cd mlflow_recommender
-```
-
-2. Sanal ortam oluşturun:
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac için
-venv\Scripts\activate     # Windows için
-```
-
-3. Gereksinimleri yükleyin:
 ```bash
 pip install -r requirements.txt
 ```
 
-## 3. Kullanım
+Başlıca gereksinimler:
+- mlflow==2.10.0
+- fastapi==0.104.1
+- uvicorn==0.24.0
+- pandas==2.1.0
+- numpy==1.25.2
+- scikit-learn==1.2.2
+- joblib==1.3.2
 
-### 3.1 Model Eğitimi
+### Veri Oluşturma
 
-1. MLflow sunucusunu başlatın:
+```bash
+python generate_data.py
+```
+
+Bu komut, `data/` klasörü altında şu dosyaları oluşturur:
+- `users.csv`: Kullanıcı profilleri
+- `products.csv`: Ürün bilgileri
+- `interactions.csv`: Kullanıcı-ürün etkileşimleri
+
+### MLflow Sunucusunu Başlatma
+
 ```bash
 mlflow server --host 0.0.0.0 --port 5000
 ```
-- MLflow UI: http://localhost:5000
-- Tüm model versiyonlarını ve metrikleri buradan izleyebilirsiniz
 
-2. Model versiyonlarını eğitin:
+Bu komut, MLflow sunucusunu `http://localhost:5000` adresinde başlatır.
+
+### Model Eğitimi
+
 ```bash
-python train.py
+python train_recommendation.py
 ```
 
-Bu komut 4 farklı model versiyonu eğitir:
+Bu script:
+1. Sentetik veriyi yükler
+2. Kullanıcı-ürün matrisini oluşturur
+3. Ürün benzerlik matrislerini hesaplar
+4. Modeli değerlendirir (RMSE, MAE)
+5. Model ve artifactları MLflow'a kaydeder
 
-1. **v1_auto_select**
-   - PyCaret'in otomatik seçtiği en iyi model
-   - Tüm algoritmaları karşılaştırır
-   - En iyi performans gösteren modeli seçer
+### Öneri API Servisini Başlatma
 
-2. **v2_random_forest**
-   - Random Forest algoritması
-   - Varsayılan parametrelerle eğitim
-   - Temel performans karşılaştırması için
-
-3. **v3_rf_tuned**
-   - Optimize edilmiş Random Forest
-   - Özel parametreler:
-     * n_estimators: 200 (ağaç sayısı)
-     * max_depth: 10 (maksimum derinlik)
-     * min_samples_split: 5 (dal bölme için min örnek)
-
-4. **v4_xgboost**
-   - XGBoost algoritması
-   - Otomatik parametre optimizasyonu
-   - Genellikle en iyi performansı verir
-
-### 3.2 Model Serving
-
-1. API servisini başlatın:
 ```bash
 python serve.py
 ```
-- API servisi: http://localhost:8000
-- API dokümantasyonu: http://localhost:8000/docs
 
-## 4. API Endpoints
+Servis şu adreste çalışacaktır: `http://localhost:8000`
 
-### 4.1 Model Versiyonlarını Listeleme
+## 📋 Kullanım Kılavuzu
+
+### API Endpoint'leri
+
+| Endpoint | Yöntem | Açıklama |
+|----------|--------|----------|
+| `/` | GET | API bilgileri |
+| `/versions` | GET | Mevcut tüm model versiyonlarını ve hangi endpoint için kullanıldığını listeler |
+| `/load_recommendation_version/{version_name}` | POST | Belirli bir model versiyonunu yükler |
+| `/recommend` | POST | Ürün önerileri sunar |
+| `/recommendation_model_health` | GET | Model sağlık durumunu kontrol eder |
+
+### Ürün-tabanlı Öneri İsteği
+
 ```bash
-GET /versions
-
-curl http://localhost:8000/versions
-```
-- Tüm mevcut model versiyonlarını listeler
-- Her versiyon için performans metriklerini gösterir
-
-### 4.2 Model Versiyonu Yükleme
-```bash
-POST /load_version/{version_name}
-
-curl -X POST http://localhost:8000/load_version/v2_random_forest
-```
-- Belirli bir model versiyonunu aktif hale getirir
-- Versiyonlar arası geçiş yapmak için kullanılır
-
-### 4.3 Model Sağlığını Kontrol Etme
-```bash
-GET /model_health
-
-curl http://localhost:8000/model_health
-```
-- Son 24 saatteki performansı kontrol eder
-- RMSE ve R² metriklerini hesaplar
-- Model durumunu raporlar
-
-### 4.4 Tahmin Yapma
-```bash
-POST /predict
-
-curl -X POST "http://localhost:8000/predict" \
-     -H "Content-Type: application/json" \
-     -d '{
-           "user_id": 1,
-           "item_id": 1,
-           "user_age": 25,
-           "user_gender": "M",
-           "item_category": "A",
-           "item_price": 50.0
-         }'
+curl -X 'POST' \
+  'http://localhost:8000/recommend' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+       "user_id": 123,
+       "item_id": 42,
+       "num_recommendations": 5
+   }'
 ```
 
-Opsiyonel parametreler:
-- `version_name`: Belirli bir versiyon kullanmak için
-- `enable_ab_testing`: A/B testing için
+### Kullanıcı-tabanlı Öneri İsteği
 
-## 5. Özellik Detayları
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/recommend' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+       "user_id": 123,
+       "num_recommendations": 5
+   }'
+```
 
-### 5.1 Veri Özellikleri
+### Model Versiyonları Arası Geçiş
 
-1. **Kullanıcı Özellikleri**
-   - user_id: Kullanıcı kimliği (1-100)
-   - user_age: Kullanıcı yaşı (18-70)
-   - user_gender: Cinsiyet (M/F)
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/load_recommendation_version/v1_20250318_122143' \
+  -H 'accept: application/json'
+```
 
-2. **Ürün Özellikleri**
-   - item_id: Ürün kimliği (1-50)
-   - item_category: Kategori (A/B/C)
-   - item_price: Fiyat (10-100)
+Versiyon adını MLflow arayüzünden (`http://localhost:5000`) bulabilirsiniz.
 
-### 5.2 Model Metrikleri
+## 🧪 Test Etme
 
-1. **Temel Metrikler**
-   - MAE (Mean Absolute Error)
-   - MSE (Mean Squared Error)
-   - RMSE (Root Mean Squared Error)
-   - R² (R-squared)
+```bash
+python test_recommendation.py
+```
 
-2. **Sağlık Kontrolleri**
-   - RMSE < 1.0 (1 yıldızdan az hata)
-   - R² > 0.6 (en az %60 açıklayıcılık)
+Bu script şunları test eder:
+- Model sağlık durumu
+- Mevcut model versiyonları ve endpoint bilgileri
+- Ürün-tabanlı öneriler
+- Kullanıcı-tabanlı öneriler
 
-### 5.3 Güven Aralıkları
-- Her tahmin için güven aralığı hesaplanır
-- Model belirsizliği ölçülür
-- Tahmin güvenilirliği raporlanır
+## 🛠️ Hata Giderme
 
-## 6. İleri Seviye Özellikler
+### "Ürün bulunamadı" Hatası
 
-### 6.1 A/B Testing
-1. `/predict` endpoint'inde `enable_ab_testing=true` parametresi kullanın
-2. Sistem otomatik olarak farklı versiyonları test eder
-3. Performans metriklerini karşılaştırın
+Bu hata, olmayan bir ürün ID'si ile istek yapıldığında görülür. Geçerli bir ürün ID'si kullanın:
 
-### 6.2 Model İzleme
-1. MLflow UI'da model performansını takip edin
-2. `/model_health` endpoint'i ile canlı izleme yapın
-3. Metrikler düşükse otomatik uyarı alın
+```bash
+# Hatalı istek (995 numaralı ürün yok)
+curl -X 'POST' \
+  'http://localhost:8000/recommend' \
+  -d '{
+       "user_id": 123,
+       "item_id": 995,
+       "num_recommendations": 5
+   }'
 
-### 6.3 Otomatik Model Güncelleme
-1. Yeni veri geldiğinde `train.py` ile modeli güncelleyin
-2. MLflow'da yeni versiyon otomatik kaydedilir
-3. API üzerinden yeni versiyona geçiş yapın
+# Cevap
+{
+  "detail": "Ürün bulunamadı: 995"
+}
 
-## 7. Hata Giderme ve Bakım
+# Doğru istek (1-200 arası ürün ID'leri kullanın)
+curl -X 'POST' \
+  'http://localhost:8000/recommend' \
+  -d '{
+       "user_id": 123,
+       "item_id": 42,
+       "num_recommendations": 5
+   }'
+```
 
-### 7.1 Sık Karşılaşılan Hatalar
+### MLflow Bağlantı Hatası
 
-1. **MLflow Bağlantı Hatası**
-   ```
-   Solution: MLflow sunucusunun çalıştığını kontrol edin
-   ```
+- MLflow sunucusunun çalıştığını doğrulayın: `http://localhost:5000`
+- Bağlantı ayarlarını kontrol edin: `mlflow.set_tracking_uri("http://localhost:5000")`
 
-2. **Model Yükleme Hatası**
-   ```
-   Solution: Model versiyonunun doğru olduğunu kontrol edin
-   ```
+### API Yanıt Vermiyor
 
-3. **API Hataları**
-   ```
-   Solution: Input formatını kontrol edin
-   ```
+- Servisin çalıştığını kontrol edin: `http://localhost:8000/docs`
+- Log dosyasını inceleyin: `logs.log`
+- Servisi yeniden başlatın: `python serve.py`
 
-### 7.2 Performans İyileştirme
-1. GPU kullanımını etkinleştirin
-2. Batch prediction kullanın
-3. Model parametrelerini optimize edin
+### "Model yüklenemedi!" Hatası
 
-### 7.3 Güvenlik Önlemleri
-1. API anahtarı kullanın
-2. Rate limiting uygulayın
-3. Input validasyonu yapın
+Yeni eklenen model fallback mekanizması sayesinde, eğer son yüklenen model hatalıysa sistem otomatik olarak önceki düzgün çalışan modele geri döner:
 
-### 7.4 Düzenli Bakım
-1. Modeli periyodik olarak güncelleyin
-2. Performans metriklerini kontrol edin
-3. Sistem loglarını temizleyin
+1. **Otomatik Geri Dönüş**: Uygulama başlatıldığında son model yüklenemezse, sistem otomatik olarak önceki çalışan versiyona geri döner.
+2. **Çalışma Kaydı**: Her başarılı model yüklemesi `last_working_model.json` ve `last_working_rating_model.json` dosyalarına kaydedilir.
+3. **Alternatif Model Arama**: Son 3 model versiyonu denenir ve çalışan sürüm bulunmaya çalışılır.
+4. **Servis Devamlılığı**: Hiçbir model yüklenemese bile API servisi çalışmaya devam eder, sadece öneri ve tahmin endpoint'leri etkilenir.
 
-## 8. Proje Yapısı
+Örnek senaryo:
+```bash
+# Hatalı model servis başlangıcında
+[INFO] Son öneri modeli yüklenemedi: Error loading artifacts...
+[INFO] Alternatif modele dönüş yapılıyor...
+[INFO] Son çalışan model yükleniyor: a1b2c3d4
+[INFO] Model MLflow'dan başarıyla yüklendi
+[INFO] Servis başarıyla başlatıldı!
 
-- `train.py`: Model eğitimi ve MLflow entegrasyonu
-- `serve.py`: FastAPI ile model serving
-- `data/`: Veri seti dizini
-- `requirements.txt`: Gerekli Python paketleri 
+# Manuel model değiştirme sırasında
+$ curl -X 'POST' 'http://localhost:8000/load_recommendation_version/v3_hatalı_model'
+{
+  "message": "İstenen model versiyonu yüklenemedi: v3_hatalı_model. Mevcut model kullanılmaya devam ediliyor: v2_çalışan_model",
+  "status": "warning",
+  "error": "Model yüklenemedi"
+}
+```
+
+## 📝 Proje Dosyaları
+
+```
+mlflow_recommender/
+│
+├── data/                  # Veri dosyaları
+│   ├── users.csv         # Kullanıcı bilgileri
+│   ├── products.csv      # Ürün bilgileri
+│   └── interactions.csv  # Kullanıcı-ürün etkileşimleri
+│
+├── artifacts/            # Lokal model artifact'leri
+│
+├── serve.py              # API servisi (FastAPI)
+├── train_recommendation.py  # Model eğitim kodu
+├── test_recommendation.py  # Test scripti
+├── generate_data.py      # Veri oluşturma kodu
+├── requirements.txt      # Bağımlılıklar
+├── README.md             # Dokümantasyon
+├── sunum.md              # Sunum notları
+│
+├── last_working_model.json         # Son çalışan öneri modeli bilgileri
+└── last_working_rating_model.json  # Son çalışan rating modeli bilgileri
+```
+
+## ⚙️ Geliştirilecek Yönler
+
+- **Hibrit Öneri Algoritmaları**: Collaborative filtering + content-based yaklaşımların birleştirilmesi
+- **Derin Öğrenme Entegrasyonu**: Neural Collaborative Filtering modelleri
+- **A/B Test Mekanizması**: Farklı model versiyonlarını karşılaştırma
+- **Gerçek Zamanlı Güncelleme**: Kullanıcı davranışlarına göre sürekli iyileştirme
+- **Aykırı Değer Tespiti**: Anormal kullanıcı davranışlarını filtreleme
+- **Model Sağlık İzleme**: Düzenli performans kontrolü ve otomatik iyileştirme
+
+## 📊 Model Performans Metrikleri ve Açıklamaları
+
+### Metrik Nedir ve Ne İşe Yarar?
+
+Model performans metrikleri, önerilerin ne kadar doğru ve güvenilir olduğunu gösterir. Aşağıdaki metrikler, modelin başarısını ölçmek için kullanılır:
+
+#### RMSE (Root Mean Square Error - Kök Ortalama Kare Hata)
+- 💡 Ne Anlama Gelir?: Tahminlerimizin gerçek değerlerden ne kadar saptığını gösterir
+- 📉 İyi Değer: 0'a yakın değerler (Örn: 0.5531 çok iyi bir değerdir)
+- ⚖️ Özellik: Büyük hataları daha çok cezalandırır
+- 🎯 Örnek: RMSE=0.5 ise, tahminlerimiz ortalamada gerçek değerlerden yaklaşık 0.5 puan sapıyor
+
+#### MAE (Mean Absolute Error - Ortalama Mutlak Hata)
+- 💡 Ne Anlama Gelir?: Tahminlerimizin gerçek değerlerden ortalama sapmasını gösterir
+- 📉 İyi Değer: 0'a yakın değerler (Örn: 0.4427 çok iyi bir değerdir)
+- ⚖️ Özellik: Tüm hataları eşit şekilde değerlendirir
+- 🎯 Örnek: MAE=0.4 ise, tahminlerimiz ortalamada gerçek değerlerden 0.4 puan sapıyor
+
+#### Tahmin Oranı (Prediction Rate)
+- 💡 Ne Anlama Gelir?: Modelin kaç örnek için tahmin yapabildiğini yüzde olarak gösterir
+- 📈 İyi Değer: %100'e yakın değerler (Örn: %99.34 çok iyi bir değerdir)
+- ⚖️ Özellik: Modelin kapsama alanını gösterir
+- 🎯 Örnek: %99.34 ise, model örneklerin %99.34'ü için tahmin yapabiliyor
+
+### Mevcut Model Performansı

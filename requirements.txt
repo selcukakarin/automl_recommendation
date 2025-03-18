@@ -11,4 +11,5 @@ shap==0.41.0
 optuna==3.1.0
 python-multipart>=0.0.6
 pydantic>=2.4.2
-requests>=2.31.0 
+requests>=2.31.0
+faker>=19.0.0 

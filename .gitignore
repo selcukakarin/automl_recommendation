@@ -103,3 +103,6 @@ mlruns/
 *.pkl
 *.pkl.pkl
 data_summary.json
+
+# MLartifacts
+mlartifacts/

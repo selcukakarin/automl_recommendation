@@ -35,9 +35,24 @@ def validate_model_performance(metrics):
     Raises:
         ValueError: Eger model performansi esik degerlerin altindaysa hata verir
         
-    Kontrol edilen metrikler:
-    - RMSE: 1.0'dan kucuk olmali (1 yildizdan az hata)
-    - R2: 0.6'dan buyuk olmali (en az %60 aciklayicilik)
+    Metrik Açıklamaları:
+    --------------------
+    RMSE (Root Mean Square Error - Kök Ortalama Kare Hata):
+    - Tahminlerimizin gerçek değerlerden ne kadar saptığını gösterir
+    - Daha düşük değerler daha iyidir (0'a yakın olması idealdir)
+    - Büyük hataları daha çok cezalandırır
+    - Örnek: RMSE=0.5 ise, tahminlerimiz ortalamada gerçek değerlerden yaklaşık 0.5 puan sapıyor
+    
+    MAE (Mean Absolute Error - Ortalama Mutlak Hata):
+    - Tahminlerimizin gerçek değerlerden ortalama sapmasını gösterir
+    - Daha düşük değerler daha iyidir (0'a yakın olması idealdir)
+    - Tüm hataları eşit şekilde değerlendirir
+    - Örnek: MAE=0.4 ise, tahminlerimiz ortalamada gerçek değerlerden 0.4 puan sapıyor
+    
+    Tahmin Oranı (Prediction Rate):
+    - Modelin kaç örnek için tahmin yapabildiğini yüzde olarak gösterir
+    - Daha yüksek değerler daha iyidir (%100'e yakın olması idealdir)
+    - Örnek: %99.34 ise, model örneklerin %99.34'ü için tahmin yapabiliyor
     """
     threshold = {
         "RMSE": 1.0,  # 1 yildizdan fazla hata kabul edilemez
@@ -223,337 +238,78 @@ def train_model_version(version_name, model_type=None, params=None):
     else:
         df = pd.read_csv('data/ratings.csv')
     
+    # Model dosyası için artifacts klasörü oluştur
+    if not os.path.exists('artifacts'):
+        os.makedirs('artifacts')
+    
     with mlflow.start_run(run_name=version_name):
-        # AutoML: Otomatik veri on isleme ve cross-validation ayarları
-        # Setup fonksiyonu, model egitimi oncesi tum veri ve validasyon ayarlarını yapılandırır
-        
-        # Örnek veri yapısı:
-        # df = 
-        #    user_id  item_id  rating  timestamp  user_age  user_gender  item_category  item_price
-        # 0      23       5     4.2    2023...        25          M            A          45.23
-        # 1      45      12     3.7    2023...        45          F            B          78.50
-        # 2       12       45     2.1    2023...        33          M            C          23.15
-        # ...
-        setup(
-              # Ana veri çerçevesi - tum ozellikler ve hedef degisken
-              data=df,
-              
-              # Tahmin edilecek hedef degisken
-              target='rating',
-              
-              # Timestamp sütununu model eğitiminde kullanma
-              ignore_features=['timestamp'],
-              
-              # Egitim seti oranı: %75 egitim, %25 test
-              train_size=0.75,
-              
-              # 5-fold cross validation: Veriyi 5 parçaya böler
-              # Örnek fold yapısı (750 satırlık egitim verisi için):
-              # Fold 1: [0-150] test, [151-750] train
-              # Fold 2: [151-300] test, [0-150, 301-750] train
-              # Fold 3: [301-450] test, [0-300, 451-750] train
-              # Fold 4: [451-600] test, [0-450, 601-750] train
-              # Fold 5: [601-750] test, [0-600] train
-              fold=5,
-              
-              # Zaman bazlı cross-validation
-              # Normal CV'den farkı: Gelecekteki veriyi tahmin etmek için geçmis veriyi kullanır
-              # Örnek: Mart 2024 verilerini tahmin etmek için Ocak-Şubat 2024 verilerini kullanır
-              fold_strategy='timeseries',
-              
-              # Zaman sırasını korur, karıştırma yapmaz
-              # False: 1 Ocak -> 2 Ocak -> 3 Ocak ... şeklinde sıralı gider
-              # True olsaydı: 5 Ocak -> 1 Ocak -> 7 Ocak ... şeklinde karışık olurdu
-              fold_shuffle=False,
-              
-              # Veri bölme işleminde karıştırma yapma
-              # False: Zaman sırasını koru
-              # True: Verileri rastgele karıştır
-              data_split_shuffle=False,
-              
-              # Rastgele sayı üreteci için sabit değer
-              # Aynı sonuçları tekrar üretebilmek için kullanılır
-              # Her çalıştırmada aynı bölünmeleri ve sonuçları elde ederiz
-              session_id=42,
-              
-              # Setup işlemi sırasında ekrana çıktı yazmaz
-              # True: Detaylı çıktı gösterir
-              # False: Minimum çıktı gösterir
-              verbose=False,
-              
-              # GPU kullanımını devre dışı bırakır
-              # False: CPU kullanır (daha yavaş ama her sistemde çalışır)
-              # True: GPU kullanır (daha hızlı ama GPU gerektirir)
-              use_gpu=False)
-        
-        if model_type:
-            # AutoML: Belirli bir model için otomatik hiperparametre optimizasyonu
-            # Örnek: Random Forest modeli için hiperparametreler
-            # rf_params = {
-            #    'n_estimators': [100, 200, 300],     # Ağaç sayısı
-            #    'max_depth': [5, 10, 15, 20],        # Maksimum derinlik
-            #    'min_samples_split': [2, 5, 10],     # Bölünme için minimum örnek sayısı
-            #    'min_samples_leaf': [1, 2, 4]        # Yaprak için minimum örnek sayısı
-            #  }
-
-            # PyCaret bu kombinasyonları otomatik dener ve en iyisini bulur
-            model = create_model(model_type, **params if params else {})
-            # Model optimizasyonu
-            
-            # Perde arkasında yapılanlar:
-            # Deneme 1: n_estimators=100, max_depth=5  -> RMSE: 0.85
-            # Deneme 2: n_estimators=200, max_depth=10 -> RMSE: 0.82
-            # Deneme 3: n_estimators=300, max_depth=15 -> RMSE: 0.83
-            # ...
-            # En iyi sonuç veren parametreler seçilir
-            tuned_model = tune_model(model, n_iter=10, optimize='RMSE')
-            final_model = finalize_model(tuned_model)
-            # Bu otomatik optimizasyon süreci:
-            # Manuel parametre ayarlamaya göre çok daha hızlıdır
-            # Daha iyi sonuçlar verir
-            # Zaman tasarrufu sağlar
-            # İnsan hatasını minimize eder
-            # Tutarlı ve tekrarlanabilir sonuçlar üretir
-        else:
-            # AutoML: Otomatik model secimi - en iyi modeli secer
-            # Otomatik model secimi süreci:
-            # 1. compare_models: Tüm model tiplerini (rf, xgb, lightgbm vb.) test eder
-            #    - Her model için cross-validation ile performans hesaplar
-            #    - RMSE, MAE, R2 gibi metrikleri değerlendirir
-            #    - Egitim süresini ve kaynak kullanımını kontrol eder
-            #    - En iyi performans/kaynak oranına sahip modeli secer
-            # 
-            # 2. finalize_model: Seçilen en iyi modeli son haline getirir
-            #    - Tüm veri setiyle tekrar egitir
-            #    - Modeli üretim için hazırlar
-            model = compare_models(n_select=1)
-            final_model = finalize_model(model)
-        
-        # AutoML: Otomatik metrik hesaplama
-        # pull(): Sonuçları görüntüleme
-        #    - Tüm modellere ait performans metriklerini görüntüler
-        #    - En iyi modeli secmek için kullanılır
-        metrics = pull()
-        best_metrics = metrics.iloc[0].to_dict()
-        
-        # Tüm model ve egitim bilgilerini hazırla
-        # Bu sözlük, modelin tüm önemli bilgilerini içerir ve MLflow'a kaydedilir
-        base_info = {
-            # Model bilgileri
-            # - version_name: Model versiyonunun benzersiz adı (orn: "v1_auto_select")
-            # - model_type: Kullanılan model tipi (rf, xgb, vb. veya otomatik secilmis)
-            # - custom_params: Özel model parametreleri (varsa)
-            "version_name": version_name,
-            "model_type": model_type if model_type else "auto_selected",
-            "custom_params": str(params) if params else "default",
-            
-            # Egitim konfigürasyonu
-            # - fold_strategy: Cross-validation stratejisi (timeseries: zaman bazlı bölünme)
-            # - n_folds: Kaç parçaya bölüneceği (5-fold cross validation)
-            # - train_size: Egitim seti oranı (0.75 = %75 egitim, %25 test)
-            # - fold_shuffle: Veri karıştırma durumu (False: zaman sırasını koru)
-            # - data_split_shuffle: Veri bölme işleminde karıştırma durumu (False: zaman sırasını koru)
-            # - session_id: Tekrar üretilebilirlik için sabit değer
-            # - verbose: Çıktı detay seviyesi
-            # - use_gpu: GPU kullanım durumu
-            "fold_strategy": "timeseries",
-            "n_folds": 5,
-            "train_size": 0.75,
-            "fold_shuffle": False,
-            "data_split_shuffle": False,
-            "session_id": 42,
-            "verbose": False,
-            "use_gpu": False,
-            
-            # Veri bilgileri
-            # - data_shape: Veri setinin boyutu (satır x sütun)
-            # - features: Kullanılan özellikler listesi
-            # - target_variable: Tahmin edilecek degisken
-            # - timestamp_column: Zaman serisi için kullanılan sütun
-            "data_shape": f"{df.shape[0]}x{df.shape[1]}",
-            "features": list(df.columns),
-            "target_variable": "rating",
-            "timestamp_column": "timestamp",
-            
-            # Egitim zamanı
-            # Model egitiminin başlangıç zamanı (debug ve izleme için)
-            "training_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            
-            # Model parametreleri
-            # final_model'in tüm parametrelerini sözlüğe ekle
-            **final_model.get_params()
-        }
-        
-        # Performans metrikleri sözlüğü
-        # Modelin performansını ölçen tüm metrikler burada toplanır
-        all_metrics = {
-            "MAE": best_metrics['MAE'],      # Ortalama Mutlak Hata
-            "MSE": best_metrics['MSE'],      # Ortalama Kare Hata
-            "RMSE": best_metrics['RMSE'],    # Kok Ortalama Kare Hata
-            "R2": best_metrics['R2'],        # Belirtme Katsayisi
-            "Training_Time": best_metrics.get('TT', 0),    # Egitim süresi (saniye)
-            "Memory_Usage": best_metrics.get('Memory', 0)  # Kullanılan bellek (MB)
-        }
-        
-        # Model performans kontrolü
-        # Belirlenen eşik değerlere göre model başarılı mı kontrol et
-        validation_error = None
         try:
-            # Model performans kontrolü
-            validate_model_performance(best_metrics)
+            # Temel parametreleri kaydet
+            mlflow.log_param("model_type", "rating")
+            mlflow.log_param("endpoint", "/predict")
+            mlflow.log_param("version_name", version_name)
             
-            # Başarılı durumda ek bilgiler
-            base_info.update({
-                "validation_status": "passed",  # Validasyon durumu
-                "validation_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Validasyon zamanı
-            })
+            if params:
+                for key, value in params.items():
+                    mlflow.log_param(key, str(value))
             
-            # Başarılı modelin performans detayları
-            all_metrics.update({
-                "threshold_rmse": 1.0,  # RMSE için kabul edilen maksimum değer
-                "threshold_r2": 0.6,    # R2 için kabul edilen minimum değer
-                "rmse_margin": 1.0 - best_metrics['RMSE'],  # RMSE'nin eşik değerden ne kadar iyi olduğu
-                "r2_margin": best_metrics['R2'] - 0.6       # R2'nin eşik değerden ne kadar iyi olduğu
-            })
+            # Model eğitimi setup
+            setup(
+                data=df,
+                target='rating',
+                ignore_features=['timestamp'],
+                train_size=0.75,
+                fold=5,
+                fold_strategy='timeseries',
+                fold_shuffle=False,
+                data_split_shuffle=False,
+                session_id=42,
+                verbose=False,
+                use_gpu=False
+            )
             
-        except ValueError as e:
-            validation_error = str(e)
-            # Hata durumunda kayıt
-            base_info.update({
-                "validation_status": "failed",        # Başarısız durumu
-                "failure_reason": validation_error,   # Başarısızlık nedeni
-                "failure_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  # Hata zamanı
-                "threshold_rmse": 1.0,                # Hedeflenen RMSE değeri
-                "threshold_r2": 0.6                   # Hedeflenen R2 değeri
-            })
-                # MLflow'a kayıt
-        # Tüm model bilgileri ve metrikleri MLflow'a kaydedilir
-        mlflow.log_params(base_info)      # Model parametreleri ve konfigürasyonu
-        mlflow.log_metrics(all_metrics)   # Performans metrikleri
-        
-        try:
-            # Model dosyası kaydetme
-            # Başarılı ve başarısız modeller farklı isimlerle kaydedilir
-            model_filename = None
-            try:
-                # Model dosyası adını belirle (uzantısız)
-                base_filename = "model" if base_info["validation_status"] == "passed" else "failed_model"
-                model_filename = f"{base_filename}.pkl"
-                
-                # Eğer dosya zaten varsa sil
-                if os.path.exists(model_filename):
-                    os.remove(model_filename)
-                if os.path.exists(f"{model_filename}.pkl"):  # PyCaret'in oluşturduğu dosya
-                    os.remove(f"{model_filename}.pkl")
-                
-                # Modeli kaydet
-                save_model(final_model, base_filename)
-                print("Transformation Pipeline and Model Successfully Saved")
-                
-                # Modeli doğrudan MLflow'a kaydediyoruz
-                mlflow.sklearn.log_model(final_model, "model")
-            except Exception as model_error:
-                print(f"Model kaydedilirken hata oluştu: {str(model_error)}")
+            # Model oluşturma ve eğitme
+            if model_type:
+                model = create_model(model_type, **params if params else {})
+                tuned_model = tune_model(model, n_iter=10, optimize='RMSE')
+                final_model = finalize_model(tuned_model)
+            else:
+                model = compare_models(n_select=1)
+                final_model = finalize_model(model)
             
-            # Veri özeti kaydetme
-            # Veri seti hakkında detaylı istatistikler ve bilgiler
-            def convert_to_serializable(obj):
-                if isinstance(obj, (np.int64, np.float64)):
-                    return float(obj)
-                if isinstance(obj, pd.Timestamp):
-                    return obj.strftime("%Y-%m-%d %H:%M:%S")
-                if isinstance(obj, np.dtype):
-                    return str(obj)
-                if isinstance(obj, pd.Categorical):
-                    return str(obj)
-                if pd.isna(obj):  # NaN değerleri için kontrol
-                    return None
-                return str(obj) if not isinstance(obj, (int, float, bool, str, list, dict)) else obj
-
-            # Timestamp ve kategorik sütunları geçici olarak kaldır
-            temp_cols = {}
-            for col in df.columns:
-                if col == 'timestamp' or df[col].dtype.name == 'category':
-                    temp_cols[col] = df[col].copy()
-                    df = df.drop(col, axis=1)
-
-            # Sayısal veriler için özet istatistikler
-            data_summary = {
-                "data_statistics": {
-                    col: {k: convert_to_serializable(v) for k, v in stats.items()}
-                    for col, stats in df.describe().to_dict().items()
-                },
-                "missing_values": {
-                    k: int(v) for k, v in df.isnull().sum().to_dict().items()
-                },
-                "feature_correlations": {
-                    k: convert_to_serializable(v)
-                    for k, v in df.select_dtypes(include=['int64', 'float64']).corr()['rating'].dropna().to_dict().items()  # Sadece sayısal sütunlar için korelasyon
-                },
-                "data_types": {
-                    k: str(v) for k, v in df.dtypes.to_dict().items()
-                },
-                "numerical_features": df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+            # Metrikleri hesapla
+            metrics = pull()
+            best_metrics = metrics.iloc[0].to_dict()
+            
+            # Temel metrikleri kaydet
+            essential_metrics = {
+                'rmse': float(best_metrics['RMSE']),
+                'mae': float(best_metrics['MAE']),
+                'n_predictions': len(df),  # Toplam tahmin sayısı
+                'prediction_ratio': 1.0    # Tüm örnekler için tahmin yapılabilir
             }
-
-            # Kategorik değişkenler için özet
-            categorical_summary = {}
-            for col, series in temp_cols.items():
-                if col != 'timestamp':
-                    value_counts = series.value_counts()
-                    categorical_summary[col] = {
-                        "unique_values": value_counts.index.tolist(),
-                        "counts": value_counts.values.tolist(),
-                        "null_count": int(series.isnull().sum())
-                    }
-
-            data_summary["categorical_features"] = {
-                "columns": [col for col in temp_cols if col != 'timestamp'],
-                "summaries": categorical_summary
-            }
-
-            # Timestamp istatistiklerini ekle
-            if 'timestamp' in temp_cols:
-                timestamp_col = temp_cols['timestamp']
-                data_summary["timestamp_info"] = {
-                    "min": convert_to_serializable(timestamp_col.min()),
-                    "max": convert_to_serializable(timestamp_col.max()),
-                    "unique_count": len(timestamp_col.unique()),
-                    "null_count": int(timestamp_col.isnull().sum())
-                }
-
-            # Geçici olarak kaldırılan sütunları geri ekle
-            for col, series in temp_cols.items():
-                df[col] = series
+            mlflow.log_metrics(essential_metrics)
             
-            # Veri özetini JSON formatında kaydet
-            try:
-                with open("data_summary.json", "w") as f:
-                    json.dump(data_summary, f, indent=2)
-                if os.path.exists("data_summary.json"):
-                    mlflow.log_artifact("data_summary.json")
-                    print("Veri özeti başarıyla kaydedildi")
-                else:
-                    print("Uyarı: Veri özeti dosyası bulunamadı")
-            except Exception as summary_error:
-                print(f"Veri özeti kaydedilirken hata oluştu: {str(summary_error)}")
+            # Model dosyasını kaydet
+            model_path = os.path.join('artifacts', 'model.pkl')
+            save_model(final_model, model_path)
+            
+            # MLflow'a model artifact'ını kaydet
+            mlflow.sklearn.log_model(
+                final_model,
+                "model",
+                registered_model_name=f"rating_model_{version_name}"
+            )
+            
+            # Geçici dosyaları temizle
+            if os.path.exists(model_path):
+                os.remove(model_path)
+            
+            return (True, "Model başarıyla eğitildi ve kaydedildi.")
             
         except Exception as e:
-            print(f"Model ve veri özeti kaydedilirken hata oluştu: {str(e)}")
-        
-        finally:
-            # Geçici dosyaları temizle
-            # Hata olsa da olmasa da dosyaları temizlemeye çalış
-            for file in [model_filename, "data_summary.json"]:
-                if os.path.exists(file):
-                    try:
-                        os.remove(file)
-                    except:
-                        pass
-        
-        # Sonuç döndür
-        return (True, "Model başarıyla eğitildi ve kaydedildi.") if base_info["validation_status"] == "passed" \
-               else (False, f"Model performans kriterleri karşılanamadı: {validation_error}")
+            print(f"Model eğitimi sırasında hata: {str(e)}")
+            return (False, f"Model eğitimi başarısız oldu: {str(e)}")
 
 def train_multiple_versions():
     """

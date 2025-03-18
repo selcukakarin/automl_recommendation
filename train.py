@@ -447,18 +447,11 @@ def train_model_version(version_name, model_type=None, params=None):
                     os.remove(f"{model_filename}.pkl")
                 
                 # Modeli kaydet
-                save_model(final_model, base_filename)  # PyCaret otomatik .pkl ekleyecek
+                save_model(final_model, base_filename)
+                print("Transformation Pipeline and Model Successfully Saved")
                 
-                # Eğer PyCaret .pkl uzantısını eklediyse, dosyayı doğru isimle yeniden adlandır
-                if os.path.exists(f"{base_filename}.pkl"):
-                    os.rename(f"{base_filename}.pkl", model_filename)
-                
-                # Model artifactlarını MLflow'a kaydet
-                if os.path.exists(model_filename):
-                    mlflow.log_artifact(model_filename)
-                    print(f"Model başarıyla kaydedildi: {model_filename}")
-                else:
-                    print(f"Uyarı: Model dosyası bulunamadı: {model_filename}")
+                # Modeli doğrudan MLflow'a kaydediyoruz
+                mlflow.sklearn.log_model(final_model, "model")
             except Exception as model_error:
                 print(f"Model kaydedilirken hata oluştu: {str(model_error)}")
             

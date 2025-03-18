@@ -205,10 +205,20 @@ def load_model(run_id):
             - model: Yüklenen PyCaret modeli
             - run_id: MLflow run ID'si
     """
-    client = mlflow.tracking.MlflowClient()
-    artifacts_path = client.download_artifacts(run_id, "model.pkl")
-    model = pycaret_load_model(artifacts_path)
-    return model, run_id
+    try:
+        # Önce modeli MLflow'dan yüklemeyi dene
+        model_path = f"runs:/{run_id}/model"
+        model = mlflow.pyfunc.load_model(model_path)
+        return model, run_id
+    except Exception as mlflow_error:
+        print(f"MLflow'dan model yükleme hatası: {str(mlflow_error)}")
+        try:
+            # Eğer MLflow'dan yükleme başarısız olursa, doğrudan dosyadan yüklemeyi dene
+            model = pycaret_load_model("model.pkl")
+            return model, run_id
+        except Exception as file_error:
+            print(f"Dosyadan model yükleme hatası: {str(file_error)}")
+            raise Exception("Model yüklenemedi!")
 
 # Global model değişkeni ve versiyon bilgisi
 model = None
@@ -228,21 +238,33 @@ async def startup_event():
         Exception: MLflow bağlantısı veya model yükleme başarısız olursa
     """
     global model, current_version
-    # MLflow sunucusuna bağlan
-    mlflow.set_tracking_uri("http://localhost:5000")
     
-    # Son başarılı çalışmayı bul
-    experiment = mlflow.get_experiment_by_name("recommendation-system")
-    if experiment is None:
-        raise Exception("Experiment bulunamadı!")
-    
-    runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
-    if len(runs) == 0:
-        raise Exception("Hiç model çalışması bulunamadı!")
-    
-    # En son çalışmayı al
-    latest_run = runs.iloc[0]
-    model, current_version = load_model(latest_run.run_id)
+    try:
+        # MLflow sunucusuna bağlan
+        mlflow.set_tracking_uri("http://localhost:5000")
+        
+        # Son başarılı çalışmayı bul
+        experiment = mlflow.get_experiment_by_name("recommendation-system")
+        if experiment is None:
+            raise Exception("Experiment bulunamadı!")
+        
+        runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+        if len(runs) == 0:
+            raise Exception("Hiç model çalışması bulunamadı!")
+        
+        # En son çalışmayı al
+        latest_run = runs.iloc[0]
+        
+        try:
+            # Modeli yüklemeyi dene
+            model, current_version = load_model(latest_run.run_id)
+            print(f"Model başarıyla yüklendi. Versiyon: {current_version}")
+        except Exception as model_error:
+            print(f"Model yükleme hatası: {str(model_error)}")
+            raise
+    except Exception as e:
+        print(f"Başlangıç hatası: {str(e)}")
+        raise
 
 @app.get("/versions", response_model=List[ModelVersion])
 async def list_versions():
@@ -266,14 +288,21 @@ async def list_versions():
     
     versions = []
     for _, run in runs.iterrows():
+        # Eğer version_name None ise, run_id'yi kullan
+        version_name = run["params.version_name"]
+        if version_name is None:
+            version_name = f"run_{run['run_id'][:8]}"
+            
+        # Metrikleri güvenli bir şekilde al, yoksa varsayılan değer kullan
         metrics = {
-            "MAE": run["metrics.MAE"],
-            "MSE": run["metrics.MSE"],
-            "RMSE": run["metrics.RMSE"],
-            "R2": run["metrics.R2"]
+            "MAE": float(run["metrics.MAE"]) if pd.notna(run["metrics.MAE"]) else 0.0,
+            "MSE": float(run["metrics.MSE"]) if pd.notna(run["metrics.MSE"]) else 0.0,
+            "RMSE": float(run["metrics.RMSE"]) if pd.notna(run["metrics.RMSE"]) else 0.0,
+            "R2": float(run["metrics.R2"]) if pd.notna(run["metrics.R2"]) else 0.0
         }
+        
         versions.append(ModelVersion(
-            version_name=run["params.version_name"],
+            version_name=version_name,
             run_id=run["run_id"],
             metrics=metrics
         ))
@@ -392,12 +421,10 @@ async def predict(
     global model, current_version
     
     if enable_ab_testing:
-        # Rastgele bir model versiyonu seç
         versions = await list_versions()
         selected_version = random.choice([v.version_name for v in versions])
         await load_version(selected_version)
     elif version_name:
-        # Belirtilen versiyonu yükle
         await load_version(version_name)
     
     if model is None:
@@ -405,7 +432,7 @@ async def predict(
     
     try:
         # Gelen veriyi DataFrame'e dönüştür
-        input_data = pd.DataFrame([{
+        input_df = pd.DataFrame([{
             'user_id': request.user_id,
             'item_id': request.item_id,
             'user_age': request.user_age,
@@ -414,34 +441,34 @@ async def predict(
             'item_price': request.item_price
         }])
         
-        # AutoML: Kategorik değişkenleri otomatik dönüştür
-        input_data['user_gender'] = input_data['user_gender'].astype('category')
-        input_data['item_category'] = input_data['item_category'].astype('category')
+        # Sayısal değişkenleri ölçeklendir
+        for feature in ['user_age', 'item_price']:
+            mean = input_df[feature].mean()
+            std = input_df[feature].std()
+            if std != 0:
+                input_df[feature] = (input_df[feature] - mean) / std
         
-        # AutoML: Otomatik tahmin
-        prediction = model.predict(input_data)
+        print(f"Tahmin için kullanılan özellikler: {input_df.columns.tolist()}")
         
-        # Güven aralığı hesaplama
-        try:
-            confidence = model.predict_proba(input_data)
-            confidence_interval = (float(confidence[0]), float(confidence[1]))
-        except (AttributeError, NotImplementedError):
-            # Model predict_proba desteklemiyorsa basit bir güven aralığı hesapla
-            pred_value = float(prediction[0])
-            confidence_interval = (pred_value - 0.5, pred_value + 0.5)
+        # Tahmin yap
+        prediction = float(model.predict(input_df)[0])
+        
+        # Güven aralığı hesapla
+        confidence_interval = (prediction - 0.5, prediction + 0.5)
         
         # Tahmin kaydını sakla
         recent_predictions.append(
-            PredictionRecord(prediction=float(prediction[0]))
+            PredictionRecord(prediction=prediction)
         )
         
         return RecommendationResponse(
-            predicted_rating=float(prediction[0]),
+            predicted_rating=prediction,
             confidence_interval=confidence_interval,
             model_version=current_version
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Tahmin hatası: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"500: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("serve:app", host="0.0.0.0", port=8000, reload=True) 

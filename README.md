@@ -4,8 +4,6 @@
 
 Bu proje, MLflow kullanarak bir e-ticaret ürün öneri sistemi geliştirmeyi, deployment süreçlerini yönetmeyi ve REST API aracılığıyla servis etmeyi göstermektedir. Sistem, kullanıcı-ürün etkileşimlerini analiz ederek kişiselleştirilmiş öneriler sunmaktadır.
 
-![MLflow Recommendation System](https://i.imgur.com/YOUR_IMAGE_ID.png) <!-- Sunum için bir görsel ekleyebilirsiniz -->
-
 ## 🌟 Geliştirilmiş Özellikler
 
 Bu projede yakın zamanda eklenen iyileştirmeler:

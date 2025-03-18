@@ -167,43 +167,6 @@ curl -X 'POST' \
    }'
 ```
 
-### MLflow Bağlantı Hatası
-
-- MLflow sunucusunun çalıştığını doğrulayın: `http://localhost:5000`
-- Bağlantı ayarlarını kontrol edin: `mlflow.set_tracking_uri("http://localhost:5000")`
-
-### API Yanıt Vermiyor
-
-- Servisin çalıştığını kontrol edin: `http://localhost:8000/docs`
-- Log dosyasını inceleyin: `logs.log`
-- Servisi yeniden başlatın: `python serve.py`
-
-### "Model yüklenemedi!" Hatası
-
-Yeni eklenen model fallback mekanizması sayesinde, eğer son yüklenen model hatalıysa sistem otomatik olarak önceki düzgün çalışan modele geri döner:
-
-1. **Otomatik Geri Dönüş**: Uygulama başlatıldığında son model yüklenemezse, sistem otomatik olarak önceki çalışan versiyona geri döner.
-2. **Çalışma Kaydı**: Her başarılı model yüklemesi `last_working_model.json` ve `last_working_rating_model.json` dosyalarına kaydedilir.
-3. **Alternatif Model Arama**: Son 3 model versiyonu denenir ve çalışan sürüm bulunmaya çalışılır.
-4. **Servis Devamlılığı**: Hiçbir model yüklenemese bile API servisi çalışmaya devam eder, sadece öneri ve tahmin endpoint'leri etkilenir.
-
-Örnek senaryo:
-```bash
-# Hatalı model servis başlangıcında
-[INFO] Son öneri modeli yüklenemedi: Error loading artifacts...
-[INFO] Alternatif modele dönüş yapılıyor...
-[INFO] Son çalışan model yükleniyor: a1b2c3d4
-[INFO] Model MLflow'dan başarıyla yüklendi
-[INFO] Servis başarıyla başlatıldı!
-
-# Manuel model değiştirme sırasında
-$ curl -X 'POST' 'http://localhost:8000/load_recommendation_version/v3_hatalı_model'
-{
-  "message": "İstenen model versiyonu yüklenemedi: v3_hatalı_model. Mevcut model kullanılmaya devam ediliyor: v2_çalışan_model",
-  "status": "warning",
-  "error": "Model yüklenemedi"
-}
-```
 
 ## 📝 Proje Dosyaları
 
@@ -262,4 +225,3 @@ Model performans metrikleri, önerilerin ne kadar doğru ve güvenilir olduğunu
 - ⚖️ Özellik: Modelin kapsama alanını gösterir
 - 🎯 Örnek: %99.34 ise, model örneklerin %99.34'ü için tahmin yapabiliyor
 
-### Mevcut Model Performansı

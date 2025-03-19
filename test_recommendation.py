@@ -336,8 +336,8 @@ def test_versions():
                     if 'model_type' in version:
                         print(f"Model Tipi: {version['model_type']}")
                     
-                    if 'endpoint_info' in version:
-                        print(f"API Endpoint: {version['endpoint_info']}")
+                    if 'endpoint' in version:
+                        print(f"API Endpoint: {version['endpoint']}")
                         
                     if 'metrics' in version and version['metrics']:
                         print("Performans Metrikleri:")

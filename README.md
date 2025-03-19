@@ -223,3 +223,70 @@ Model performans metrikleri, önerilerin ne kadar doğru ve güvenilir olduğunu
 - ⚖️ Özellik: Modelin kapsama alanını gösterir
 - 🎯 Örnek: %99.34 ise, model örneklerin %99.34'ü için tahmin yapabiliyor
 
+## Model Metrikleri
+
+Model performansı ve veri kalitesi aşağıdaki metriklerle ölçülmektedir:
+
+### Performans Metrikleri
+- **RMSE (Root Mean Square Error)**: Tahminlerin gerçek değerlerden ne kadar saptığını gösteren hata metriği. Düşük olması iyidir.
+- **MAE (Mean Absolute Error)**: Tahminlerin gerçek değerlerden ortalama sapmasını gösteren hata metriği. Düşük olması iyidir.
+- **N_Predictions**: Modelin başarılı bir şekilde yaptığı tahmin sayısı.
+- **Prediction_Ratio**: Başarılı tahminlerin tüm test örneklerine oranı (0-1 arası).
+
+### Veri Metrikleri
+- **Average Rating**: Tüm derecelendirmelerin ortalaması. Kullanıcı memnuniyetini gösterir.
+- **Rating Count**: Toplam derecelendirme sayısı. Veri setinin büyüklüğünü gösterir.
+- **Unique Users**: Sistemdeki benzersiz kullanıcı sayısı.
+- **Unique Items**: Sistemdeki benzersiz ürün sayısı.
+- **Sparsity**: Veri matrisinin seyrekliği. Düşük değer, az etkileşim olduğunu gösterir.
+
+# MLflow Recommendation System
+
+Bu proje, MLflow kullanarak eğitilen öneri ve derecelendirme modellerini yöneten bir API servisidir.
+
+## Özellikler
+
+- Kullanıcı-ürün derecelendirme tahmini
+- Ürün bazlı ve kullanıcı bazlı öneriler
+- Model versiyonlama ve yönetimi
+- Model sağlık kontrolü
+- A/B testing desteği
+
+## API Endpoint'leri
+
+### Model Versiyon Yönetimi
+
+#### `/load_recommendation_version/{version_name}`
+- Belirtilen versiyondaki öneri modelini yükler
+- Bu endpoint ile yüklenen model, `/recommend` endpoint'inde kullanılır
+- Yani ürün önerileri, en son yüklenen model versiyonu kullanılarak yapılır
+- Örnek: `POST /load_recommendation_version/v1_20250319_102242`
+
+#### `/load_rating_version/{version_name}`
+- Belirtilen versiyondaki derecelendirme modelini yükler
+- Bu endpoint ile yüklenen model, `/predict` endpoint'inde kullanılır
+- Yani derecelendirme tahminleri, en son yüklenen model versiyonu kullanılarak yapılır
+- Örnek: `POST /load_rating_version/v3_rf_tuned`
+
+### Tahmin ve Öneri Endpoint'leri
+
+#### `/predict`
+- Kullanıcı-ürün derecelendirme tahmini yapar
+- En son yüklenen rating model versiyonunu kullanır
+- Model versiyonunu değiştirmek için önce `/load_rating_version` endpoint'ini kullanın
+
+#### `/recommend`
+- Ürün önerileri sunar (ürün bazlı veya kullanıcı bazlı)
+- En son yüklenen recommendation model versiyonunu kullanır
+- Model versiyonunu değiştirmek için önce `/load_recommendation_version` endpoint'ini kullanın
+
+### Model Sağlık Kontrolü
+
+#### `/recommendation_model_health`
+- Yüklü olan öneri ve derecelendirme modellerinin sağlık durumunu kontrol eder
+- Her iki model için de versiyon bilgisi, metrikler ve durum bilgisi döndürür
+
+#### `/rating_model_health`
+- Yüklü olan derecelendirme modelinin sağlık durumunu kontrol eder
+- Model metrikleri ve performans bilgisi döndürür
+

@@ -245,9 +245,9 @@ def train_model_version(version_name, model_type=None, params=None):
     with mlflow.start_run(run_name=version_name):
         try:
             # Temel parametreleri kaydet
-            mlflow.log_param("model_type", "rating")
-            mlflow.log_param("endpoint", "/predict")
-            mlflow.log_param("version_name", version_name)
+            mlflow.set_tag("model_type", "rating")
+            mlflow.set_tag("endpoint", "/predict")
+            mlflow.set_tag("version_name", version_name)
             
             if params:
                 for key, value in params.items():

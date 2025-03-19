@@ -136,33 +136,21 @@ def calculate_item_similarity(user_item_matrix):
 def evaluate_model(user_item_matrix, item_similarity_matrix, test_interactions):
     """Model performansını değerlendirir
     
-    Bu fonksiyon, önerilen modelin performansını değerlendirir. İki farklı tahmin yöntemi kullanır:
+    Bu fonksiyon, önerilen modelin performansını değerlendirir ve aşağıdaki metrikleri hesaplar:
     
-    1. BENZERLİK AĞIRLIKLI ORTALAMA YÖNTEMİ (Birincil yöntem):
-       - Hedef ürün ile kullanıcının daha önce etkileşimde bulunduğu ürünler arasındaki benzerliği kullanır
-       - Yalnızca pozitif benzerlik değerlerine sahip ürünler dikkate alınır
-       - Benzerlik değerleri, ağırlık olarak kullanılarak ağırlıklı bir ortalama hesaplanır
-       
-    2. KULLANICI ORTALAMA YÖNTEMİ (Yedek yöntem/Fallback):
-       - Eğer birincil yöntem başarısız olursa (örn. pozitif benzerlik bulunamazsa) kullanılır
-       - Kullanıcının mevcut etkileşimlerinin ortalaması alınır
-       - Bu, özellikle "soğuk başlangıç" problemini hafifletmeye yardımcı olur
+    Performans Metrikleri:
+    - rmse (Root Mean Square Error): Tahminlerin gerçek değerlerden sapmasını ölçer. Düşük olması iyidir.
+    - mae (Mean Absolute Error): Tahminlerin gerçek değerlerden ortalama sapması. Düşük olması iyidir.
+    - n_predictions: Başarılı tahmin sayısı.
+    - prediction_ratio: Başarılı tahminlerin tüm test örneklerine oranı (0-1 arası).
     
     Args:
-        user_item_matrix: Kullanıcı-ürün etkileşim matrisi (satırlar: kullanıcılar, sütunlar: ürünler)
+        user_item_matrix: Kullanıcı-ürün etkileşim matrisi
         item_similarity_matrix: Ürünler arası benzerlik matrisi
-        test_interactions: Test veri seti (user_id, item_id, rating kolonları)
+        test_interactions: Test veri seti
     
     Returns:
-        dict: Model performans metrikleri. Şunları içerir:
-            - rmse: Kök ortalama kare hata (düşük olması iyidir)
-            - mae: Ortalama mutlak hata (düşük olması iyidir)
-            - n_predictions: Başarılı tahmin sayısı
-            - prediction_ratio: Tahmin yapılabilen örneklerin oranı (0-1 arası)
-    
-    Hatalar:
-        Try-except bloğu, tek bir tahmin başarısız olduğunda tüm değerlendirme sürecinin
-        durmasını önlemek için kullanılır. Bu, veri kalitesi sorunlarına karşı dayanıklılık sağlar.
+        dict: Model performans metrikleri
     """
     predictions = []  # Tahmin edilen puanları saklamak için liste
     actuals = []     # Gerçek puanları saklamak için liste
@@ -281,16 +269,32 @@ def main():
         with mlflow.start_run(experiment_id=experiment_id, run_name=version_name):
             print("MLflow çalışması başlatıldı...")
             
+            # Model tipini ve versiyon adını tag olarak ekle
+            mlflow.set_tag("model_type", "collaborative_filtering")
+            mlflow.set_tag("version_name", version_name)
+            mlflow.set_tag("endpoint", "/recommend")
+            
             # Parametreleri kaydet
-            mlflow.log_param("version_name", version_name)
-            mlflow.log_param("model_type", "collaborative_filtering")
-            mlflow.log_param("endpoint", "/recommend")
             mlflow.log_param("num_users", len(user_item_matrix))
             mlflow.log_param("num_items", len(user_item_matrix.columns))
             mlflow.log_param("num_interactions", len(interactions_df))
             
+            # Temel metrikleri hesapla
+            non_zero_ratings = user_item_matrix.values[user_item_matrix.values != 0]
+            basic_metrics = {
+                # Veri Metrikleri
+                "average_rating": float(np.mean(non_zero_ratings)),  # Tüm derecelendirmelerin ortalaması
+                "rating_count": int(len(non_zero_ratings)),         # Toplam derecelendirme sayısı
+                "unique_users": int(len(user_item_matrix.index)),   # Benzersiz kullanıcı sayısı
+                "unique_items": int(len(user_item_matrix.columns)), # Benzersiz ürün sayısı
+                "sparsity": float(len(non_zero_ratings) / (user_item_matrix.shape[0] * user_item_matrix.shape[1]))  # Matris seyrekliği
+            }
+            
+            # Tüm metrikleri birleştir
+            all_metrics = {**metrics, **basic_metrics}
+            
             # Metrikleri kaydet
-            mlflow.log_metrics(metrics)
+            mlflow.log_metrics(all_metrics)
             
             # Model giriş örneği oluştur
             input_example = pd.DataFrame({
@@ -349,4 +353,4 @@ def main():
         print("Model değerlendirilemedi!")
 
 if __name__ == "__main__":
-    main() 
+    main()

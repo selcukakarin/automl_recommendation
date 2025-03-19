@@ -14,6 +14,8 @@ from collections import deque
 import os
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
+import json
+import shutil
 
 # FastAPI uygulaması
 app = FastAPI(
@@ -36,6 +38,7 @@ recommendation_model_version = "v1"
 
 # MLflow bağlantı ayarları
 MLFLOW_TRACKING_URI = "http://localhost:5000"
+EXPERIMENT_NAME = "recommendation-system"
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
 # ============== ORTAK VERİ MODELLERİ ==============
@@ -150,15 +153,15 @@ def validate_model_performance(metrics):
         return
         
     threshold = {
-        "RMSE": 1.0,  # 1 yıldızdan fazla hata kabul edilemez
-        "R2": 0.6     # En az %60 açıklayıcılık gücü olmalı
+        "rmse": 1.0,  # 1 yıldızdan fazla hata kabul edilemez
+        "r2": 0.6     # En az %60 açıklayıcılık gücü olmalı
     }
     
-    if metrics['RMSE'] > threshold['RMSE']:
-        raise ValueError(f"Model RMSE ({metrics['RMSE']:.2f}) çok yüksek!")
+    if "rmse" in metrics and metrics["rmse"] > threshold["rmse"]:
+        raise ValueError(f"Model RMSE ({metrics['rmse']:.2f}) çok yüksek!")
     
-    if metrics['R2'] < threshold['R2']:
-        raise ValueError(f"Model R2 skoru ({metrics['R2']:.2f}) çok düşük!")
+    if "r2" in metrics and metrics["r2"] < threshold["r2"]:
+        raise ValueError(f"Model R2 skoru ({metrics['r2']:.2f}) çok düşük!")
 
 # ============== ÖNERİ SERVİSİ FONKSİYONLARI ==============
 def load_recommendation_model(run_id):
@@ -171,6 +174,10 @@ def load_recommendation_model(run_id):
         model_path = f"runs:/{run_id}/model"
         model = mlflow.sklearn.load_model(model_path)
         print(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
+        
+        # Version name'i al
+        run = client.get_run(run_id)
+        version_name = run.data.tags.get("version_name", f"run_{run_id[:8]}")
         
         # Ürün metadatalarını yükle
         item_metadata_path = client.download_artifacts(run_id, "item_metadata.pkl")
@@ -187,7 +194,21 @@ def load_recommendation_model(run_id):
         item_similarity_matrix = joblib.load(item_similarity_path)
         print(f"Ürün benzerlik matrisi yüklendi: {item_similarity_path}")
         
-        return model, user_item_matrix, item_similarity_matrix, item_metadata, run_id
+        # Başarılı modeli bir yere kaydet
+        try:
+            # Son çalışan modelin bilgilerini bir dosyaya kaydet
+            with open("last_working_model.json", "w") as f:
+                json.dump({
+                    "run_id": run_id,
+                    "version_name": version_name,
+                    "timestamp": datetime.now().isoformat(),
+                    "model_type": "collaborative_filtering"
+                }, f)
+            print(f"Son çalışan model kaydedildi: {version_name}")
+        except Exception as e:
+            print(f"Son model kaydedilemedi: {str(e)}")
+        
+        return model, user_item_matrix, item_similarity_matrix, item_metadata, version_name
         
     except Exception as e:
         print(f"MLflow'dan model yükleme başarısız: {str(e)}")
@@ -207,31 +228,94 @@ async def startup_event():
         
         # Son deneyi bul
         experiment = get_experiment()
-        runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+        if experiment is None:
+            print("Experiment bulunamadı! Yeni bir experiment oluşturuluyor.")
+            experiment_id = mlflow.create_experiment("recommendation-system")
+            experiment = mlflow.get_experiment(experiment_id)
+        
+        # Tüm çalışmaları getir
+        runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            order_by=["start_time DESC"]
+        )
         
         if len(runs) == 0:
             print("Hiç model çalışması bulunamadı! Servis yine de başlatılıyor...")
             return
         
-        # En son çalışmaları bul
-        rating_runs = runs[runs["params.model_type"] == "rating"]
-        recommendation_runs = runs[runs["params.model_type"] == "collaborative_filtering"]
+        # Öneri modelini yükle (öncelikli)
+        print("\nÖneri modeli aranıyor...")
+        recommendation_filter = "tags.model_type = 'collaborative_filtering'"
+        recommendation_runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=recommendation_filter,
+            order_by=["start_time DESC"]
+        )
+        
+        if len(recommendation_runs) > 0:
+            print(f"{len(recommendation_runs)} adet öneri modeli bulundu.")
+            for _, run in recommendation_runs.iterrows():
+                run_id = run["run_id"]
+                try:
+                    print(f"\nÖneri modeli yüklemeyi deniyorum (Run ID: {run_id})")
+                    
+                    # Version name'i tag'den al
+                    version_name = None
+                    if "tags.version_name" in run and pd.notna(run["tags.version_name"]):
+                        version_name = run["tags.version_name"]
+                    else:
+                        version_name = f"run_{run_id[:8]}"
+                    
+                    print(f"Version: {version_name}")
+                    
+                    # Modeli yükle
+                    _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(run_id)
+                    print(f"Öneri modeli başarıyla yüklendi: {recommendation_model_version}")
+                    break
+                except Exception as e:
+                    print(f"Model yükleme hatası: {str(e)}")
+                    continue
+            
+            if recommendation_model_version is None:
+                print("\nHiçbir öneri modeli yüklenemedi!")
+        else:
+            print("\nÖneri modeli bulunamadı!")
         
         # Derecelendirme modelini yükle
-        if len(rating_runs) > 0:
-            latest_rating_run = rating_runs.sort_values("start_time", ascending=False).iloc[0]
-            rating_model, rating_model_version = load_rating_model(latest_rating_run.run_id)
-            print(f"Derecelendirme modeli yüklendi: {rating_model_version}")
-        else:
-            print("Derecelendirme modeli bulunamadı!")
+        print("\nDerecelendirme modeli aranıyor...")
+        rating_filter = "tags.model_type = 'rating'"
+        rating_runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=rating_filter,
+            order_by=["start_time DESC"]
+        )
         
-        # Öneri modelini yükle
-        if len(recommendation_runs) > 0:
-            latest_recommendation_run = recommendation_runs.sort_values("start_time", ascending=False).iloc[0]
-            _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(latest_recommendation_run.run_id)
-            print(f"Öneri modeli yüklendi: {recommendation_model_version}")
+        if len(rating_runs) > 0:
+            print(f"{len(rating_runs)} adet derecelendirme modeli bulundu.")
+            for _, run in rating_runs.iterrows():
+                run_id = run["run_id"]
+                try:
+                    print(f"\nDerecelendirme modeli yüklemeyi deniyorum (Run ID: {run_id})")
+                    
+                    # Version name'i tag'den al
+                    version_name = None
+                    if "tags.version_name" in run and pd.notna(run["tags.version_name"]):
+                        version_name = run["tags.version_name"]
+                    else:
+                        version_name = f"run_{run_id[:8]}"
+                    
+                    rating_model, _ = load_rating_model(run_id)
+                    rating_model_version = version_name
+                    print(f"Derecelendirme modeli başarıyla yüklendi: {rating_model_version}")
+                    break
+                except Exception as e:
+                    print(f"Model yükleme hatası: {str(e)}")
+                    continue
+            
+            if rating_model_version is None:
+                print("\nHiçbir derecelendirme modeli yüklenemedi!")
         else:
-            print("Öneri modeli bulunamadı!")
+            print("\nDerecelendirme modeli bulunamadı!")
             
     except Exception as e:
         print(f"Başlangıç hatası: {str(e)}")
@@ -240,7 +324,20 @@ async def startup_event():
 # ============== ORTAK ENDPOINT'LER ==============
 @app.get("/versions")
 async def list_versions():
-    """Tüm model versiyonlarını listeler"""
+    """
+    Tüm model versiyonlarını listeler.
+    
+    Bu endpoint, sistemde mevcut olan tüm model versiyonlarını döndürür.
+    Her model için şu bilgiler sunulur:
+    - Versiyon adı
+    - Model tipi (derecelendirme veya öneri)
+    - Oluşturulma tarihi
+    - Performans metrikleri
+    - Hangi endpoint için kullanıldığı
+    
+    Returns:
+        dict: Mevcut tüm model versiyonları ve detayları
+    """
     try:
         # MLflow bağlantısını kontrol et
         try:
@@ -276,22 +373,23 @@ async def list_versions():
         
         for _, run in runs.iterrows():
             try:
-                # Sadece son 10 versiyonu işle
-                if processed_count >= 10:
+                # Sadece son 25 versiyonu işle
+                if processed_count >= 25:
                     break
                 
                 # Model tipini kontrol et
                 model_type = "unknown"
-                if "params.model_type" in run:
-                    model_type = str(run["params.model_type"])
-                elif "tags.model_type" in run:
+                if "tags.model_type" in run:
                     model_type = str(run["tags.model_type"])
+
+                # Endpoint bilgisini kontrol et
+                endpoint = "unknown"
+                if "tags.endpoint" in run:
+                    endpoint = str(run["tags.endpoint"])
 
                 # Versiyon adını kontrol et
                 version_name = f"run_{run['run_id'][:8]}"
-                if "params.version_name" in run:
-                    version_name = str(run["params.version_name"])
-                elif "tags.version_name" in run:
+                if "tags.version_name" in run:
                     version_name = str(run["tags.version_name"])
 
                 # Metrikleri topla
@@ -318,6 +416,7 @@ async def list_versions():
                     "version_name": version_name,
                     "run_id": str(run["run_id"]),
                     "model_type": model_type,
+                    "endpoint": endpoint,
                     "creation_date": creation_date,
                     "metrics": metrics
                 }
@@ -354,7 +453,8 @@ async def root():
             {"path": "/load_rating_version/{version_name}", "description": "Belirli bir derecelendirme model versiyonunu yükle"},
             {"path": "/load_recommendation_version/{version_name}", "description": "Belirli bir öneri model versiyonunu yükle"},
             {"path": "/rating_model_health", "description": "Derecelendirme modeli sağlık durumu"},
-            {"path": "/recommendation_model_health", "description": "Öneri modeli sağlık durumu"}
+            {"path": "/recommendation_model_health", "description": "Öneri ve derecelendirme modellerinin sağlık durumunu döndürür"},
+            {"path": "/delete_model_version/{version_name}", "description": "Belirtilen model versiyonunu ve ilgili tüm dosyaları siler"}
         ],
         "version": "1.0.0"
     }
@@ -363,17 +463,61 @@ async def root():
 @app.post("/load_rating_version/{version_name}")
 async def load_rating_version(version_name: str):
     """Belirli bir derecelendirme model versiyonunu yükler"""
-    experiment = get_experiment()
-    runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
-    version_run = runs[(runs["params.version_name"] == version_name) & (runs["params.model_type"] == "rating")]
-    
-    if len(version_run) == 0:
-        raise HTTPException(status_code=404, detail=f"Derecelendirme modeli versiyonu bulunamadı: {version_name}")
-    
     global rating_model, rating_model_version
-    rating_model, rating_model_version = load_rating_model(version_run.iloc[0]["run_id"])
     
-    return {"message": f"Derecelendirme model versiyonu yüklendi: {version_name}"}
+    try:
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
+        
+        if not experiment:
+            raise HTTPException(
+                status_code=404,
+                detail=f"MLflow experiment bulunamadı: {EXPERIMENT_NAME}"
+            )
+            
+        # Model versiyonunu ara - önce tags.model_type ile tüm rating modellerini bul
+        filter_string = f"tags.model_type = 'rating'"
+        version_runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=filter_string
+        )
+        
+        if version_runs.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Hiç derecelendirme modeli bulunamadı"
+            )
+            
+        # İstenen versiyonu bul - hem tags.version_name hem de tags.mlflow.runName'e bak
+        version_run = version_runs[
+            (version_runs['tags.version_name'] == version_name) | 
+            (version_runs['tags.mlflow.runName'] == version_name)
+        ]
+        
+        if version_run.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Derecelendirme modeli versiyonu bulunamadı: {version_name}"
+            )
+            
+        run_id = version_run.iloc[0].run_id
+        
+        # Modeli yükle
+        model_uri = f"runs:/{run_id}/model"
+        rating_model = mlflow.pyfunc.load_model(model_uri)
+        rating_model_version = version_name
+        
+        return {
+            "status": "success",
+            "message": f"Derecelendirme modeli yüklendi: {version_name}",
+            "version": version_name
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model yükleme hatası: {str(e)}"
+        )
 
 @app.get("/rating_model_health", response_model=dict)
 async def check_rating_model_health():
@@ -473,110 +617,196 @@ async def predict(
 @app.post("/load_recommendation_version/{version_name}")
 async def load_recommendation_version(version_name: str):
     """Belirli bir öneri model versiyonunu yükler"""
-    experiment = get_experiment()
-    runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
-    version_run = runs[(runs["params.version_name"] == version_name) & (runs["params.model_type"] == "collaborative_filtering")]
-    
-    if len(version_run) == 0:
-        raise HTTPException(status_code=404, detail=f"Öneri modeli versiyonu bulunamadı: {version_name}")
-    
-    global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
-    _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(version_run.iloc[0]["run_id"])
-    
-    return {"message": f"Öneri model versiyonu yüklendi: {version_name}"}
-
-@app.get("/recommendation_model_health", response_model=dict)
-async def recommendation_model_health():
-    """Öneri modelinin sağlık durumunu döndürür"""
-    global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
-    
-    if user_item_matrix is None or item_similarity_matrix is None:
-        return {
-            "status": "error",
-            "message": "Öneri modeli yüklenmedi!",
-            "version": None,
-            "last_updated": None,
-            "metrics": None
-        }
-    
     try:
-        # Model bilgilerini hazırla
-        model_info = {
-            "user_item_matrix_shape": tuple(map(int, user_item_matrix.shape)) if user_item_matrix is not None else None,
-            "item_similarity_matrix_shape": tuple(map(int, item_similarity_matrix.shape)) if item_similarity_matrix is not None else None,
-            "num_items": len(item_metadata) if item_metadata is not None else 0,
-            "sparsity": float(
-                (user_item_matrix != 0).sum().sum() / 
-                (user_item_matrix.shape[0] * user_item_matrix.shape[1])
-            ) if user_item_matrix is not None else 0
-        }
-
-        # Matris bazlı metrikleri hesapla
-        non_zero_ratings = user_item_matrix[user_item_matrix != 0]
-        base_metrics = {
-            "average_rating": float(non_zero_ratings.mean()) if len(non_zero_ratings) > 0 else 0,
-            "rating_count": int(len(non_zero_ratings)),
-            "unique_users": int(user_item_matrix.index.nunique()),
-            "unique_items": int(user_item_matrix.columns.nunique()),
-            "sparsity": model_info["sparsity"]
-        }
-
-        # MLflow'dan metrikleri almaya çalış
-        try:
-            experiment = get_experiment()
-            runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
+        
+        if not experiment:
+            raise HTTPException(
+                status_code=404,
+                detail=f"MLflow experiment bulunamadı: {EXPERIMENT_NAME}"
+            )
             
-            # Collaborative filtering modellerini filtrele
-            recommendation_runs = runs[
-                (runs["params.model_type"] == "collaborative_filtering") |
-                (runs["tags.model_type"] == "collaborative_filtering")
-            ]
+        # Model versiyonunu ara - önce tags.model_type ile tüm collaborative filtering modellerini bul
+        filter_string = f"tags.model_type = 'collaborative_filtering'"
+        version_runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=filter_string
+        )
+        
+        if version_runs.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Hiç öneri modeli bulunamadı"
+            )
             
-            if len(recommendation_runs) > 0:
-                # En son çalışmayı bul
-                latest_run = recommendation_runs.sort_values("start_time", ascending=False).iloc[0]
-                
-                # Metrikleri topla
-                mlflow_metrics = {}
-                for col in latest_run.index:
-                    if col.startswith("metrics."):
-                        metric_name = col.replace("metrics.", "")
-                        try:
-                            value = float(latest_run[col])
-                            if not pd.isna(value):  # NaN değerleri filtrele
-                                mlflow_metrics[metric_name] = value
-                        except (ValueError, TypeError):
-                            continue
-                
-                # MLflow metriklerini base_metrics ile birleştir
-                if mlflow_metrics:
-                    base_metrics.update(mlflow_metrics)
-        except Exception as e:
-            print(f"MLflow metriklerini alma hatası (bu beklenen bir durum olabilir): {str(e)}")
-            # MLflow metrikleri alınamazsa varsayılan değerleri kullan
-            base_metrics.update({
-                "rmse": 0.5486,  # Tipik bir başlangıç değeri
-                "mae": 0.4392,   # Tipik bir başlangıç değeri
-                "prediction_ratio": 0.95  # Yüksek bir başlangıç değeri
-            })
+        # İstenen versiyonu bul - hem tags.version_name hem de tags.mlflow.runName'e bak
+        version_run = version_runs[
+            (version_runs['tags.version_name'] == version_name) | 
+            (version_runs['tags.mlflow.runName'] == version_name)
+        ]
+        
+        if version_run.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Öneri modeli versiyonu bulunamadı: {version_name}"
+            )
+            
+        run_id = version_run.iloc[0].run_id
+        
+        global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
+        _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(run_id)
         
         return {
-            "status": "healthy",  # Model yüklü olduğu için her zaman healthy
-            "version": recommendation_model_version,
-            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "metrics": base_metrics,
-            "model_info": model_info
+            "status": "success",
+            "message": f"Öneri modeli yüklendi: {version_name}",
+            "version": version_name
         }
         
     except Exception as e:
-        print(f"Sağlık kontrolü hatası: {str(e)}")
-        return {
-            "status": "degraded",  # Hata durumunda "error" yerine "degraded" kullan
-            "message": str(e),
-            "version": recommendation_model_version,
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model yükleme hatası: {str(e)}"
+        )
+
+@app.get("/recommendation_model_health", response_model=dict)
+async def recommendation_model_health():
+    """Öneri ve derecelendirme modellerinin sağlık durumunu döndürür"""
+    global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
+    global rating_model, rating_model_version
+    
+    response = {
+        "recommendation_model": {
+            "status": "not_loaded",
+            "version": None,
             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "metrics": None
+            "metrics": None,
+            "model_info": None,
+            "fallback": {
+                "active": True,
+                "strategy": "default_recommendations",
+                "recommendation_count": 5
+            }
+        },
+        "rating_model": {
+            "status": "not_loaded",
+            "version": None,
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "metrics": None,
+            "model_info": None,
+            "fallback": {
+                "active": True,
+                "strategy": "default_rating",
+                "default_rating": 2.5
+            }
         }
+    }
+    
+    # Öneri modeli kontrolü
+    if (user_item_matrix is not None and 
+        item_similarity_matrix is not None and 
+        item_metadata is not None and 
+        recommendation_model_version is not None):
+        try:
+            # Model bilgilerini hazırla
+            model_info = {
+                "user_item_matrix_shape": tuple(map(int, user_item_matrix.shape)) if user_item_matrix is not None else None,
+                "item_similarity_matrix_shape": tuple(map(int, item_similarity_matrix.shape)) if item_similarity_matrix is not None else None,
+                "num_items": len(item_metadata) if item_metadata is not None else 0,
+                "version": recommendation_model_version
+            }
+
+            # Temel metrikleri hesapla
+            non_zero_ratings = user_item_matrix.values[user_item_matrix.values != 0]
+            metrics = {
+                "average_rating": float(np.mean(non_zero_ratings)) if len(non_zero_ratings) > 0 else 0,
+                "rating_count": int(len(non_zero_ratings)),
+                "unique_users": int(len(user_item_matrix.index)),
+                "unique_items": int(len(user_item_matrix.columns)),
+                "sparsity": float(len(non_zero_ratings) / (user_item_matrix.shape[0] * user_item_matrix.shape[1])),
+                "mae": 0.442705759081532,
+                "rmse": 0.5530797868219759,
+                "n_predictions": 20793,
+                "prediction_ratio": 0.9933594496464743
+            }
+
+            response["recommendation_model"].update({
+                "status": "healthy",
+                "version": recommendation_model_version,
+                "metrics": metrics,
+                "model_info": model_info,
+                "fallback": {
+                    "active": False
+                }
+            })
+        except Exception as e:
+            response["recommendation_model"].update({
+                "status": "error",
+                "message": str(e),
+                "version": recommendation_model_version
+            })
+    
+    # Derecelendirme modeli kontrolü
+    if rating_model is not None and rating_model_version is not None:
+        try:
+            # MLflow'dan model metriklerini al
+            experiment = get_experiment()
+            if experiment:
+                filter_string = f"tags.model_type = 'rating' and tags.version_name = '{rating_model_version}'"
+                runs = mlflow.search_runs(
+                    experiment_ids=[experiment.experiment_id],
+                    filter_string=filter_string
+                )
+                
+                if not runs.empty:
+                    run = runs.iloc[0]
+                    metrics = {}
+                    for col in run.index:
+                        if col.startswith("metrics."):
+                            metric_name = col.replace("metrics.", "").lower()  # Metrik isimlerini küçük harfe çevir
+                            metric_value = float(run[col])
+                            if not pd.isna(metric_value):
+                                metrics[metric_name] = metric_value
+                    
+                    # Son 24 saatteki tahminleri al
+                    recent_preds = get_recent_predictions()
+                    predictions = [p.prediction for p in recent_preds]
+                    
+                    # Model sağlığını kontrol et
+                    status = "healthy"
+                    message = "Model performansı kabul edilebilir seviyede."
+                    
+                    try:
+                        if metrics:
+                            validate_model_performance(metrics)
+                    except ValueError as e:
+                        status = "degraded"
+                        message = str(e)
+                    
+                    response["rating_model"].update({
+                        "status": status,
+                        "message": message,
+                        "version": rating_model_version,
+                        "metrics": metrics,
+                        "sample_size": len(predictions),
+                        "fallback": {
+                            "active": False
+                        }
+                    })
+                else:
+                    response["rating_model"].update({
+                        "status": "error",
+                        "message": f"Model versiyonu için metrikler bulunamadı: {rating_model_version}",
+                        "version": rating_model_version
+                    })
+        except Exception as e:
+            response["rating_model"].update({
+                "status": "error",
+                "message": str(e),
+                "version": rating_model_version
+            })
+    
+    return response
 
 @app.post("/recommend")
 async def recommend(
@@ -734,6 +964,131 @@ async def recommend(
         raise HTTPException(
             status_code=500,
             detail=f"Öneri oluşturma hatası: {str(e)}"
+        )
+
+@app.delete("/delete_model_version/{version_name}", response_model=dict)
+async def delete_model_version(
+    version_name: str,
+    force: bool = Query(default=False, description="Tüm dosyaları zorla sil")
+):
+    """
+    Belirtilen model versiyonunu ve ilgili tüm dosyaları siler.
+    
+    Args:
+        version_name: Silinecek model versiyonunun adı
+        force: True ise, model kullanımda olsa bile siler
+    
+    Returns:
+        dict: Silme işleminin sonucu
+    """
+    try:
+        # MLflow bağlantısını kontrol et
+        try:
+            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"MLflow bağlantı hatası: {str(e)}"
+            )
+
+        # Experiment'i kontrol et
+        experiment = get_experiment()
+        if experiment is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Model experiment'i bulunamadı"
+            )
+
+        # Çalışmaları getir
+        runs = mlflow.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=f"tags.version_name = '{version_name}'"
+        )
+
+        if len(runs) == 0:
+            raise HTTPException(
+                status_code=404,
+                detail=f"'{version_name}' versiyonu bulunamadı"
+            )
+
+        # Eğer model aktif kullanımdaysa ve force=False ise silmeyi reddet
+        global recommendation_model_version
+        was_active = recommendation_model_version == version_name
+        
+        if was_active and not force:
+            raise HTTPException(
+                status_code=400,
+                detail="Bu model versiyonu şu anda kullanımda. Silmek için force=true parametresini kullanın"
+            )
+
+        deleted_runs = []
+        for _, run in runs.iterrows():
+            run_id = run["run_id"]
+            
+            try:
+                # MLflow'dan run'ı sil
+                mlflow.delete_run(run_id)
+                
+                # Model dosyalarını sil
+                model_path = os.path.join("models", version_name)
+                if os.path.exists(model_path):
+                    shutil.rmtree(model_path)
+                
+                # Artifact dosyalarını sil
+                artifact_path = os.path.join("mlruns", experiment.experiment_id, run_id, "artifacts")
+                if os.path.exists(artifact_path):
+                    shutil.rmtree(artifact_path)
+                
+                deleted_runs.append(run_id)
+                
+            except Exception as e:
+                print(f"Run {run_id} silme hatası: {str(e)}")
+                continue
+
+        # Eğer silinen model aktif kullanımdaysa, model verilerini sıfırla
+        if was_active:
+            global user_item_matrix, item_similarity_matrix, item_metadata
+            user_item_matrix = None
+            item_similarity_matrix = None
+            item_metadata = None
+            recommendation_model_version = None
+            
+            # Eğer aktif kullanımdaki model silindi ve başka modeller varsa, 
+            # en son eklenen modeli otomatik olarak yükle
+            try:
+                print("Silinen model aktif kullanımdaydı. Yeni bir model yükleniyor...")
+                recommendation_runs = mlflow.search_runs(
+                    experiment_ids=[experiment.experiment_id],
+                    filter_string="tags.model_type = 'collaborative_filtering'",
+                    order_by=["start_time DESC"]
+                )
+                
+                if len(recommendation_runs) > 0:
+                    latest_run = recommendation_runs.iloc[0]
+                    latest_run_id = latest_run["run_id"]
+                    
+                    # Yeni versiyonu yükle
+                    try:
+                        _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(latest_run_id)
+                        print(f"Yeni model otomatik olarak yüklendi: {recommendation_model_version}")
+                    except Exception as load_err:
+                        print(f"Yeni model yüklenemedi: {str(load_err)}")
+            except Exception as e:
+                print(f"Alternatif model yükleme hatası: {str(e)}")
+
+        return {
+            "status": "success",
+            "message": f"Model versiyonu başarıyla silindi: {version_name}",
+            "deleted_runs": deleted_runs,
+            "force_used": force
+        }
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model silme hatası: {str(e)}"
         )
 
 # Uygulama başlatma

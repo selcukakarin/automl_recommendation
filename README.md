@@ -69,9 +69,18 @@ Servis şu adreste çalışacaktır: `http://localhost:8000`
 |----------|--------|----------|
 | `/` | GET | API bilgileri |
 | `/versions` | GET | Mevcut tüm model versiyonlarını ve hangi endpoint için kullanıldığını listeler |
-| `/load_recommendation_version/{version_name}` | POST | Belirli bir model versiyonunu yükler |
+| `/load_recommendation_version/{version_name}` | POST | Belirli bir öneri model versiyonunu yükler |
+| `/load_rating_version/{version_name}` | POST | Belirli bir derecelendirme model versiyonunu yükler |
 | `/recommend` | POST | Ürün önerileri sunar |
-| `/recommendation_model_health` | GET | Model sağlık durumunu kontrol eder |
+| `/predict` | POST | Kullanıcı-ürün derecelendirme tahmini yapar |
+| `/recommendation_model_health` | GET | Öneri modelinin sağlık durumunu kontrol eder |
+| `/rating_model_health` | GET | Derecelendirme modelinin sağlık durumunu kontrol eder |
+| `/metrics` | GET | Sistem metriklerini ve model performansını gösterir |
+| `/item/{item_id}` | GET | Ürün detaylarını getirir |
+| `/items` | GET | Birden fazla ürünün detaylarını getirir |
+| `/user_interactions/{user_id}` | GET | Kullanıcının etkileşimlerini getirir |
+| `/popular_items` | GET | En popüler ürünleri getirir |
+| `/delete_model_version/{version_name}` | DELETE | Belirtilen model versiyonunu siler |
 
 ### Ürün-tabanlı Öneri İsteği
 
@@ -109,6 +118,69 @@ curl -X 'POST' \
 ```
 
 Versiyon adını MLflow arayüzünden (`http://localhost:5000`) bulabilirsiniz.
+
+### Derecelendirme Tahmini İsteği
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+       "user_id": 123,
+       "item_id": 42,
+       "user_age": 25,
+       "user_gender": "F",
+       "item_category": "Elektronik",
+       "item_price": 999.99
+   }'
+```
+
+### Ürün Detayları İsteği
+
+```bash
+# Tek ürün detayı
+curl -X 'GET' 'http://localhost:8000/item/42'
+
+# Birden fazla ürün detayı
+curl -X 'GET' 'http://localhost:8000/items?ids=42,43,44'
+```
+
+### Kullanıcı Etkileşimleri İsteği
+
+```bash
+# Tüm etkileşimler
+curl -X 'GET' 'http://localhost:8000/user_interactions/123'
+
+# Sıralama ve limit ile
+curl -X 'GET' 'http://localhost:8000/user_interactions/123?limit=10&sort_by=rating&order=desc'
+```
+
+### Popüler Ürünler İsteği
+
+```bash
+curl -X 'GET' 'http://localhost:8000/popular_items?limit=10'
+```
+
+### Sistem Metrikleri İsteği
+
+```bash
+# Tüm sistem metrikleri
+curl -X 'GET' 'http://localhost:8000/metrics'
+
+# Belirli bir model versiyonunun metrikleri
+curl -X 'GET' 'http://localhost:8000/metrics?version_name=v1_auto_select'
+```
+
+### Model Silme İsteği
+
+```bash
+# Normal silme
+curl -X 'DELETE' 'http://localhost:8000/delete_model_version/v1_test'
+
+# Zorla silme (aktif kullanımdaki model için)
+curl -X 'DELETE' 'http://localhost:8000/delete_model_version/v1_test?force=true'
+```
 
 ## 🧪 Test Etme
 

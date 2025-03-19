@@ -41,6 +41,22 @@ MLFLOW_TRACKING_URI = "http://localhost:5000"
 EXPERIMENT_NAME = "recommendation-system"
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
+# Ürün verilerini yükle
+try:
+    products_df = pd.read_csv("data/products.csv")
+    print(f"Ürün verileri yüklendi: {len(products_df)} ürün")
+except Exception as e:
+    print(f"Ürün verileri yüklenemedi: {str(e)}")
+    products_df = pd.DataFrame()
+
+# Etkileşim verilerini yükle
+try:
+    interactions_df = pd.read_csv("data/interactions.csv")
+    print(f"Etkileşim verileri yüklendi: {len(interactions_df)} etkileşim")
+except Exception as e:
+    print(f"Etkileşim verileri yüklenemedi: {str(e)}")
+    interactions_df = pd.DataFrame()
+
 # ============== ORTAK VERİ MODELLERİ ==============
 class ModelVersion(BaseModel):
     """Model versiyonu bilgileri"""
@@ -84,6 +100,11 @@ class RecommendationResponse(BaseModel):
     recommendations: List[Dict]
     recommendation_type: str
     model_version: str
+
+# Yeni veri modeli
+class ItemIdsRequest(BaseModel):
+    """Toplu ürün detayları için istek modeli"""
+    item_ids: List[int]
 
 # ============== ORTAK FONKSİYONLAR ==============
 def get_experiment():
@@ -454,7 +475,12 @@ async def root():
             {"path": "/load_recommendation_version/{version_name}", "description": "Belirli bir öneri model versiyonunu yükle"},
             {"path": "/rating_model_health", "description": "Derecelendirme modeli sağlık durumu"},
             {"path": "/recommendation_model_health", "description": "Öneri ve derecelendirme modellerinin sağlık durumunu döndürür"},
-            {"path": "/delete_model_version/{version_name}", "description": "Belirtilen model versiyonunu ve ilgili tüm dosyaları siler"}
+            {"path": "/delete_model_version/{version_name}", "description": "Belirtilen model versiyonunu ve ilgili tüm dosyaları siler"},
+            {"path": "/item/{item_id}", "description": "Ürün detaylarını getir"},
+            {"path": "/items", "description": "Birden fazla ürünün detaylarını getir"},
+            {"path": "/user_interactions/{user_id}", "description": "Kullanıcının etkileşimlerini getir"},
+            {"path": "/popular_items", "description": "En popüler ürünleri getir"},
+            {"path": "/metrics", "description": "Tüm sistem metriklerini getir"}
         ],
         "version": "1.0.0"
     }
@@ -681,24 +707,14 @@ async def recommendation_model_health():
             "version": None,
             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "metrics": None,
-            "model_info": None,
-            "fallback": {
-                "active": True,
-                "strategy": "default_recommendations",
-                "recommendation_count": 5
-            }
+            "model_info": None
         },
         "rating_model": {
             "status": "not_loaded",
             "version": None,
             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "metrics": None,
-            "model_info": None,
-            "fallback": {
-                "active": True,
-                "strategy": "default_rating",
-                "default_rating": 2.5
-            }
+            "model_info": None
         }
     }
     
@@ -723,21 +739,14 @@ async def recommendation_model_health():
                 "rating_count": int(len(non_zero_ratings)),
                 "unique_users": int(len(user_item_matrix.index)),
                 "unique_items": int(len(user_item_matrix.columns)),
-                "sparsity": float(len(non_zero_ratings) / (user_item_matrix.shape[0] * user_item_matrix.shape[1])),
-                "mae": 0.442705759081532,
-                "rmse": 0.5530797868219759,
-                "n_predictions": 20793,
-                "prediction_ratio": 0.9933594496464743
+                "sparsity": float(len(non_zero_ratings) / (user_item_matrix.shape[0] * user_item_matrix.shape[1]))
             }
 
             response["recommendation_model"].update({
                 "status": "healthy",
                 "version": recommendation_model_version,
                 "metrics": metrics,
-                "model_info": model_info,
-                "fallback": {
-                    "active": False
-                }
+                "model_info": model_info
             })
         except Exception as e:
             response["recommendation_model"].update({
@@ -783,15 +792,21 @@ async def recommendation_model_health():
                         status = "degraded"
                         message = str(e)
                     
+                    # Rating model için model bilgilerini hazırla
+                    model_info = {
+                        "version": rating_model_version,
+                        "features": ["user_id", "item_id", "user_age", "user_gender", "item_category", "item_price"],
+                        "target": "rating",
+                        "model_type": "rating"
+                    }
+                    
                     response["rating_model"].update({
                         "status": status,
                         "message": message,
                         "version": rating_model_version,
                         "metrics": metrics,
-                        "sample_size": len(predictions),
-                        "fallback": {
-                            "active": False
-                        }
+                        "model_info": model_info,
+                        "sample_size": len(predictions)
                     })
                 else:
                     response["rating_model"].update({
@@ -1089,6 +1104,453 @@ async def delete_model_version(
         raise HTTPException(
             status_code=500,
             detail=f"Model silme hatası: {str(e)}"
+        )
+
+@app.get("/item/{item_id}")
+async def get_item_details(item_id: int):
+    """Ürün detaylarını getirir"""
+    try:
+        # Ürünü bul
+        item = products_df[products_df['item_id'] == item_id]
+        
+        if item.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Ürün bulunamadı: {item_id}"
+            )
+        
+        # Ürün bilgilerini hazırla
+        item_info = item.iloc[0].to_dict()
+        
+        # Eğer öneri modeli yüklüyse, ürünün ortalama puanını ve kaç kişinin puanladığını ekle
+        if user_item_matrix is not None:
+            item_ratings = user_item_matrix[item_id]
+            non_zero_ratings = item_ratings[item_ratings > 0]
+            
+            item_info.update({
+                "average_rating": float(non_zero_ratings.mean()) if len(non_zero_ratings) > 0 else None,
+                "rating_count": int(len(non_zero_ratings)),
+                "rating_distribution": {
+                    "1": int(len(non_zero_ratings[non_zero_ratings == 1])),
+                    "2": int(len(non_zero_ratings[non_zero_ratings == 2])),
+                    "3": int(len(non_zero_ratings[non_zero_ratings == 3])),
+                    "4": int(len(non_zero_ratings[non_zero_ratings == 4])),
+                    "5": int(len(non_zero_ratings[non_zero_ratings == 5]))
+                }
+            })
+        
+        return item_info
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ürün detayları alınırken hata oluştu: {str(e)}"
+        )
+
+@app.get("/items")
+async def get_items(ids: str = Query(..., description="Virgülle ayrılmış ürün ID'leri (örn: 456,789,123)")):
+    """Birden fazla ürünün detaylarını getirir"""
+    try:
+        # Ürün verilerinin yüklü olup olmadığını kontrol et
+        if products_df.empty:
+            raise HTTPException(
+                status_code=500,
+                detail="Ürün verileri yüklenemedi"
+            )
+        
+        # ID'leri parse et
+        try:
+            item_ids = [int(id.strip()) for id in ids.split(",")]
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Geçersiz ID formatı. Örnek format: 456,789,123"
+            )
+        
+        # Ürünleri bul
+        items = products_df[products_df['item_id'].isin(item_ids)]
+        
+        # Bulunamayan ID'leri tespit et
+        missing_ids = set(item_ids) - set(items['item_id'])
+        if missing_ids:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Bu ID'lere sahip ürünler bulunamadı: {list(missing_ids)}"
+            )
+        
+        # Ürün bilgilerini hazırla
+        items_info = []
+        for _, item in items.iterrows():
+            item_info = item.to_dict()
+            item_id = item['item_id']
+            
+            # Sayısal değerleri float'a çevir
+            for key in ['item_price', 'item_rating_avg']:
+                if key in item_info and pd.notna(item_info[key]):
+                    item_info[key] = float(item_info[key])
+            
+            # Integer değerleri int'e çevir
+            for key in ['item_id', 'stock_quantity']:
+                if key in item_info and pd.notna(item_info[key]):
+                    item_info[key] = int(item_info[key])
+            
+            # Eğer öneri modeli yüklüyse, ürünün ortalama puanını ve kaç kişinin puanladığını ekle
+            if user_item_matrix is not None:
+                item_ratings = user_item_matrix[item_id]
+                non_zero_ratings = item_ratings[item_ratings > 0]
+                
+                item_info.update({
+                    "rating_stats": {
+                        "average_rating": float(non_zero_ratings.mean()) if len(non_zero_ratings) > 0 else None,
+                        "rating_count": int(len(non_zero_ratings)),
+                        "rating_distribution": {
+                            "1": int(len(non_zero_ratings[non_zero_ratings == 1])),
+                            "2": int(len(non_zero_ratings[non_zero_ratings == 2])),
+                            "3": int(len(non_zero_ratings[non_zero_ratings == 3])),
+                            "4": int(len(non_zero_ratings[non_zero_ratings == 4])),
+                            "5": int(len(non_zero_ratings[non_zero_ratings == 5]))
+                        }
+                    }
+                })
+            
+            items_info.append(item_info)
+        
+        return {
+            "items": items_info,
+            "total": len(items_info)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ürün detayları alınırken hata oluştu: {str(e)}"
+        )
+
+@app.get("/user_interactions/{user_id}")
+async def get_user_interactions(
+    user_id: int,
+    limit: Optional[int] = Query(None, description="Maksimum etkileşim sayısı"),
+    sort_by: str = Query("timestamp", description="Sıralama kriteri (timestamp, rating, item_id)"),
+    order: str = Query("desc", description="Sıralama yönü (asc, desc)")
+):
+    """Kullanıcının etkileşimlerini getirir"""
+    try:
+        # Etkileşim verilerinin yüklü olup olmadığını kontrol et
+        if interactions_df.empty:
+            raise HTTPException(
+                status_code=500,
+                detail="Etkileşim verileri yüklenemedi"
+            )
+        
+        # Kullanıcının etkileşimlerini bul
+        user_interactions = interactions_df[interactions_df['user_id'] == user_id].copy()
+        
+        if user_interactions.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Kullanıcı bulunamadı veya hiç etkileşimi yok: {user_id}"
+            )
+        
+        # Sıralama yönünü kontrol et
+        if order.lower() not in ['asc', 'desc']:
+            raise HTTPException(
+                status_code=400,
+                detail="Geçersiz sıralama yönü. 'asc' veya 'desc' kullanın"
+            )
+        
+        # Sıralama kriterini kontrol et
+        if sort_by not in user_interactions.columns:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Geçersiz sıralama kriteri. Kullanılabilir kriterler: {list(user_interactions.columns)}"
+            )
+        
+        # Sırala
+        ascending = order.lower() == 'asc'
+        user_interactions = user_interactions.sort_values(by=sort_by, ascending=ascending)
+        
+        # Limit uygula
+        if limit is not None:
+            user_interactions = user_interactions.head(limit)
+        
+        # Etkileşimleri hazırla
+        interactions = []
+        for _, interaction in user_interactions.iterrows():
+            interaction_info = interaction.to_dict()
+            
+            # Sayısal değerleri düzelt
+            for key, value in interaction_info.items():
+                if pd.isna(value):
+                    interaction_info[key] = None
+                elif isinstance(value, (np.int64, np.int32)):
+                    interaction_info[key] = int(value)
+                elif isinstance(value, (np.float64, np.float32)):
+                    interaction_info[key] = float(value)
+            
+            # Ürün bilgilerini ekle
+            item_id = interaction_info.get('item_id')
+            if item_id is not None and not products_df.empty:
+                item = products_df[products_df['item_id'] == item_id]
+                if not item.empty:
+                    item_info = item.iloc[0].to_dict()
+                    # Ürün bilgilerini düzelt
+                    for key in ['item_price', 'item_rating_avg']:
+                        if key in item_info and pd.notna(item_info[key]):
+                            item_info[key] = float(item_info[key])
+                    for key in ['item_id', 'stock_quantity']:
+                        if key in item_info and pd.notna(item_info[key]):
+                            item_info[key] = int(item_info[key])
+                    interaction_info['item'] = item_info
+            
+            interactions.append(interaction_info)
+        
+        return {
+            "user_id": user_id,
+            "interactions": interactions,
+            "total": len(interactions)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Kullanıcı etkileşimleri alınırken hata oluştu: {str(e)}"
+        )
+
+@app.get("/popular_items")
+async def get_popular_items(
+    limit: Optional[int] = Query(10, description="Maksimum ürün sayısı", ge=1, le=100)
+):
+    """En popüler ürünleri getirir"""
+    try:
+        # Öneri modelinin yüklü olup olmadığını kontrol et
+        if user_item_matrix is None:
+            raise HTTPException(
+                status_code=500,
+                detail="Öneri modeli henüz yüklenmemiş"
+            )
+        
+        # Ürün verilerinin yüklü olup olmadığını kontrol et
+        if products_df.empty:
+            raise HTTPException(
+                status_code=500,
+                detail="Ürün verileri yüklenemedi"
+            )
+        
+        # Her ürünün toplam derecelendirme sayısını hesapla
+        item_popularity = user_item_matrix[user_item_matrix > 0].count()
+        
+        # En popüler ürünleri al
+        top_items = item_popularity.sort_values(ascending=False).head(limit)
+        
+        # Popüler ürünlerin detaylarını hazırla
+        popular_items = []
+        for item_id, rating_count in top_items.items():
+            # Ürün bilgilerini al
+            item = products_df[products_df['item_id'] == item_id]
+            if item.empty:
+                continue
+                
+            item_info = item.iloc[0].to_dict()
+            
+            # Sayısal değerleri düzelt
+            for key in ['item_price', 'item_rating_avg']:
+                if key in item_info and pd.notna(item_info[key]):
+                    item_info[key] = float(item_info[key])
+            for key in ['item_id', 'stock_quantity']:
+                if key in item_info and pd.notna(item_info[key]):
+                    item_info[key] = int(item_info[key])
+            
+            # Derecelendirme istatistiklerini ekle
+            item_ratings = user_item_matrix[item_id]
+            non_zero_ratings = item_ratings[item_ratings > 0]
+            
+            item_info.update({
+                "rating_stats": {
+                    "average_rating": float(non_zero_ratings.mean()) if len(non_zero_ratings) > 0 else None,
+                    "rating_count": int(rating_count),
+                    "rating_distribution": {
+                        "1": int(len(non_zero_ratings[non_zero_ratings == 1])),
+                        "2": int(len(non_zero_ratings[non_zero_ratings == 2])),
+                        "3": int(len(non_zero_ratings[non_zero_ratings == 3])),
+                        "4": int(len(non_zero_ratings[non_zero_ratings == 4])),
+                        "5": int(len(non_zero_ratings[non_zero_ratings == 5]))
+                    }
+                }
+            })
+            
+            popular_items.append(item_info)
+        
+        return {
+            "items": popular_items,
+            "total": len(popular_items)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Popüler ürünler alınırken hata oluştu: {str(e)}"
+        )
+
+@app.get("/metrics")
+async def get_metrics(version_name: Optional[str] = Query(None, description="Model versiyonu")):
+    """Sistem metriklerini döndürür"""
+    try:
+        # MLflow bağlantısını kontrol et
+        try:
+            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"MLflow bağlantı hatası: {str(e)}"
+            )
+
+        # Experiment'i kontrol et
+        experiment = get_experiment()
+        if experiment is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Model experiment'i bulunamadı"
+            )
+
+        # Eğer versiyon belirtilmişse, o versiyonun run'ını bul
+        if version_name:
+            runs = mlflow.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                filter_string=f"tags.mlflow.runName = '{version_name}'"
+            )
+
+            if runs.empty:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Model versiyonu bulunamadı: {version_name}"
+                )
+
+            run = runs.iloc[0]
+            metrics = {}
+            for col in run.index:
+                if col.startswith("metrics."):
+                    metric_name = col.replace("metrics.", "").lower()
+                    metric_value = float(run[col])
+                    if not pd.isna(metric_value):
+                        metrics[metric_name] = metric_value
+
+            return {
+                "model_version": version_name,
+                "run_id": run["run_id"],
+                "metrics": metrics,
+                "tags": {k.replace("tags.", ""): v for k, v in run.items() if k.startswith("tags.") and pd.notna(v)},
+                "status": "active" if version_name in [recommendation_model_version, rating_model_version] else "inactive"
+            }
+
+        # Versiyon belirtilmemişse tüm sistem metriklerini getir
+        response = {
+            "system_status": "healthy",
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "models": {
+                "recommendation": {
+                    "status": "not_loaded",
+                    "version": None,
+                    "metrics": None
+                },
+                "rating": {
+                    "status": "not_loaded",
+                    "version": None,
+                    "metrics": None
+                }
+            },
+            "data_stats": {
+                "products": None,
+                "interactions": None
+            }
+        }
+
+        # Öneri modeli metrikleri
+        if (user_item_matrix is not None and 
+            item_similarity_matrix is not None and 
+            item_metadata is not None):
+            
+            non_zero_ratings = user_item_matrix.values[user_item_matrix.values != 0]
+            rec_metrics = {
+                "average_rating": float(np.mean(non_zero_ratings)) if len(non_zero_ratings) > 0 else 0,
+                "rating_count": int(len(non_zero_ratings)),
+                "unique_users": int(len(user_item_matrix.index)),
+                "unique_items": int(len(user_item_matrix.columns)),
+                "sparsity": float(len(non_zero_ratings) / (user_item_matrix.shape[0] * user_item_matrix.shape[1]))
+            }
+            
+            response["models"]["recommendation"].update({
+                "status": "healthy",
+                "version": recommendation_model_version,
+                "metrics": rec_metrics
+            })
+        
+        # Rating modeli metrikleri
+        if rating_model is not None:
+            experiment = get_experiment()
+            if experiment:
+                filter_string = f"tags.model_type = 'rating'"
+                if rating_model_version:
+                    filter_string += f" and tags.mlflow.runName = '{rating_model_version}'"
+                
+                runs = mlflow.search_runs(
+                    experiment_ids=[experiment.experiment_id],
+                    filter_string=filter_string
+                )
+                
+                if not runs.empty:
+                    run = runs.iloc[0]
+                    rating_metrics = {}
+                    for col in run.index:
+                        if col.startswith("metrics."):
+                            metric_name = col.replace("metrics.", "").lower()
+                            metric_value = float(run[col])
+                            if not pd.isna(metric_value):
+                                rating_metrics[metric_name] = metric_value
+                    
+                    response["models"]["rating"].update({
+                        "status": "healthy",
+                        "version": rating_model_version,
+                        "metrics": rating_metrics
+                    })
+        
+        # Veri istatistikleri
+        try:
+            products_df = pd.read_csv("data/products.csv")
+            interactions_df = pd.read_csv("data/interactions.csv")
+            
+            response["data_stats"].update({
+                "products": {
+                    "total_count": len(products_df),
+                    "categories": len(products_df["item_category"].unique())
+                },
+                "interactions": {
+                    "total_count": len(interactions_df),
+                    "unique_users": len(interactions_df["user_id"].unique()),
+                    "unique_items": len(interactions_df["item_id"].unique()),
+                    "average_rating": float(interactions_df["rating"].mean())
+                }
+            })
+        except Exception as e:
+            response["data_stats"].update({
+                "error": str(e)
+            })
+        
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Metrik hesaplama hatası: {str(e)}"
         )
 
 # Uygulama başlatma

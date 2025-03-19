@@ -6,8 +6,6 @@ Bu proje, MLflow kullanarak bir e-ticaret ürün öneri sistemi geliştirmeyi, d
 
 ## 🌟 Geliştirilmiş Özellikler
 
-Bu projede yakın zamanda eklenen iyileştirmeler:
-
 - **Daha Detaylı Dökümantasyon**: Tüm kod dosyalarına kapsamlı dokümantasyon eklendi
 - **Model Versiyon Bilgilerinin Zenginleştirilmesi**: `/versions` endpoint'i artık her modelin hangi API endpoint'i için kullanıldığı bilgisini de içeriyor
 - **Gelişmiş Test Scripti**: Test senaryoları ve hata yakalama geliştirildi

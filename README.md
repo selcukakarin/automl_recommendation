@@ -4,16 +4,6 @@
 
 Bu proje, MLflow kullanarak bir e-ticaret ürün öneri sistemi geliştirmeyi, deployment süreçlerini yönetmeyi ve REST API aracılığıyla servis etmeyi göstermektedir. Sistem, kullanıcı-ürün etkileşimlerini analiz ederek kişiselleştirilmiş öneriler sunmaktadır.
 
-## 🌟 Geliştirilmiş Özellikler
-
-- **Daha Detaylı Dökümantasyon**: Tüm kod dosyalarına kapsamlı dokümantasyon eklendi
-- **Model Versiyon Bilgilerinin Zenginleştirilmesi**: `/versions` endpoint'i artık her modelin hangi API endpoint'i için kullanıldığı bilgisini de içeriyor
-- **Gelişmiş Test Scripti**: Test senaryoları ve hata yakalama geliştirildi
-- **Hata Yönetimi**: Ürün bulunamadığında ve benzer durumlarda daha açıklayıcı hata mesajları eklendi
-- **Değerlendirme Algoritması İyileştirmesi**: İki aşamalı tahmin modeli (benzerlik ağırlıklı ortalama + fallback)
-- **Detaylı Sunum Dokümanı**: Projeyi adım adım açıklayan kapsamlı bir sunum rehberi
-- **Model Fallback Mekanizması**: Hatalı model yüklendiğinde otomatik olarak önceki sağlıklı modele geri dönüş yapabilme
-
 ## 🔧 Kurulum
 
 ### Gereksinimler

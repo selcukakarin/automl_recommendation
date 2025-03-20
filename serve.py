@@ -127,7 +127,58 @@ def load_rating_model(run_id):
         model_path = f"runs:/{run_id}/model"
         model = mlflow.pyfunc.load_model(model_path)
         print(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
-        return model, run_id
+        
+        # Version name'i ve metrikleri al
+        run = client.get_run(run_id)
+        version_name = run.data.tags.get("version_name", f"run_{run_id[:8]}")
+        
+        # Son çalışan tahmin modelinin bilgilerini kaydet
+        try:
+            # Metrikleri al
+            metrics = {}
+            print("\nMetrikleri alıyorum...")
+            try:
+                run_metrics = run.data.metrics
+                print(f"MLflow'dan alınan metrikler: {run_metrics}")
+                metrics = {key: float(value) for key, value in run_metrics.items()}
+                print(f"İşlenmiş metrikler: {metrics}")
+            except Exception as metric_error:
+                print(f"Metrikler alınırken hata: {str(metric_error)}")
+            
+            last_working_model = {
+                "run_id": run_id,
+                "version_name": version_name,
+                "timestamp": datetime.now().isoformat(),
+                "model_type": "rating",
+                "metrics": metrics
+            }
+            print(f"\nKaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
+            
+            # Dosya yolunu oluştur
+            model_info_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "last_working_prediction_model.json")
+            print(f"Dosya yolu: {model_info_path}")
+            
+            # JSON dosyasını kaydet
+            with open(model_info_path, "w", encoding="utf-8") as f:
+                json.dump(last_working_model, f, indent=4, ensure_ascii=False)
+            print(f"Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: {model_info_path}")
+            
+            # Dosyanın içeriğini kontrol et
+            try:
+                with open(model_info_path, "r", encoding="utf-8") as f:
+                    saved_content = json.load(f)
+                print(f"\nKaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
+            except Exception as read_error:
+                print(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
+            
+        except Exception as e:
+            print(f"Son model bilgileri kaydedilemedi: {str(e)}")
+            print(f"Hata detayı: {type(e).__name__}")
+            import traceback
+            print(f"Hata stack trace: {traceback.format_exc()}")
+        
+        return model, version_name
+        
     except Exception as mlflow_error:
         print(f"MLflow'dan model yükleme hatası: {str(mlflow_error)}")
         try:
@@ -215,19 +266,50 @@ def load_recommendation_model(run_id):
         item_similarity_matrix = joblib.load(item_similarity_path)
         print(f"Ürün benzerlik matrisi yüklendi: {item_similarity_path}")
         
-        # Başarılı modeli bir yere kaydet
+        # Son çalışan modelin bilgilerini kaydet
         try:
-            # Son çalışan modelin bilgilerini bir dosyaya kaydet
-            with open("last_working_model.json", "w") as f:
-                json.dump({
-                    "run_id": run_id,
-                    "version_name": version_name,
-                    "timestamp": datetime.now().isoformat(),
-                    "model_type": "collaborative_filtering"
-                }, f)
-            print(f"Son çalışan model kaydedildi: {version_name}")
+            # Metrikleri al
+            metrics = {}
+            print("\nMetrikleri alıyorum...")
+            try:
+                run_metrics = run.data.metrics
+                print(f"MLflow'dan alınan metrikler: {run_metrics}")
+                metrics = {key: float(value) for key, value in run_metrics.items()}
+                print(f"İşlenmiş metrikler: {metrics}")
+            except Exception as metric_error:
+                print(f"Metrikler alınırken hata: {str(metric_error)}")
+            
+            last_working_model = {
+                "run_id": run_id,
+                "version_name": version_name,
+                "timestamp": datetime.now().isoformat(),
+                "model_type": "collaborative_filtering",
+                "metrics": metrics
+            }
+            print(f"\nKaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
+            
+            # Dosya yolunu oluştur
+            model_info_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "last_working_recommendation_model.json")
+            print(f"Dosya yolu: {model_info_path}")
+            
+            # JSON dosyasını kaydet
+            with open(model_info_path, "w", encoding="utf-8") as f:
+                json.dump(last_working_model, f, indent=4, ensure_ascii=False)
+            print(f"Son çalışan öneri modeli bilgileri başarıyla kaydedildi: {model_info_path}")
+            
+            # Dosyanın içeriğini kontrol et
+            try:
+                with open(model_info_path, "r", encoding="utf-8") as f:
+                    saved_content = json.load(f)
+                print(f"\nKaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
+            except Exception as read_error:
+                print(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
+            
         except Exception as e:
-            print(f"Son model kaydedilemedi: {str(e)}")
+            print(f"Son model bilgileri kaydedilemedi: {str(e)}")
+            print(f"Hata detayı: {type(e).__name__}")
+            import traceback
+            print(f"Hata stack trace: {traceback.format_exc()}")
         
         return model, user_item_matrix, item_similarity_matrix, item_metadata, version_name
         
@@ -528,10 +610,10 @@ async def load_rating_version(version_name: str):
             
         run_id = version_run.iloc[0].run_id
         
-        # Modeli yükle
-        model_uri = f"runs:/{run_id}/model"
-        rating_model = mlflow.pyfunc.load_model(model_uri)
-        rating_model_version = version_name
+        # Modeli yükle ve bilgileri kaydet
+        loaded_model, loaded_version = load_rating_model(run_id)
+        rating_model = loaded_model
+        rating_model_version = loaded_version
         
         return {
             "status": "success",

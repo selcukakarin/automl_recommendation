@@ -1,0 +1,12 @@
+{
+    "run_id": "187ef8280b8d42c6a70a313d22874926",
+    "version_name": "v2_random_forest",
+    "timestamp": "2025-03-20T11:36:48.853190",
+    "model_type": "rating",
+    "metrics": {
+        "mae": 0.9829,
+        "n_predictions": 1000.0,
+        "prediction_ratio": 1.0,
+        "rmse": 1.1511
+    }
+}

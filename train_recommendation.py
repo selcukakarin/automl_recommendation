@@ -4,11 +4,12 @@ import os
 import joblib
 import mlflow
 import mlflow.sklearn
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, manhattan_distances
 from scipy.sparse import csr_matrix
 from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, RegressorMixin
+import argparse
 
 # MLflow ayarları
 MLFLOW_TRACKING_URI = "http://localhost:5000"
@@ -27,10 +28,14 @@ print(f"Deney ID: {experiment_id}, Deney Adı: {experiment_name}")
 
 # Önerici model sınıfı
 class RecommenderModel(BaseEstimator, RegressorMixin):
-    def __init__(self, user_item_matrix=None, item_similarity_matrix=None, item_metadata=None):
+    def __init__(self, user_item_matrix=None, item_similarity_matrix=None, item_metadata=None,
+                 similarity_metric='cosine', min_rating=0, normalize=True):
         self.user_item_matrix = user_item_matrix
         self.item_similarity_matrix = item_similarity_matrix
         self.item_metadata = item_metadata
+        self.similarity_metric = similarity_metric
+        self.min_rating = min_rating
+        self.normalize = normalize
     
     def fit(self, X, y=None):
         return self
@@ -60,7 +65,7 @@ class RecommenderModel(BaseEstimator, RegressorMixin):
             try:
                 if user_id in self.user_item_matrix.index and item_id in self.item_similarity_matrix.index:
                     user_ratings = self.user_item_matrix.loc[user_id]
-                    rated_items = user_ratings[user_ratings > 0].index
+                    rated_items = user_ratings[user_ratings > self.min_rating].index
                     
                     if len(rated_items) > 0:
                         similar_items = self.item_similarity_matrix.loc[item_id, rated_items]
@@ -73,7 +78,7 @@ class RecommenderModel(BaseEstimator, RegressorMixin):
                                 weights=positive_similarities
                             )
                         else:
-                            predicted_rating = user_ratings[user_ratings > 0].mean()
+                            predicted_rating = user_ratings[user_ratings > self.min_rating].mean()
                     else:
                         predicted_rating = 2.5  # Varsayılan değer
                 else:
@@ -113,10 +118,51 @@ def load_data():
     
     return interactions_df, item_metadata
 
-def create_user_item_matrix(interactions_df):
+def calculate_similarity_matrix(user_item_matrix, metric='cosine', normalize=True):
+    """Farklı benzerlik metriklerine göre ürün benzerlik matrisini hesaplar"""
+    if normalize:
+        # Kullanıcı ortalamalarına göre normalize et
+        user_means = user_item_matrix.mean(axis=1)
+        normalized_matrix = user_item_matrix.sub(user_means, axis=0)
+        matrix_to_use = normalized_matrix.fillna(0)
+    else:
+        matrix_to_use = user_item_matrix.fillna(0)
+    
+    if metric == 'cosine':
+        similarity_matrix = pd.DataFrame(
+            cosine_similarity(matrix_to_use.T),
+            index=matrix_to_use.columns,
+            columns=matrix_to_use.columns
+        )
+    elif metric == 'euclidean':
+        # Euclidean uzaklığını benzerliğe çevir
+        distances = euclidean_distances(matrix_to_use.T)
+        similarity_matrix = pd.DataFrame(
+            1 / (1 + distances),  # Uzaklığı [0,1] aralığında benzerliğe dönüştür
+            index=matrix_to_use.columns,
+            columns=matrix_to_use.columns
+        )
+    elif metric == 'manhattan':
+        # Manhattan uzaklığını benzerliğe çevir
+        distances = manhattan_distances(matrix_to_use.T)
+        similarity_matrix = pd.DataFrame(
+            1 / (1 + distances),  # Uzaklığı [0,1] aralığında benzerliğe dönüştür
+            index=matrix_to_use.columns,
+            columns=matrix_to_use.columns
+        )
+    else:
+        raise ValueError(f"Desteklenmeyen benzerlik metriği: {metric}")
+    
+    return similarity_matrix
+
+def create_user_item_matrix(interactions_df, min_rating=0):
     """Kullanıcı-ürün etkileşim matrisini oluşturur"""
     # Tekrarlanan kullanıcı-ürün çiftlerinin ortalamasını al
     interactions_df = interactions_df.groupby(['user_id', 'item_id'])['rating'].mean().reset_index()
+    
+    # Minimum rating filtresini uygula
+    if min_rating > 0:
+        interactions_df = interactions_df[interactions_df['rating'] > min_rating]
     
     # Pivot tablosunu oluştur
     return interactions_df.pivot(
@@ -124,14 +170,6 @@ def create_user_item_matrix(interactions_df):
         columns='item_id',
         values='rating'
     ).fillna(0)
-
-def calculate_item_similarity(user_item_matrix):
-    """Ürünler arası benzerlik matrisini hesaplar"""
-    return pd.DataFrame(
-        cosine_similarity(user_item_matrix.T),
-        index=user_item_matrix.columns,
-        columns=user_item_matrix.columns
-    )
 
 def evaluate_model(user_item_matrix, item_similarity_matrix, test_interactions):
     """Model performansını değerlendirir
@@ -222,10 +260,33 @@ def evaluate_model(user_item_matrix, item_similarity_matrix, test_interactions):
         return None
 
 def main():
+    # Komut satırı argümanlarını tanımla
+    parser = argparse.ArgumentParser(description='E-Ticaret Ürün Öneri Sistemi Model Eğitimi')
+    parser.add_argument('--model_type', type=str, default='cosine',
+                      choices=['cosine', 'euclidean', 'manhattan'],
+                      help='Benzerlik metriği tipi')
+    parser.add_argument('--min_rating', type=float, default=0,
+                      help='Minimum derecelendirme eşiği')
+    parser.add_argument('--normalize', type=bool, default=True,
+                      help='Kullanıcı ortalamalarına göre normalize et')
+    parser.add_argument('--version_suffix', type=str, default='',
+                      help='Model versiyon adına eklenecek sonek')
+    
+    args = parser.parse_args()
+    
     print("E-Ticaret Ürün Öneri Sistemi Eğitimi Başlatılıyor...")
     
     # Model versiyonu
-    version_name = f"v1_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    model_type_suffix = f"_{args.model_type}"
+    if args.min_rating > 0:
+        model_type_suffix += f"_minrating{args.min_rating}"
+    if not args.normalize:
+        model_type_suffix += "_raw"
+    if args.version_suffix:
+        model_type_suffix += f"_{args.version_suffix}"
+    
+    version_name = f"v1_{timestamp}{model_type_suffix}"
     print(f"Model Versiyonu: {version_name}")
     
     # Verileri yükle
@@ -240,19 +301,26 @@ def main():
     
     # Kullanıcı-ürün matrisini oluştur
     print("Kullanıcı-ürün matrisi oluşturuluyor...")
-    user_item_matrix = create_user_item_matrix(train_df)
+    user_item_matrix = create_user_item_matrix(train_df, min_rating=args.min_rating)
     print(f"Kullanıcı-ürün matrisinin boyutu: {user_item_matrix.shape}")
     
     # Ürün benzerliklerini hesapla
-    print("Ürün benzerlik matrisi hesaplanıyor...")
-    item_similarity_matrix = calculate_item_similarity(user_item_matrix)
+    print(f"Ürün benzerlik matrisi hesaplanıyor (metrik: {args.model_type})...")
+    item_similarity_matrix = calculate_similarity_matrix(
+        user_item_matrix,
+        metric=args.model_type,
+        normalize=args.normalize
+    )
     print(f"Ürün benzerlik matrisinin boyutu: {item_similarity_matrix.shape}")
     
     # Recommender model oluştur
     model = RecommenderModel(
         user_item_matrix=user_item_matrix,
         item_similarity_matrix=item_similarity_matrix,
-        item_metadata=item_metadata
+        item_metadata=item_metadata,
+        similarity_metric=args.model_type,
+        min_rating=args.min_rating,
+        normalize=args.normalize
     )
     
     # Modelin performansını değerlendir
@@ -271,6 +339,7 @@ def main():
             
             # Model tipini ve versiyon adını tag olarak ekle
             mlflow.set_tag("model_type", "collaborative_filtering")
+            mlflow.set_tag("similarity_metric", args.model_type)
             mlflow.set_tag("version_name", version_name)
             mlflow.set_tag("endpoint", "/recommend")
             
@@ -278,6 +347,9 @@ def main():
             mlflow.log_param("num_users", len(user_item_matrix))
             mlflow.log_param("num_items", len(user_item_matrix.columns))
             mlflow.log_param("num_interactions", len(interactions_df))
+            mlflow.log_param("similarity_metric", args.model_type)
+            mlflow.log_param("min_rating", args.min_rating)
+            mlflow.log_param("normalize", args.normalize)
             
             # Temel metrikleri hesapla
             non_zero_ratings = user_item_matrix.values[user_item_matrix.values != 0]

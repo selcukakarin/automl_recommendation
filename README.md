@@ -43,15 +43,42 @@ Bu komut, MLflow sunucusunu `http://localhost:5000` adresinde başlatır.
 ### Model Eğitimi
 
 ```bash
+# Temel model eğitimi (Kosinüs benzerliği)
 python train_recommendation.py
+
+# Öklid uzaklığı bazlı model
+python train_recommendation.py --model_type euclidean
+
+# Manhattan uzaklığı bazlı model
+python train_recommendation.py --model_type manhattan
+
+# Minimum derecelendirme filtreli model
+python train_recommendation.py --min_rating 3
+
+# Normalizasyon olmadan model
+python train_recommendation.py --normalize False
+
+# Özel versiyon adı ile model
+python train_recommendation.py --model_type euclidean --version_suffix test1
 ```
 
 Bu script:
 1. Sentetik veriyi yükler
 2. Kullanıcı-ürün matrisini oluşturur
-3. Ürün benzerlik matrislerini hesaplar
-4. Modeli değerlendirir (RMSE, MAE)
-5. Model ve artifactları MLflow'a kaydeder
+3. Seçilen benzerlik metriğine göre ürün benzerlik matrislerini hesaplar:
+   - Kosinüs benzerliği (varsayılan)
+   - Öklid uzaklığı
+   - Manhattan uzaklığı
+4. Veri önişleme seçeneklerini uygular:
+   - Minimum derecelendirme filtresi (opsiyonel)
+   - Kullanıcı ortalamalarına göre normalizasyon (varsayılan: açık)
+5. Modeli değerlendirir (RMSE, MAE)
+6. Model ve artifactları MLflow'a kaydeder
+
+Her model eğitimi sonunda:
+- MLflow'da farklı bir versiyon olarak kaydedilir
+- Versiyon adında kullanılan parametreler görünür (örn: v1_20240318_123456_euclidean_minrating3)
+- Model performans metrikleri karşılaştırılabilir
 
 ### Öneri API Servisini Başlatma
 

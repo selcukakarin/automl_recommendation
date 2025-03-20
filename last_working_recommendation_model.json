@@ -1,0 +1,17 @@
+{
+    "run_id": "2a968460287849579eb084e8d8231600",
+    "version_name": "v1_20250320_100115_cosine_minrating3.0",
+    "timestamp": "2025-03-20T11:37:33.271405",
+    "model_type": "collaborative_filtering",
+    "metrics": {
+        "average_rating": 4.030689867191343,
+        "mae": 0.4624182182825706,
+        "n_predictions": 20785.0,
+        "prediction_ratio": 0.9929772596980699,
+        "rating_count": 81320.0,
+        "rmse": 0.5783566838777477,
+        "sparsity": 0.008239108409321176,
+        "unique_items": 1000.0,
+        "unique_users": 9870.0
+    }
+}

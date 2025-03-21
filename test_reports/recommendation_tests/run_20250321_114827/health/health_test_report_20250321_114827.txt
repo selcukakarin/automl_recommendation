@@ -1,0 +1,23 @@
+=== Model Sağlık Kontrolü Raporu ===
+Test Tarihi: 2025-03-21 11:48:29
+
+Model Sağlık Bilgileri:
+
+Model Durumu: healthy
+Model Versiyonu: v1_20250320_100319_euclidean_selcukakarin_1
+Son Güncelleme: 2025-03-21 11:48:31
+
+Model Metrikleri:
+- average_rating: 3.996776428153404
+- rating_count: 83727
+- unique_users: 9888
+- unique_items: 1000
+- sparsity: 0.00846753640776699
+
+Model Bilgileri:
+- User-Item Matrix Shape: [9888, 1000]
+- Item Similarity Matrix Shape: [1000, 1000]
+- Toplam Ürün Sayısı: 1000
+- Model Versiyonu: v1_20250320_100319_euclidean_selcukakarin_1
+
+Test Tamamlandı.

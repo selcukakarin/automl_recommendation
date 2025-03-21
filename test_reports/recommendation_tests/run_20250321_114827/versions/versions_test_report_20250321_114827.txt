@@ -1,0 +1,209 @@
+=== Model Versiyonları Raporu ===
+Test Tarihi: 2025-03-21 11:48:33
+
+Kullanılabilir Model Versiyonları:
+
+==================================================
+Versiyon: v4_lightgbm
+Oluşturulma Tarihi: 2025-03-20 07:47:17
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9832
+  n_predictions: 1000.0000
+  rmse: 1.1513
+
+==================================================
+Versiyon: v3_rf_tuned
+Oluşturulma Tarihi: 2025-03-20 07:47:02
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9829
+  n_predictions: 1000.0000
+  rmse: 1.1511
+
+==================================================
+Versiyon: v2_random_forest
+Oluşturulma Tarihi: 2025-03-20 07:46:50
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9829
+  n_predictions: 1000.0000
+  rmse: 1.1511
+
+==================================================
+Versiyon: v1_auto_select
+Oluşturulma Tarihi: 2025-03-20 07:46:25
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9955
+  n_predictions: 1000.0000
+  rmse: 1.1540
+
+==================================================
+Versiyon: v1_20250320_100319_euclidean_selcukakarin_1
+Oluşturulma Tarihi: 2025-03-20 07:03:30
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4172
+  n_predictions: 20793.0000
+  rmse: 0.5207
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v1_20250320_100237_euclidean_test1
+Oluşturulma Tarihi: 2025-03-20 07:02:48
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4172
+  n_predictions: 20793.0000
+  rmse: 0.5207
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v1_20250320_100156_cosine
+Oluşturulma Tarihi: 2025-03-20 07:02:06
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4720
+  n_predictions: 20793.0000
+  rmse: 0.5905
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v1_20250320_100115_cosine_minrating3.0
+Oluşturulma Tarihi: 2025-03-20 07:01:26
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9930
+  mae: 0.4624
+  n_predictions: 20785.0000
+  rmse: 0.5784
+  unique_items: 1000.0000
+  average_rating: 4.0307
+  unique_users: 9870.0000
+  rating_count: 81320.0000
+  sparsity: 0.0082
+
+==================================================
+Versiyon: v1_20250320_095959_manhattan
+Oluşturulma Tarihi: 2025-03-20 07:00:16
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4172
+  n_predictions: 20793.0000
+  rmse: 0.5207
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v1_20250320_095824_euclidean
+Oluşturulma Tarihi: 2025-03-20 06:58:34
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4172
+  n_predictions: 20793.0000
+  rmse: 0.5207
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v1_20250320_091900
+Oluşturulma Tarihi: 2025-03-20 06:19:10
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4427
+  n_predictions: 20793.0000
+  rmse: 0.5531
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085
+
+==================================================
+Versiyon: v3_rf_tuned
+Oluşturulma Tarihi: 2025-03-19 08:23:51
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9829
+  n_predictions: 1000.0000
+  rmse: 1.1511
+
+==================================================
+Versiyon: v2_random_forest
+Oluşturulma Tarihi: 2025-03-19 08:23:33
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9829
+  n_predictions: 1000.0000
+  rmse: 1.1511
+
+==================================================
+Versiyon: v1_auto_select
+Oluşturulma Tarihi: 2025-03-19 08:23:02
+Model Tipi: rating
+API Endpoint: /predict
+Performans Metrikleri:
+  prediction_ratio: 1.0000
+  mae: 0.9955
+  n_predictions: 1000.0000
+  rmse: 1.1540
+
+==================================================
+Versiyon: v1_20250319_102242
+Oluşturulma Tarihi: 2025-03-19 07:23:02
+Model Tipi: collaborative_filtering
+API Endpoint: /recommend
+Performans Metrikleri:
+  prediction_ratio: 0.9934
+  mae: 0.4427
+  n_predictions: 20793.0000
+  rmse: 0.5531
+  unique_items: 1000.0000
+  average_rating: 3.9968
+  unique_users: 9888.0000
+  rating_count: 83727.0000
+  sparsity: 0.0085

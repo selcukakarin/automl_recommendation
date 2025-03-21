@@ -1,0 +1,47 @@
+=== Ürün Bazlı Öneri Testi Raporu ===
+Test Tarihi: 2025-03-21 11:47:28
+
+Test Ürünü ID: 853
+Test Kullanıcı ID: 9896
+
+Test Ürünü Detayları:
+İsim: Illum Amet
+Kategori: Otomotiv
+Fiyat: 557.92 TL
+
+Önerilen Ürünler (5):
+----------------------------------------
+1. Ürün:
+   ID: 303
+   İsim: Culpa Iste
+   Kategori: Mobilya
+   Fiyat: 463.85 TL
+   Benzerlik Skoru: 0.0505
+----------------------------------------
+2. Ürün:
+   ID: 291
+   İsim: Nihil Debitis
+   Kategori: Otomotiv
+   Fiyat: 172.84 TL
+   Benzerlik Skoru: 0.0447
+----------------------------------------
+3. Ürün:
+   ID: 219
+   İsim: Adipisci Error
+   Kategori: Oyuncak
+   Fiyat: 102.13 TL
+   Benzerlik Skoru: 0.0369
+----------------------------------------
+4. Ürün:
+   ID: 508
+   İsim: Excepturi Aspernatur
+   Kategori: Ev & Yaşam
+   Fiyat: 273.05 TL
+   Benzerlik Skoru: 0.0352
+----------------------------------------
+5. Ürün:
+   ID: 414
+   İsim: Placeat Numquam
+   Kategori: Otomotiv
+   Fiyat: 817.10 TL
+   Benzerlik Skoru: 0.0342

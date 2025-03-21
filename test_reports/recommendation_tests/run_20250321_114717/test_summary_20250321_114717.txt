@@ -1,0 +1,16 @@
+=== Öneri Sistemi Test Raporu ===
+Test Tarihi: 2025-03-21 11:47:17
+
+API Durumu: Çalışıyor
+
+Çalıştırılan Testler:
+- Tüm temel testler
+
+Oluşturulan Test Raporları:
+- health (0 bytes)
+- item_based (4096 bytes)
+- test_summary_20250321_114717.txt (0 bytes)
+- user_based (4096 bytes)
+- versions (8192 bytes)
+
+Test Bitiş Zamanı: 2025-03-21 11:47:33

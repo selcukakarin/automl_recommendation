@@ -1,0 +1,151 @@
+=== Tahmin Sistemi Test Raporu ===
+Test Tarihi: 2025-03-21 12:19:29
+Planlanan Tahmin Sayısı: 10
+
+
+Tahmin 1:
+Girdi: {
+  "user_id": 76,
+  "item_id": 290,
+  "user_age": 50,
+  "user_gender": "K",
+  "item_category": "Kişisel Gelişim",
+  "item_price": 44.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0635 saniye
+
+Tahmin 2:
+Girdi: {
+  "user_id": 259,
+  "item_id": 461,
+  "user_age": 55,
+  "user_gender": "K",
+  "item_category": "Bilim",
+  "item_price": 39.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0666 saniye
+
+Tahmin 3:
+Girdi: {
+  "user_id": 380,
+  "item_id": 242,
+  "user_age": 35,
+  "user_gender": "E",
+  "item_category": "Tarih",
+  "item_price": 15.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0553 saniye
+
+Tahmin 4:
+Girdi: {
+  "user_id": 13,
+  "item_id": 412,
+  "user_age": 30,
+  "user_gender": "E",
+  "item_category": "Tarih",
+  "item_price": 34.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0692 saniye
+
+Tahmin 5:
+Girdi: {
+  "user_id": 224,
+  "item_id": 247,
+  "user_age": 25,
+  "user_gender": "K",
+  "item_category": "Kişisel Gelişim",
+  "item_price": 39.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0568 saniye
+
+Tahmin 6:
+Girdi: {
+  "user_id": 773,
+  "item_id": 157,
+  "user_age": 35,
+  "user_gender": "E",
+  "item_category": "Çocuk",
+  "item_price": 15.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0618 saniye
+
+Tahmin 7:
+Girdi: {
+  "user_id": 990,
+  "item_id": 5,
+  "user_age": 50,
+  "user_gender": "E",
+  "item_category": "Kişisel Gelişim",
+  "item_price": 15.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0541 saniye
+
+Tahmin 8:
+Girdi: {
+  "user_id": 677,
+  "item_id": 310,
+  "user_age": 35,
+  "user_gender": "E",
+  "item_category": "Roman",
+  "item_price": 29.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0828 saniye
+
+Tahmin 9:
+Girdi: {
+  "user_id": 893,
+  "item_id": 425,
+  "user_age": 35,
+  "user_gender": "E",
+  "item_category": "Roman",
+  "item_price": 39.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0514 saniye
+
+Tahmin 10:
+Girdi: {
+  "user_id": 414,
+  "item_id": 81,
+  "user_age": 50,
+  "user_gender": "K",
+  "item_category": "Sanat",
+  "item_price": 54.99
+}
+Tahmin: 3.01876
+Güven Aralığı: [2.51876, 3.51876]
+Yanıt Süresi: 2.0674 saniye
+
+=== Test Özeti ===
+Toplam Tahmin: 10
+Başarılı Tahmin: 10
+Başarı Oranı: %100.0
+
+Tahmin İstatistikleri:
+Ortalama Tahmin: 3.01876
+Standart Sapma: 0.00000
+Min Tahmin: 3.01876
+Max Tahmin: 3.01876
+
+Performans İstatistikleri:
+Ortalama Yanıt Süresi: 2.0629 saniye
+Standart Sapma: 0.0088 saniye
+Min Yanıt Süresi: 2.0514 saniye
+Max Yanıt Süresi: 2.0828 saniye

@@ -1,12 +1,12 @@
 {
-    "run_id": "187ef8280b8d42c6a70a313d22874926",
-    "version_name": "v2_random_forest",
-    "timestamp": "2025-03-20T11:36:48.853190",
+    "run_id": "783c93bc38c7427b9607be7a3c5cb615",
+    "version_name": "v4_lightgbm",
+    "timestamp": "2025-03-21T12:24:50.756120",
     "model_type": "rating",
     "metrics": {
-        "mae": 0.9829,
+        "mae": 0.9832,
         "n_predictions": 1000.0,
         "prediction_ratio": 1.0,
-        "rmse": 1.1511
+        "rmse": 1.1513
     }
 }

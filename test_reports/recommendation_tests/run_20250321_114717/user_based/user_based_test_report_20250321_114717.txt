@@ -1,0 +1,46 @@
+=== Kullanıcı Bazlı Öneri Testi Raporu ===
+Test Tarihi: 2025-03-21 11:47:30
+
+Test Kullanıcı ID: 1397
+
+Kullanıcı Detayları:
+Yaş: 44
+Cinsiyet: M
+Lokasyon: Şensoyborough
+
+Kullanıcıya Özel Öneriler (5):
+----------------------------------------
+1. Ürün:
+   ID: 156
+   İsim: Explicabo Impedit
+   Kategori: Kitap
+   Fiyat: 44.22 TL
+   Tahmini Puan: 0.24
+----------------------------------------
+2. Ürün:
+   ID: 174
+   İsim: Quibusdam Omnis
+   Kategori: Otomotiv
+   Fiyat: 22.22 TL
+   Tahmini Puan: 0.22
+----------------------------------------
+3. Ürün:
+   ID: 845
+   İsim: Laboriosam Voluptatibus
+   Kategori: Elektronik
+   Fiyat: 338.02 TL
+   Tahmini Puan: 0.20
+----------------------------------------
+4. Ürün:
+   ID: 447
+   İsim: Nemo Facilis
+   Kategori: Kitap
+   Fiyat: 519.24 TL
+   Tahmini Puan: 0.20
+----------------------------------------
+5. Ürün:
+   ID: 685
+   İsim: Ea Illum
+   Kategori: Oyuncak
+   Fiyat: 888.76 TL
+   Tahmini Puan: 0.18

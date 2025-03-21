@@ -1,0 +1,46 @@
+=== Kullanıcı Bazlı Öneri Testi Raporu ===
+Test Tarihi: 2025-03-21 11:48:40
+
+Test Kullanıcı ID: 1884
+
+Kullanıcı Detayları:
+Yaş: 51
+Cinsiyet: F
+Lokasyon: Demirelbury
+
+Kullanıcıya Özel Öneriler (5):
+----------------------------------------
+1. Ürün:
+   ID: 516
+   İsim: Inventore Quod
+   Kategori: Gıda
+   Fiyat: 289.29 TL
+   Tahmini Puan: 0.10
+----------------------------------------
+2. Ürün:
+   ID: 735
+   İsim: Molestiae Iusto
+   Kategori: Mücevher
+   Fiyat: 177.75 TL
+   Tahmini Puan: 0.10
+----------------------------------------
+3. Ürün:
+   ID: 805
+   İsim: Reiciendis Quibusdam
+   Kategori: Oyuncak
+   Fiyat: 370.19 TL
+   Tahmini Puan: 0.10
+----------------------------------------
+4. Ürün:
+   ID: 126
+   İsim: Dolor Exercitationem
+   Kategori: Ev & Yaşam
+   Fiyat: 300.13 TL
+   Tahmini Puan: 0.10
+----------------------------------------
+5. Ürün:
+   ID: 64
+   İsim: Est Incidunt
+   Kategori: Giyim
+   Fiyat: 323.06 TL
+   Tahmini Puan: 0.10

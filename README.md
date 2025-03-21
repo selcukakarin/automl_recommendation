@@ -211,15 +211,100 @@ curl -X 'DELETE' 'http://localhost:8000/delete_model_version/v1_test?force=true'
 
 ## 🧪 Test Etme
 
+Sistemin doğru çalıştığını ve performansını doğrulamak için iki farklı test scripti bulunmaktadır:
+
+### Öneri Sistemi Testleri
+
 ```bash
 python test_recommendation.py
 ```
 
 Bu script şunları test eder:
-- Model sağlık durumu
-- Mevcut model versiyonları ve endpoint bilgileri
-- Ürün-tabanlı öneriler
-- Kullanıcı-tabanlı öneriler
+- **Model Sağlık Durumu:** Öneri modelinin sağlık durumunu kontrol eder, metriklerini ve model bilgilerini raporlar.
+- **Model Versiyonları:** Mevcut tüm model versiyonlarını ve endpoint bilgilerini listeler.
+- **Ürün-tabanlı Öneriler:** Belirli bir ürüne benzeyen diğer ürünleri test eder ve benzerlik skorlarını grafikleştirir.
+- **Kullanıcı-tabanlı Öneriler:** Kullanıcı geçmişine göre önerileri test eder ve tahmin puanlarını grafikleştirir.
+
+Her test, ayrıntılı rapor dosyaları (`*_test_report_*.txt`) ve görsel grafikler (`*.png`, `*.pdf`) oluşturur:
+- Benzerlik grafiği (`item_similarity_*.png`)
+- Tahmin skorları grafiği (`user_predictions_*.png`)
+- Versiyon karşılaştırma grafikleri (`version_comparison_*.png`)
+
+#### Örnek Test Raporu ve Grafikler
+
+**Ürün Benzerlik Grafiği:**
+![Ürün Benzerlik Grafiği](test_reports/recommendation_tests/run_20250321_114717/item_based/item_similarity_20250321_114717.png)
+
+Bu grafik, test edilen ürüne en benzer 5 ürünün benzerlik skorlarını gösterir. Yüksek benzerlik skorları (0.7-0.9 arası) iyi öneriler anlamına gelir.
+
+**Farklı Model Versiyonları Karşılaştırması:**
+
+Kosinüs benzerliği ve Öklid uzaklığı modellerinden elde edilen ürün benzerlikleri karşılaştırıldığında farklı skorlar görünür:
+- Kosinüs benzerliği daha yüksek skorlar gösterir (0.7-0.9 aralığında)
+- Öklid uzaklığı daha düşük skorlar gösterir (0.5-0.7 aralığında)
+- Kosinüs benzerliğinde skorlar daha yakın ve ayırt edicilik daha azdır
+- Öklid uzaklığında skorlar arasında daha belirgin farklar görülür
+
+Ürünlerin genel benzerliğini ölçmek için kosinüs benzerliği, belirli özelliklere (fiyat, kategori) göre benzerliği ölçmek için Öklid uzaklığı daha uygundur.
+
+### Tahmin Sistemi Testleri
+
+```bash
+python test_predictions.py
+```
+
+Bu script aşağıdaki testleri gerçekleştirir:
+- **Rastgele Tahmin İstekleri:** Farklı kullanıcı ve ürün kombinasyonlarıyla tahmin işlemlerini test eder.
+- **Performans İzleme:** Yanıt sürelerini ölçer ve her isteğin başarı durumunu kaydeder.
+- **Sonuç Analizi:** Tahmin dağılımlarını analiz eder ve görselleştirir.
+
+Test sonuçları aşağıdaki dosyalarda raporlanır:
+- Ayrıntılı test raporu (`prediction_test_report_*.txt`)
+- Tahmin dağılımı grafiği (`prediction_distribution_*.png`)
+- Yanıt süreleri grafiği (`response_times_*.png`)
+
+#### Örnek Test Çıktıları ve Analizleri
+
+**Tahmin Dağılımı Grafiği:**
+![Tahmin Dağılımı](test_reports/prediction_tests/run_20250321_122454/prediction_distribution_20250321_122454.png)
+
+Bu grafik, tahmin değerlerinin frekans dağılımını gösterir. İdeal bir tahmin modelinde çan eğrisi şeklinde bir dağılım (1-5 arasında yayılmış) beklenir. Yukarıdaki grafikte tahminlerin çoğunlukla 3.0 civarında toplanması, modelin çeşitlilik göstermediğini ve daha fazla iyileştirme gerektiğini belirtir.
+
+**Yanıt Süreleri Grafiği:**
+![Yanıt Süreleri](test_reports/prediction_tests/run_20250321_122454/response_times_20250321_122454.png)
+
+Bu grafik, her tahmin isteğinin işlenme süresini gösterir. İlk istek genellikle daha uzun sürer (model yüklemesi nedeniyle), sonraki istekler daha hızlı olmalıdır. Grafikteki yanıt sürelerinde ilk istek için yaklaşık 20 saniye, sonraki isteklerde ise ortalama 2 saniye civarında bir süre görülmektedir.
+
+### Test Raporları
+
+Tüm test çıktıları `test_reports/` klasöründe tarihe göre düzenlenmiş alt klasörlerde saklanır:
+- Öneri testleri: `test_reports/recommendation_tests/run_*/`
+- Tahmin testleri: `test_reports/prediction_tests/run_*/`
+
+Her test çalıştırmasında yeni bir zaman damgalı klasör oluşturulur ve tüm raporlar ve grafikler bu klasörde saklanır. Bu sayede farklı zamanlarda yapılan testleri karşılaştırmak mümkün olur.
+
+### Test Sonuçlarını Yorumlama
+
+**Başarılı bir test şu özellikleri gösterir:**
+
+- **Tahmin Testi:**
+  - Yüksek başarı oranı (%95+)
+  - Düşük yanıt süreleri (< 1 saniye)
+  - 1-5 arasında dağılmış gerçekçi tahminler
+  - Makul standart sapma değerleri
+
+- **Öneri Testi:**
+  - Benzer kategoride ve fiyatta ürün önerileri
+  - Yüksek benzerlik skorları (0.6+)
+  - Kullanıcı profiline uygun çeşitli öneriler
+
+**Sorunlu durumlar şunlar olabilir:**
+- Tek bir değere yığılmış tahminler (yukarıdaki örnekte olduğu gibi)
+- Uzun yanıt süreleri (ilk yükleme hariç 1 saniyeden fazla)
+- Düşük benzerlik skorları (< 0.4)
+- Alakasız ürün önerileri
+
+Testleri düzenli olarak çalıştırarak ve sonuçları analiz ederek, sistemin performansını ve öneri kalitesini sürekli olarak izleyebilir ve iyileştirebilirsiniz.
 
 ## 🛠️ Hata Giderme
 
@@ -276,15 +361,6 @@ mlflow_recommender/
 ├── last_working_model.json         # Son çalışan öneri modeli bilgileri
 └── last_working_rating_model.json  # Son çalışan rating modeli bilgileri
 ```
-
-## ⚙️ Geliştirilecek Yönler
-
-- **Hibrit Öneri Algoritmaları**: Collaborative filtering + content-based yaklaşımların birleştirilmesi
-- **Derin Öğrenme Entegrasyonu**: Neural Collaborative Filtering modelleri
-- **A/B Test Mekanizması**: Farklı model versiyonlarını karşılaştırma
-- **Gerçek Zamanlı Güncelleme**: Kullanıcı davranışlarına göre sürekli iyileştirme
-- **Aykırı Değer Tespiti**: Anormal kullanıcı davranışlarını filtreleme
-- **Model Sağlık İzleme**: Düzenli performans kontrolü ve otomatik iyileştirme
 
 ## 📊 Model Performans Metrikleri ve Açıklamaları
 

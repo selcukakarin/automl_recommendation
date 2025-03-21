@@ -1,0 +1,47 @@
+=== Ürün Bazlı Öneri Testi Raporu ===
+Test Tarihi: 2025-03-21 11:48:38
+
+Test Ürünü ID: 108
+Test Kullanıcı ID: 2245
+
+Test Ürünü Detayları:
+İsim: Ducimus Earum
+Kategori: Ev & Yaşam
+Fiyat: 663.65 TL
+
+Önerilen Ürünler (5):
+----------------------------------------
+1. Ürün:
+   ID: 516
+   İsim: Inventore Quod
+   Kategori: Gıda
+   Fiyat: 289.29 TL
+   Benzerlik Skoru: 0.0220
+----------------------------------------
+2. Ürün:
+   ID: 126
+   İsim: Dolor Exercitationem
+   Kategori: Ev & Yaşam
+   Fiyat: 300.13 TL
+   Benzerlik Skoru: 0.0218
+----------------------------------------
+3. Ürün:
+   ID: 735
+   İsim: Molestiae Iusto
+   Kategori: Mücevher
+   Fiyat: 177.75 TL
+   Benzerlik Skoru: 0.0218
+----------------------------------------
+4. Ürün:
+   ID: 625
+   İsim: Dolorem A
+   Kategori: Otomotiv
+   Fiyat: 786.35 TL
+   Benzerlik Skoru: 0.0215
+----------------------------------------
+5. Ürün:
+   ID: 64
+   İsim: Est Incidunt
+   Kategori: Giyim
+   Fiyat: 323.06 TL
+   Benzerlik Skoru: 0.0215

@@ -1,7 +1,9 @@
 import mlflow
 import mlflow.sklearn
 import mlflow.pyfunc
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.responses import Response
 from pydantic import BaseModel
 from pycaret.regression import load_model as pycaret_load_model
 import pandas as pd
@@ -16,6 +18,103 @@ import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 import shutil
+import logging
+from logging.handlers import RotatingFileHandler
+import sys
+import time
+
+# Log yapılandırması
+def setup_logger(name, log_dir="logs", level=logging.INFO, log_type=None):
+    """Logger'ı yapılandırır ve döndürür"""
+    # Log dizinini oluştur
+    if log_type:
+        log_dir = os.path.join(log_dir, datetime.now().strftime("%Y%m"), log_type)
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Logger'ı oluştur
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    
+    # Handler'ları temizle
+    if logger.hasHandlers():
+        logger.handlers.clear()
+    
+    # Dosya handler'ı
+    log_file = os.path.join(log_dir, f"{name}.log")
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=10*1024*1024,  # 10MB
+        backupCount=5,
+        encoding='utf-8'
+    )
+    file_formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    file_handler.setFormatter(file_formatter)
+    
+    # Konsol handler'ı
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
+    )
+    console_handler.setFormatter(console_formatter)
+    
+    # Handler'ları ekle
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
+# API Logger ayarları
+api_logger = setup_logger(
+    name="api_service",
+    level=logging.INFO,
+    log_dir="logs",
+    log_type="api"
+)
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        # İstek başlangıç zamanı
+        start_time = time.time()
+        
+        # İstek detaylarını al
+        method = request.method
+        url = str(request.url)
+        client_host = request.client.host if request.client else "unknown"
+        
+        try:
+            # İstek gövdesini oku (eğer varsa)
+            body = None
+            if method in ["POST", "PUT", "PATCH"]:
+                try:
+                    body = await request.body()
+                    body = body.decode() if body else None
+                except Exception as e:
+                    api_logger.warning(f"Request body okunamadı: {str(e)}")
+            
+            # İsteği logla
+            api_logger.info(f"Request: {method} {url} from {client_host}")
+            if body:
+                api_logger.debug(f"Request Body: {body}")
+            
+            # İsteği işle
+            response = await call_next(request)
+            
+            # İşlem süresini hesapla
+            duration = time.time() - start_time
+            
+            # Yanıtı logla
+            api_logger.info(
+                f"Response: {method} {url} - Status: {response.status_code} - Duration: {duration:.4f}s"
+            )
+            
+            return response
+            
+        except Exception as e:
+            # Hata durumunu logla
+            api_logger.error(f"Error processing {method} {url}: {str(e)}")
+            raise
 
 # FastAPI uygulaması
 app = FastAPI(
@@ -23,6 +122,9 @@ app = FastAPI(
     description="Kullanıcı-ürün derecelendirme tahmini ve ürün öneri sistemi",
     version="1.0.0"
 )
+
+# Middleware'i ekle
+app.add_middleware(RequestLoggingMiddleware)
 
 # Global değişkenler
 # Tahmin servisi için
@@ -44,17 +146,17 @@ mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 # Ürün verilerini yükle
 try:
     products_df = pd.read_csv("data/products.csv")
-    print(f"Ürün verileri yüklendi: {len(products_df)} ürün")
+    api_logger.info(f"Ürün verileri yüklendi: {len(products_df)} ürün")
 except Exception as e:
-    print(f"Ürün verileri yüklenemedi: {str(e)}")
+    api_logger.error(f"Ürün verileri yüklenemedi: {str(e)}")
     products_df = pd.DataFrame()
 
 # Etkileşim verilerini yükle
 try:
     interactions_df = pd.read_csv("data/interactions.csv")
-    print(f"Etkileşim verileri yüklendi: {len(interactions_df)} etkileşim")
+    api_logger.info(f"Etkileşim verileri yüklendi: {len(interactions_df)} etkileşim")
 except Exception as e:
-    print(f"Etkileşim verileri yüklenemedi: {str(e)}")
+    api_logger.error(f"Etkileşim verileri yüklenemedi: {str(e)}")
     interactions_df = pd.DataFrame()
 
 # ============== ORTAK VERİ MODELLERİ ==============
@@ -111,22 +213,23 @@ def get_experiment():
     """MLflow deneyini getirir"""
     experiment = mlflow.get_experiment_by_name("recommendation-system")
     if experiment is None:
-        print("Experiment bulunamadı! Yeni bir experiment oluşturuluyor.")
+        api_logger.warning("Experiment bulunamadı! Yeni bir experiment oluşturuluyor.")
         experiment_id = mlflow.create_experiment("recommendation-system")
         experiment = mlflow.get_experiment(experiment_id)
+        api_logger.info(f"Yeni experiment oluşturuldu. ID: {experiment_id}")
     return experiment
 
 # ============== TAHMİN SERVİSİ FONKSİYONLARI ==============
 def load_rating_model(run_id):
     """Derecelendirme tahmin modelini yükler"""
     client = mlflow.tracking.MlflowClient(MLFLOW_TRACKING_URI)
-    print(f"Derecelendirme modeli yükleniyor: {run_id}")
+    api_logger.info(f"Derecelendirme modeli yükleniyor: {run_id}")
     
     try:
         # Önce modeli MLflow'dan yüklemeyi dene
         model_path = f"runs:/{run_id}/model"
         model = mlflow.pyfunc.load_model(model_path)
-        print(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
+        api_logger.info(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
         
         # Version name'i ve metrikleri al
         run = client.get_run(run_id)
@@ -136,14 +239,14 @@ def load_rating_model(run_id):
         try:
             # Metrikleri al
             metrics = {}
-            print("\nMetrikleri alıyorum...")
+            api_logger.debug("Metrikleri alıyorum...")
             try:
                 run_metrics = run.data.metrics
-                print(f"MLflow'dan alınan metrikler: {run_metrics}")
+                api_logger.debug(f"MLflow'dan alınan metrikler: {run_metrics}")
                 metrics = {key: float(value) for key, value in run_metrics.items()}
-                print(f"İşlenmiş metrikler: {metrics}")
+                api_logger.debug(f"İşlenmiş metrikler: {metrics}")
             except Exception as metric_error:
-                print(f"Metrikler alınırken hata: {str(metric_error)}")
+                api_logger.error(f"Metrikler alınırken hata: {str(metric_error)}")
             
             last_working_model = {
                 "run_id": run_id,
@@ -152,56 +255,62 @@ def load_rating_model(run_id):
                 "model_type": "rating",
                 "metrics": metrics
             }
-            print(f"\nKaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
+            api_logger.debug(f"Kaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
             
             # Dosya yolunu oluştur
             model_info_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "last_working_prediction_model.json")
-            print(f"Dosya yolu: {model_info_path}")
+            api_logger.debug(f"Dosya yolu: {model_info_path}")
             
             # JSON dosyasını kaydet
             with open(model_info_path, "w", encoding="utf-8") as f:
                 json.dump(last_working_model, f, indent=4, ensure_ascii=False)
-            print(f"Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: {model_info_path}")
+            api_logger.info(f"Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: {model_info_path}")
             
             # Dosyanın içeriğini kontrol et
             try:
                 with open(model_info_path, "r", encoding="utf-8") as f:
                     saved_content = json.load(f)
-                print(f"\nKaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
+                api_logger.debug(f"Kaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
             except Exception as read_error:
-                print(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
+                api_logger.error(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
             
         except Exception as e:
-            print(f"Son model bilgileri kaydedilemedi: {str(e)}")
-            print(f"Hata detayı: {type(e).__name__}")
+            api_logger.error(f"Son model bilgileri kaydedilemedi: {str(e)}")
+            api_logger.error(f"Hata detayı: {type(e).__name__}")
             import traceback
-            print(f"Hata stack trace: {traceback.format_exc()}")
+            api_logger.error(f"Hata stack trace: {traceback.format_exc()}")
         
         return model, version_name
         
     except Exception as mlflow_error:
-        print(f"MLflow'dan model yükleme hatası: {str(mlflow_error)}")
+        api_logger.error(f"MLflow'dan model yükleme hatası: {str(mlflow_error)}")
         try:
             # Eğer MLflow'dan yükleme başarısız olursa, doğrudan dosyadan yüklemeyi dene
+            api_logger.info("Dosyadan model yükleme deneniyor...")
             model = pycaret_load_model("model.pkl")
             return model, run_id
         except Exception as file_error:
-            print(f"Dosyadan model yükleme hatası: {str(file_error)}")
+            api_logger.error(f"Dosyadan model yükleme hatası: {str(file_error)}")
             raise Exception("Model yüklenemedi!")
 
 def get_recent_predictions(hours=24):
     """Son belirli saatteki tahminleri getirir"""
     cutoff_time = datetime.now() - timedelta(hours=hours)
-    return [p for p in recent_predictions if p.timestamp > cutoff_time]
+    predictions = [p for p in recent_predictions if p.timestamp > cutoff_time]
+    api_logger.debug(f"Son {hours} saatteki tahmin sayısı: {len(predictions)}")
+    return predictions
 
 def get_actual_ratings():
     """Gerçek değerlendirmeleri simüle eder"""
     predictions = get_recent_predictions()
-    return [np.random.normal(p.prediction, 0.5) for p in predictions]
+    actual_ratings = [np.random.normal(p.prediction, 0.5) for p in predictions]
+    api_logger.debug(f"Simüle edilen gerçek değerlendirme sayısı: {len(actual_ratings)}")
+    return actual_ratings
 
 def calculate_metrics(actual, predicted):
     """Model performans metriklerini hesaplar"""
     if not actual or not predicted:
+        api_logger.warning("Metrik hesaplaması için yeterli veri yok")
         return None
     
     actual = np.array(actual)
@@ -212,16 +321,20 @@ def calculate_metrics(actual, predicted):
     mae = np.mean(np.abs(actual - predicted))
     r2 = 1 - np.sum((actual - predicted) ** 2) / np.sum((actual - np.mean(actual)) ** 2)
     
-    return {
+    metrics = {
         "MSE": float(mse),
         "RMSE": float(rmse),
         "MAE": float(mae),
         "R2": float(r2)
     }
+    
+    api_logger.info(f"Performans metrikleri hesaplandı: MSE={mse:.4f}, RMSE={rmse:.4f}, MAE={mae:.4f}, R2={r2:.4f}")
+    return metrics
 
 def validate_model_performance(metrics):
     """Model performansının kabul edilebilir seviyede olup olmadığını kontrol eder"""
     if not metrics:
+        api_logger.warning("Performans validasyonu için metrik bulunamadı")
         return
         
     threshold = {
@@ -229,23 +342,31 @@ def validate_model_performance(metrics):
         "r2": 0.6     # En az %60 açıklayıcılık gücü olmalı
     }
     
+    api_logger.debug(f"Performans eşik değerleri: {threshold}")
+    
     if "rmse" in metrics and metrics["rmse"] > threshold["rmse"]:
-        raise ValueError(f"Model RMSE ({metrics['rmse']:.2f}) çok yüksek!")
+        error_msg = f"Model RMSE ({metrics['rmse']:.2f}) çok yüksek!"
+        api_logger.error(error_msg)
+        raise ValueError(error_msg)
     
     if "r2" in metrics and metrics["r2"] < threshold["r2"]:
-        raise ValueError(f"Model R2 skoru ({metrics['r2']:.2f}) çok düşük!")
+        error_msg = f"Model R2 skoru ({metrics['r2']:.2f}) çok düşük!"
+        api_logger.error(error_msg)
+        raise ValueError(error_msg)
+    
+    api_logger.info("Model performansı kabul edilebilir seviyede")
 
 # ============== ÖNERİ SERVİSİ FONKSİYONLARI ==============
 def load_recommendation_model(run_id):
     """Öneri sistemi modelini yükler"""
     client = mlflow.tracking.MlflowClient(MLFLOW_TRACKING_URI)
-    print(f"Öneri modeli yükleniyor: {run_id}")
+    api_logger.info(f"Öneri modeli yükleniyor: {run_id}")
     
     try:
         # MLflow'dan modeli yüklemeyi dene
         model_path = f"runs:/{run_id}/model"
         model = mlflow.sklearn.load_model(model_path)
-        print(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
+        api_logger.info(f"Model MLflow'dan başarıyla yüklendi: {model_path}")
         
         # Version name'i al
         run = client.get_run(run_id)
@@ -254,30 +375,30 @@ def load_recommendation_model(run_id):
         # Ürün metadatalarını yükle
         item_metadata_path = client.download_artifacts(run_id, "item_metadata.pkl")
         item_metadata = joblib.load(item_metadata_path)
-        print(f"Ürün metadataları yüklendi: {item_metadata_path}")
+        api_logger.info(f"Ürün metadataları yüklendi: {item_metadata_path}")
         
         # Kullanıcı-ürün matrisini yükle
         user_item_matrix_path = client.download_artifacts(run_id, "user_item_matrix.pkl")
         user_item_matrix = joblib.load(user_item_matrix_path)
-        print(f"Kullanıcı-ürün matrisi yüklendi: {user_item_matrix_path}")
+        api_logger.info(f"Kullanıcı-ürün matrisi yüklendi: {user_item_matrix_path}")
         
         # Ürün benzerlik matrisini yükle
         item_similarity_path = client.download_artifacts(run_id, "item_similarity.pkl")
         item_similarity_matrix = joblib.load(item_similarity_path)
-        print(f"Ürün benzerlik matrisi yüklendi: {item_similarity_path}")
+        api_logger.info(f"Ürün benzerlik matrisi yüklendi: {item_similarity_path}")
         
         # Son çalışan modelin bilgilerini kaydet
         try:
             # Metrikleri al
             metrics = {}
-            print("\nMetrikleri alıyorum...")
+            api_logger.debug("Metrikleri alıyorum...")
             try:
                 run_metrics = run.data.metrics
-                print(f"MLflow'dan alınan metrikler: {run_metrics}")
+                api_logger.debug(f"MLflow'dan alınan metrikler: {run_metrics}")
                 metrics = {key: float(value) for key, value in run_metrics.items()}
-                print(f"İşlenmiş metrikler: {metrics}")
+                api_logger.debug(f"İşlenmiş metrikler: {metrics}")
             except Exception as metric_error:
-                print(f"Metrikler alınırken hata: {str(metric_error)}")
+                api_logger.error(f"Metrikler alınırken hata: {str(metric_error)}")
             
             last_working_model = {
                 "run_id": run_id,
@@ -286,35 +407,35 @@ def load_recommendation_model(run_id):
                 "model_type": "collaborative_filtering",
                 "metrics": metrics
             }
-            print(f"\nKaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
+            api_logger.debug(f"Kaydedilecek model bilgileri: {json.dumps(last_working_model, indent=2)}")
             
             # Dosya yolunu oluştur
             model_info_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "last_working_recommendation_model.json")
-            print(f"Dosya yolu: {model_info_path}")
+            api_logger.debug(f"Dosya yolu: {model_info_path}")
             
             # JSON dosyasını kaydet
             with open(model_info_path, "w", encoding="utf-8") as f:
                 json.dump(last_working_model, f, indent=4, ensure_ascii=False)
-            print(f"Son çalışan öneri modeli bilgileri başarıyla kaydedildi: {model_info_path}")
+            api_logger.info(f"Son çalışan öneri modeli bilgileri başarıyla kaydedildi: {model_info_path}")
             
             # Dosyanın içeriğini kontrol et
             try:
                 with open(model_info_path, "r", encoding="utf-8") as f:
                     saved_content = json.load(f)
-                print(f"\nKaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
+                api_logger.debug(f"Kaydedilen dosya içeriği: {json.dumps(saved_content, indent=2)}")
             except Exception as read_error:
-                print(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
+                api_logger.error(f"Kaydedilen dosya kontrol edilirken hata: {str(read_error)}")
             
         except Exception as e:
-            print(f"Son model bilgileri kaydedilemedi: {str(e)}")
-            print(f"Hata detayı: {type(e).__name__}")
+            api_logger.error(f"Son model bilgileri kaydedilemedi: {str(e)}")
+            api_logger.error(f"Hata detayı: {type(e).__name__}")
             import traceback
-            print(f"Hata stack trace: {traceback.format_exc()}")
+            api_logger.error(f"Hata stack trace: {traceback.format_exc()}")
         
         return model, user_item_matrix, item_similarity_matrix, item_metadata, version_name
         
     except Exception as e:
-        print(f"MLflow'dan model yükleme başarısız: {str(e)}")
+        api_logger.error(f"MLflow'dan model yükleme başarısız: {str(e)}")
         raise Exception(f"Model yüklenemedi: {str(e)}")
 
 # ============== BAŞLANGIÇ FONKSİYONU ==============
@@ -324,17 +445,20 @@ async def startup_event():
     global rating_model, rating_model_version
     global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
     
+    api_logger.info("Servis başlatılıyor...")
+    
     try:
         # MLflow'a bağlan
         mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-        print(f"MLflow bağlantısı kuruldu: {MLFLOW_TRACKING_URI}")
+        api_logger.info(f"MLflow bağlantısı kuruldu: {MLFLOW_TRACKING_URI}")
         
         # Son deneyi bul
         experiment = get_experiment()
         if experiment is None:
-            print("Experiment bulunamadı! Yeni bir experiment oluşturuluyor.")
+            api_logger.warning("Experiment bulunamadı! Yeni bir experiment oluşturuluyor.")
             experiment_id = mlflow.create_experiment("recommendation-system")
             experiment = mlflow.get_experiment(experiment_id)
+            api_logger.info(f"Yeni experiment oluşturuldu. ID: {experiment_id}")
         
         # Tüm çalışmaları getir
         runs = mlflow.search_runs(
@@ -343,11 +467,11 @@ async def startup_event():
         )
         
         if len(runs) == 0:
-            print("Hiç model çalışması bulunamadı! Servis yine de başlatılıyor...")
+            api_logger.warning("Hiç model çalışması bulunamadı! Servis yine de başlatılıyor...")
             return
         
         # Öneri modelini yükle (öncelikli)
-        print("\nÖneri modeli aranıyor...")
+        api_logger.info("Öneri modeli aranıyor...")
         recommendation_filter = "tags.model_type = 'collaborative_filtering'"
         recommendation_runs = mlflow.search_runs(
             experiment_ids=[experiment.experiment_id],
@@ -356,11 +480,11 @@ async def startup_event():
         )
         
         if len(recommendation_runs) > 0:
-            print(f"{len(recommendation_runs)} adet öneri modeli bulundu.")
+            api_logger.info(f"{len(recommendation_runs)} adet öneri modeli bulundu.")
             for _, run in recommendation_runs.iterrows():
                 run_id = run["run_id"]
                 try:
-                    print(f"\nÖneri modeli yüklemeyi deniyorum (Run ID: {run_id})")
+                    api_logger.info(f"Öneri modeli yüklemeyi deniyorum (Run ID: {run_id})")
                     
                     # Version name'i tag'den al
                     version_name = None
@@ -369,23 +493,23 @@ async def startup_event():
                     else:
                         version_name = f"run_{run_id[:8]}"
                     
-                    print(f"Version: {version_name}")
+                    api_logger.debug(f"Version: {version_name}")
                     
                     # Modeli yükle
                     _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(run_id)
-                    print(f"Öneri modeli başarıyla yüklendi: {recommendation_model_version}")
+                    api_logger.info(f"Öneri modeli başarıyla yüklendi: {recommendation_model_version}")
                     break
                 except Exception as e:
-                    print(f"Model yükleme hatası: {str(e)}")
+                    api_logger.error(f"Model yükleme hatası: {str(e)}")
                     continue
             
             if recommendation_model_version is None:
-                print("\nHiçbir öneri modeli yüklenemedi!")
+                api_logger.warning("Hiçbir öneri modeli yüklenemedi!")
         else:
-            print("\nÖneri modeli bulunamadı!")
+            api_logger.warning("Öneri modeli bulunamadı!")
         
         # Derecelendirme modelini yükle
-        print("\nDerecelendirme modeli aranıyor...")
+        api_logger.info("Derecelendirme modeli aranıyor...")
         rating_filter = "tags.model_type = 'rating'"
         rating_runs = mlflow.search_runs(
             experiment_ids=[experiment.experiment_id],
@@ -394,11 +518,11 @@ async def startup_event():
         )
         
         if len(rating_runs) > 0:
-            print(f"{len(rating_runs)} adet derecelendirme modeli bulundu.")
+            api_logger.info(f"{len(rating_runs)} adet derecelendirme modeli bulundu.")
             for _, run in rating_runs.iterrows():
                 run_id = run["run_id"]
                 try:
-                    print(f"\nDerecelendirme modeli yüklemeyi deniyorum (Run ID: {run_id})")
+                    api_logger.info(f"Derecelendirme modeli yüklemeyi deniyorum (Run ID: {run_id})")
                     
                     # Version name'i tag'den al
                     version_name = None
@@ -409,20 +533,22 @@ async def startup_event():
                     
                     rating_model, _ = load_rating_model(run_id)
                     rating_model_version = version_name
-                    print(f"Derecelendirme modeli başarıyla yüklendi: {rating_model_version}")
+                    api_logger.info(f"Derecelendirme modeli başarıyla yüklendi: {rating_model_version}")
                     break
                 except Exception as e:
-                    print(f"Model yükleme hatası: {str(e)}")
+                    api_logger.error(f"Model yükleme hatası: {str(e)}")
                     continue
             
             if rating_model_version is None:
-                print("\nHiçbir derecelendirme modeli yüklenemedi!")
+                api_logger.warning("Hiçbir derecelendirme modeli yüklenemedi!")
         else:
-            print("\nDerecelendirme modeli bulunamadı!")
+            api_logger.warning("Derecelendirme modeli bulunamadı!")
             
     except Exception as e:
-        print(f"Başlangıç hatası: {str(e)}")
-        print("Servis yine de başlatılıyor...")
+        api_logger.error(f"Başlangıç hatası: {str(e)}")
+        api_logger.warning("Servis yine de başlatılıyor...")
+    
+    api_logger.info("Servis başlatma işlemi tamamlandı.")
 
 # ============== ORTAK ENDPOINT'LER ==============
 @app.get("/versions")
@@ -674,16 +800,22 @@ async def predict(
     """Kullanıcı-ürün derecelendirme tahmini yapar"""
     global rating_model, rating_model_version
     
+    api_logger.info(f"Tahmin isteği alındı - User ID: {request.user_id}, Item ID: {request.item_id}")
+    
     if enable_ab_testing:
+        api_logger.info("A/B testing aktif - Rastgele model versiyonu seçiliyor")
         versions = await list_versions()
         rating_versions = [v for v in versions if v["model_type"] == "rating"]
         if rating_versions:
             selected_version = random.choice(rating_versions)["version_name"]
+            api_logger.info(f"A/B testing için seçilen versiyon: {selected_version}")
             await load_rating_version(selected_version)
     elif version_name:
+        api_logger.info(f"Belirtilen model versiyonu yükleniyor: {version_name}")
         await load_rating_version(version_name)
     
     if rating_model is None:
+        api_logger.error("Derecelendirme modeli yüklenmedi!")
         raise HTTPException(status_code=500, detail="Derecelendirme modeli yüklenmedi!")
     
     try:
@@ -697,12 +829,14 @@ async def predict(
             'item_price': request.item_price
         }])
         
-        print(f"Girdi verisi:\n{input_df}")
+        api_logger.debug(f"Girdi verisi:\n{input_df}")
         
         # Tahmin yap
+        start_time = datetime.now()
         prediction = float(rating_model.predict(input_df)[0])
+        response_time = (datetime.now() - start_time).total_seconds()
         
-        print(f"Tahmin sonucu: {prediction}")
+        api_logger.info(f"Tahmin sonucu: {prediction:.2f} (yanıt süresi: {response_time:.3f}s)")
         
         # Güven aralığı hesapla
         confidence_interval = (prediction - 0.5, prediction + 0.5)
@@ -712,13 +846,15 @@ async def predict(
             PredictionRecord(prediction=prediction)
         )
         
+        api_logger.debug(f"Güven aralığı: {confidence_interval}")
+        
         return RatingResponse(
             predicted_rating=prediction,
             confidence_interval=confidence_interval,
             model_version=rating_model_version
         )
     except Exception as e:
-        print(f"Tahmin hatası: {str(e)}")
+        api_logger.error(f"Tahmin hatası: {str(e)}")
         raise HTTPException(status_code=500, detail=f"500: {str(e)}")
 
 # ============== ÖNERİ SERVİSİ ENDPOINT'LERİ ==============
@@ -917,8 +1053,11 @@ async def recommend(
     """
     global user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version
     
+    api_logger.info(f"Öneri isteği alındı - User ID: {request.user_id}, Item ID: {request.item_id if request.item_id else 'None'}")
+    
     # Model kontrolü
     if user_item_matrix is None or item_similarity_matrix is None:
+        api_logger.error("Öneri modeli henüz yüklenmemiş!")
         raise HTTPException(
             status_code=500,
             detail="Öneri modeli henüz yüklenmemiş!"
@@ -926,7 +1065,7 @@ async def recommend(
     
     # Versiyon kontrolü
     if version_name is not None:
-        # Belirli bir versiyonun yüklenmesi istendi
+        api_logger.info(f"Belirtilen model versiyonu yükleniyor: {version_name}")
         await load_recommendation_version(version_name)
     
     # Kullanıcı kontrolü
@@ -937,12 +1076,16 @@ async def recommend(
     recommendation_type = ""
     
     try:
+        start_time = datetime.now()
+        
         if request.item_id is not None:
             # Ürün bazlı öneriler
             item_id = request.item_id
+            api_logger.info(f"Ürün bazlı öneri yapılıyor - Item ID: {item_id}")
             
             # Ürünün varlığını kontrol et
             if item_id not in item_similarity_matrix.index:
+                api_logger.error(f"Ürün bulunamadı: {item_id}")
                 raise HTTPException(
                     status_code=404,
                     detail=f"Ürün bulunamadı: {item_id}"
@@ -954,6 +1097,8 @@ async def recommend(
             similar_items = similar_items.drop(item_id, errors='ignore')
             # İstenilen sayıda öneri al
             top_similar = similar_items.head(request.num_recommendations)
+            
+            api_logger.debug(f"En benzer {len(top_similar)} ürün bulundu")
             
             # Önerileri hazırla
             for similar_item_id, similarity_score in top_similar.items():
@@ -971,8 +1116,11 @@ async def recommend(
             
         else:
             # Kullanıcı bazlı öneriler
+            api_logger.info(f"Kullanıcı bazlı öneri yapılıyor - User ID: {user_id}")
+            
             # Kullanıcının varlığını kontrol et
             if user_id not in user_item_matrix.index:
+                api_logger.error(f"Kullanıcı bulunamadı: {user_id}")
                 raise HTTPException(
                     status_code=404,
                     detail=f"Kullanıcı bulunamadı: {user_id}"
@@ -983,6 +1131,7 @@ async def recommend(
             rated_items = user_ratings[user_ratings > 0].index.tolist()
             
             if not rated_items:
+                api_logger.info(f"Kullanıcı henüz hiç ürün derecelendirmemiş - Popüler ürünler önerilecek")
                 # Kullanıcı hiç ürün derecelendirmemişse, popüler ürünleri öner
                 # Sütun toplamları ürün popülerliğini gösterir
                 item_popularity = user_item_matrix.sum().sort_values(ascending=False)
@@ -1002,6 +1151,7 @@ async def recommend(
                 recommendation_type = "popularity_based"
             
             else:
+                api_logger.info(f"Kullanıcının {len(rated_items)} adet derecelendirmesi bulundu")
                 # Kullanıcının derecelendirdiği her ürün için benzer ürünleri bul
                 # ve bir skor hesapla
                 candidate_items = {}
@@ -1030,6 +1180,8 @@ async def recommend(
                 top_candidates = sorted(candidate_items.items(), key=lambda x: x[1], reverse=True)
                 top_candidates = top_candidates[:request.num_recommendations]
                 
+                api_logger.debug(f"En yüksek skorlu {len(top_candidates)} ürün seçildi")
+                
                 # Önerileri hazırla
                 for item_id, score in top_candidates:
                     item_info = {}
@@ -1044,6 +1196,9 @@ async def recommend(
                 
                 recommendation_type = "user_based"
         
+        response_time = (datetime.now() - start_time).total_seconds()
+        api_logger.info(f"Öneri tamamlandı - {len(recommendations)} öneri, {recommendation_type} yöntemi (yanıt süresi: {response_time:.3f}s)")
+        
         # Yanıtı hazırla
         response = {
             "recommendations": recommendations,
@@ -1057,7 +1212,7 @@ async def recommend(
         # HTTP hataları olduğu gibi bırak
         raise
     except Exception as e:
-        # Diğer hataları yakalayıp kullanıcıya anlamlı bir mesaj ver
+        api_logger.error(f"Öneri oluşturma hatası: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=f"Öneri oluşturma hatası: {str(e)}"

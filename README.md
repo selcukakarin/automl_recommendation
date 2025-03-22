@@ -306,6 +306,99 @@ Her test çalıştırmasında yeni bir zaman damgalı klasör oluşturulur ve t�
 
 Testleri düzenli olarak çalıştırarak ve sonuçları analiz ederek, sistemin performansını ve öneri kalitesini sürekli olarak izleyebilir ve iyileştirebilirsiniz.
 
+## 📊 Loglama ve Raporlama
+
+### Loglama Sistemi
+
+Sistem, detaylı ve yapılandırılabilir bir loglama mekanizmasına sahiptir:
+
+```bash
+# Logger kurulumu
+from logger import setup_logger
+
+logger = setup_logger(
+    name="test_name",
+    level="debug",
+    log_dir="logs/test_dir",
+    json_output=False
+)
+```
+
+#### Log Seviyeleri
+- **DEBUG:** Detaylı geliştirme bilgileri
+- **INFO:** Genel bilgilendirme mesajları
+- **WARNING:** Potansiyel sorunlar
+- **ERROR:** Hata durumları
+- **CRITICAL:** Kritik sistem sorunları
+
+#### Log Dosya Yapısı
+```
+logs/
+├── prediction_tests/      # Tahmin testleri logları
+│   └── test_20250321.log
+└── recommendation_tests/  # Öneri testleri logları
+    └── test_20250321.log
+```
+
+### Raporlama Sistemi
+
+Test raporları `test_reports/` klasöründe organize edilir:
+
+```
+test_reports/
+├── prediction_tests/
+│   └── run_20250321_122454/
+│       ├── prediction_distribution_*.png
+│       ├── response_times_*.png
+│       └── prediction_test_report_*.txt
+└── recommendation_tests/
+    └── run_20250321_114717/
+        ├── item_based/
+        │   ├── item_similarity_*.png
+        │   └── item_test_report_*.txt
+        ├── user_based/
+        │   ├── user_predictions_*.png
+        │   └── user_test_report_*.txt
+        └── test_summary_*.txt
+```
+
+#### Rapor Türleri
+
+1. **Test Özet Raporu:**
+   - Test tarihi ve süresi
+   - Başarı oranları
+   - Oluşturulan raporların listesi
+   - Dosya boyutları
+
+2. **Model Sağlık Raporu:**
+   - Model versiyonu ve durumu
+   - Performans metrikleri (RMSE, MAE)
+   - Sistem kullanım istatistikleri
+
+3. **Görsel Raporlar:**
+   - Tahmin dağılımı grafikleri
+   - Yanıt süreleri grafikleri
+   - Ürün benzerlik grafikleri
+   - Model karşılaştırma grafikleri
+
+#### Raporlama Özellikleri
+
+- **Otomatik Raporlama:**
+  - Zaman damgalı klasör yapısı
+  - Metin ve görsel raporlar
+  - Önceki test sonuçlarını koruma
+
+- **Görselleştirme:**
+  - Matplotlib ile profesyonel grafikler
+  - PNG ve PDF formatları
+  - Okunabilir başlıklar ve eksenler
+
+- **Rapor Analizi:**
+  - Test başarı oranları
+  - Performans metrikleri
+  - Sistem sağlık durumu
+  - Versiyon karşılaştırmaları
+
 ## 🛠️ Hata Giderme
 
 ### "Ürün bulunamadı" Hatası
@@ -336,7 +429,6 @@ curl -X 'POST' \
        "num_recommendations": 5
    }'
 ```
-
 
 ## 📝 Proje Dosyaları
 

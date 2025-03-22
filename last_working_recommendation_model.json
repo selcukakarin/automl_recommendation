@@ -1,15 +1,15 @@
 {
-    "run_id": "059bfc51e9c240468cbfc3a263f34db6",
-    "version_name": "v1_20250320_100319_euclidean_selcukakarin_1",
-    "timestamp": "2025-03-21T12:17:56.941935",
+    "run_id": "8b0a92191dd44f03b5fc8848f90000f4",
+    "version_name": "v1_20250322_221004_cosine",
+    "timestamp": "2025-03-22T22:23:42.420661",
     "model_type": "collaborative_filtering",
     "metrics": {
         "average_rating": 3.996776428153404,
-        "mae": 0.41716538418824345,
+        "mae": 0.4720089398075365,
         "n_predictions": 20793.0,
         "prediction_ratio": 0.9933594496464743,
         "rating_count": 83727.0,
-        "rmse": 0.5207252503855376,
+        "rmse": 0.590471998106798,
         "sparsity": 0.00846753640776699,
         "unique_items": 1000.0,
         "unique_users": 9888.0

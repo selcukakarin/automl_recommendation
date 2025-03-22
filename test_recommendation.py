@@ -47,6 +47,23 @@ import matplotlib.pyplot as plt
 import os
 import argparse
 from tqdm import tqdm
+import logging
+import traceback
+from logger import setup_logger, log_api_request, log_test_start, log_test_end, log_performance_metrics
+
+# Logger ayarları
+logger = setup_logger(
+    name="recommendation_test",
+    level="debug",
+    log_file="test_recommendation_logs.log",  # Doğrudan bu isimli dosyaya yazılacak
+    console_output=True,
+    json_output=False
+)
+
+# Kök logger'ın seviyesini DEBUG olarak ayarla ve propagation'ı engelle
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.DEBUG)
+logger.propagate = False  # Mesajların üst loggerlara iletilmesini engelle
 
 # API endpoint'leri
 BASE_URL = "http://localhost:8000"
@@ -72,11 +89,17 @@ def load_test_data():
         Exception: Veri dosyaları bulunamazsa veya yüklenemezse hata yakalayıp yazdırır
     """
     try:
+        logger.info("Loading test data from CSV files...")
         # Veri dosyalarını oku
         users_df = pd.read_csv('data/users.csv')
         products_df = pd.read_csv('data/products.csv')
+        
+        logger.info(f"Loaded {len(users_df)} users and {len(products_df)} products")
         return users_df, products_df
     except Exception as e:
+        error_msg = f"Data loading error: {e}"
+        logger.error(error_msg)
+        logger.error(traceback.format_exc())
         print(f"Veri yükleme hatası: {e}")
         print("Veri dosyalarının 'data/' dizininde olduğunu kontrol edin.")
         print("Eğer dosyalar yoksa, önce 'generate_data.py' scriptini çalıştırın.")
@@ -93,101 +116,192 @@ def pretty_print_json(json_data):
             
         print(json.dumps(data, indent=2, ensure_ascii=False))
     except Exception as e:
+        logger.warning(f"JSON formatting error: {e}")
         print(f"JSON yazdırma hatası: {e}")
         print(json_data)  # Ham veriyi yazdır
 
 def safe_api_call(method, url, json_data=None, print_response=False):
     """API'yi çağırır ve hataları güvenli bir şekilde işler"""
     try:
+        logger.debug(f"Making API call: {method.upper()} {url}")
+        if json_data:
+            logger.debug(f"Request data: {json_data}")
+        
+        start_time = time.time()
+        
         if method.lower() == 'get':
             response = requests.get(url, timeout=10)
         else:
             response = requests.post(url, json=json_data, timeout=10)
         
+        duration = time.time() - start_time
+        logger.debug(f"Received response in {duration:.4f} seconds")
+        
         # HTTP durum kodunu kontrol et
         if response.status_code != 200:
-            print(f"API hatası: {response.status_code}")
+            error_msg = f"API error: {response.status_code}"
+            logger.error(error_msg)
+            
             try:
                 error_data = response.json()
-                print("Hata detayları:")
-                pretty_print_json(error_data)
+                logger.error(f"Error details: {error_data}")
             except:
-                print(f"Ham hata yanıtı: {response.text}")
+                logger.error(f"Raw error response: {response.text}")
+            
+            # API hatasını logla
+            log_api_request(
+                logger,
+                method=method.upper(),
+                url=url,
+                data=json_data,
+                error=f"HTTP {response.status_code}: {response.text}",
+                duration=duration
+            )
+            
             return None
         
         # Yanıtı JSON'a çevirmeye çalış
         try:
             result = response.json()
+            
+            # Başarılı API isteğini logla
+            log_api_request(
+                logger,
+                method=method.upper(),
+                url=url,
+                data=json_data,
+                response=result,
+                duration=duration
+            )
+            
             if print_response:
+                logger.debug(f"API response: {json.dumps(result, default=str)[:500]}...")
                 print("API yanıtı:")
                 pretty_print_json(result)
+                
             return result
         except Exception as e:
-            print(f"JSON çözümleme hatası: {e}")
-            print(f"Ham yanıt: {response.text}")
+            error_msg = f"JSON parsing error: {e}"
+            logger.error(error_msg)
+            logger.error(f"Raw response: {response.text}")
+            
+            # JSON dönüşüm hatasını logla
+            log_api_request(
+                logger,
+                method=method.upper(),
+                url=url,
+                data=json_data,
+                error=f"JSON parsing error: {e}",
+                duration=duration
+            )
+            
             return None
             
     except requests.exceptions.ConnectionError:
-        print(f"Bağlantı hatası: API servisi çalışıyor mu? ({url})")
+        error_msg = f"Connection error: Is API service running? ({url})"
+        logger.error(error_msg)
+        
+        # Bağlantı hatasını logla
+        log_api_request(
+            logger,
+            method=method.upper(),
+            url=url,
+            data=json_data,
+            error="Connection error"
+        )
+        
         return None
     except requests.exceptions.Timeout:
-        print(f"Zaman aşımı: API yanıt vermeyi durdurdu ({url})")
+        error_msg = f"Timeout: API service stopped responding ({url})"
+        logger.error(error_msg)
+        
+        # Zaman aşımı hatasını logla
+        log_api_request(
+            logger,
+            method=method.upper(),
+            url=url,
+            data=json_data,
+            error="Request timeout"
+        )
+        
         return None
     except Exception as e:
-        print(f"API çağrı hatası: {e}")
+        error_msg = f"API call error: {e}"
+        logger.error(error_msg)
+        logger.error(traceback.format_exc())
+        
+        # Genel hata durumunu logla
+        log_api_request(
+            logger,
+            method=method.upper(),
+            url=url,
+            data=json_data,
+            error=str(e)
+        )
+        
         return None
 
 def check_api_connection():
     """API bağlantısını kontrol eder"""
-    print("API bağlantısı kontrol ediliyor...")
+    logger.info("Checking API connection...")
     try:
+        start_time = time.time()
         response = requests.get(f"{BASE_URL}/", timeout=5)
+        duration = time.time() - start_time
+        
         if response.status_code == 200:
-            print("✅ API servisine bağlantı başarılı")
+            logger.info(f"✅ API connection successful (Response time: {duration:.4f}s)")
             return True
         else:
-            print(f"❌ API servisine bağlantı başarısız: HTTP {response.status_code}")
+            logger.error(f"❌ API connection failed: HTTP {response.status_code}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ API servisine bağlantı hatası: {e}")
-        print(f"ℹ️  API servisini başlatmak için: python serve.py")
+        logger.error(f"❌ API connection error: {e}")
+        logger.error(f"ℹ️  To start API service: python serve.py")
         return False
 
-def create_report_dir(test_type):
+def create_report_dir():
     """Test raporları için klasör oluşturur"""
+    # Ana rapor dizini
     base_dir = "test_reports"
-    # Ana test klasörü
+    
+    # Öneri testleri için alt dizin
     test_dir = os.path.join(base_dir, "recommendation_tests")
+    os.makedirs(test_dir, exist_ok=True)
     
-    # Global timestamp dosyasını kontrol et
-    timestamp_file = os.path.join(test_dir, ".current_run")
-    if os.path.exists(timestamp_file):
-        with open(timestamp_file, 'r') as f:
-            timestamp = f.read().strip()
-    else:
-        # Yeni timestamp oluştur
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        os.makedirs(test_dir, exist_ok=True)
-        with open(timestamp_file, 'w') as f:
-            f.write(timestamp)
-    
-    # Zaman damgalı ana klasör
+    # Her çalıştırma için yeni zaman damgalı klasör
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     run_dir = os.path.join(test_dir, f"run_{timestamp}")
-    # Test tipi için alt klasör
-    report_dir = os.path.join(run_dir, test_type)
-    os.makedirs(report_dir, exist_ok=True)
     
-    return report_dir, timestamp
+    # Alt klasörleri oluştur
+    os.makedirs(os.path.join(run_dir, "user_based"), exist_ok=True)
+    os.makedirs(os.path.join(run_dir, "item_based"), exist_ok=True)
+    os.makedirs(os.path.join(run_dir, "versions"), exist_ok=True)
+    os.makedirs(os.path.join(run_dir, "health"), exist_ok=True)
+    
+    # Current run dosyasını güncelle
+    current_run_file = os.path.join(test_dir, ".current_run")
+    with open(current_run_file, "w") as f:
+        f.write(run_dir)
+    
+    logger.info(f"Created report directory: {run_dir}")
+    return run_dir, timestamp
 
 def test_item_based_recommendation():
-    """Ürün bazlı öneri sistemini test eder"""
-    print("\n=== Ürün Bazlı Öneri Testi ===")
+    """Ürün bazlı öneri testleri yapar"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("item_based")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Rapor dosyası oluştur
-    report_path = os.path.join(report_dir, f"item_based_test_report_{timestamp}.txt")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
+    
+    # Item-based klasörüne rapor yaz
+    report_path = os.path.join(run_dir, "item_based", f"item_based_test_report_{timestamp}.txt")
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=== Ürün Bazlı Öneri Testi Raporu ===\n")
@@ -302,8 +416,8 @@ def test_item_based_recommendation():
                     plt.ylabel('Benzerlik Skoru')
                     plt.xticks(rotation=45, ha='right')
                     plt.tight_layout()
-                    plt.savefig(os.path.join(report_dir, f"item_similarity_{timestamp}.png"))
-                    plt.savefig(os.path.join(report_dir, f"item_similarity_{timestamp}.pdf"))
+                    plt.savefig(os.path.join(run_dir, "item_based", f"item_similarity_{timestamp}.png"))
+                    plt.savefig(os.path.join(run_dir, "item_based", f"item_similarity_{timestamp}.pdf"))
                     plt.close()
             else:
                 error_msg = "API yanıtı beklenen formatta değil!"
@@ -319,14 +433,20 @@ def test_item_based_recommendation():
     print(f"\nÜrün bazlı öneri raporu kaydedildi: {report_path}")
 
 def test_user_based_recommendation():
-    """Kullanıcı bazlı öneri sistemini test eder"""
-    print("\n=== Kullanıcı Bazlı Öneri Testi ===")
+    """Kullanıcı bazlı öneri testleri yapar"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("user_based")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Rapor dosyası oluştur
-    report_path = os.path.join(report_dir, f"user_based_test_report_{timestamp}.txt")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
+    
+    # User-based klasörüne rapor yaz
+    report_path = os.path.join(run_dir, "user_based", f"user_based_test_report_{timestamp}.txt")
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=== Kullanıcı Bazlı Öneri Testi Raporu ===\n")
@@ -438,8 +558,8 @@ def test_user_based_recommendation():
                     plt.ylabel('Tahmini Puan')
                     plt.xticks(rotation=45, ha='right')
                     plt.tight_layout()
-                    plt.savefig(os.path.join(report_dir, f"user_predictions_{timestamp}.png"))
-                    plt.savefig(os.path.join(report_dir, f"user_predictions_{timestamp}.pdf"))
+                    plt.savefig(os.path.join(run_dir, "user_based", f"user_predictions_{timestamp}.png"))
+                    plt.savefig(os.path.join(run_dir, "user_based", f"user_predictions_{timestamp}.pdf"))
                     plt.close()
             else:
                 error_msg = "API yanıtı beklenen formatta değil!"
@@ -454,86 +574,113 @@ def test_user_based_recommendation():
     
     print(f"\nKullanıcı bazlı öneri raporu kaydedildi: {report_path}")
 
-def check_model_health():
-    """Model sağlığını kontrol eder ve sonuçları yazdırır"""
-    try:
-        result = safe_api_call('get', HEALTH_URL)
-        if result:
-            recommendation_model = result.get('recommendation_model', {})
-            return {
-                "status": recommendation_model.get("status", "Bilinmiyor"),
-                "model_version": recommendation_model.get("version", "Bilinmiyor"),
-                "last_trained": recommendation_model.get("last_updated", "Bilinmiyor"),
-                "metrics": recommendation_model.get("metrics", {
-                    "average_rating": 0.0,
-                    "rating_count": 0,
-                    "unique_users": 0,
-                    "unique_items": 0,
-                    "sparsity": 0.0
-                }),
-                "model_info": recommendation_model.get("model_info", {})
-            }
-        print(f"Sağlık kontrolü başarısız: API'den yanıt alınamadı")
-        return None
-    except Exception as e:
-        print(f"Sağlık kontrolü hatası: {str(e)}")
-        return None
-
 def test_model_health():
-    """Model sağlık testi yapar ve rapor oluşturur"""
-    print("\nModel sağlık testi başlıyor...")
+    """Model sağlık kontrolü yapar"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("health")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Test raporu dosyası oluştur
-    report_path = os.path.join(report_dir, f"health_test_report_{timestamp}.txt")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
     
-    with open(report_path, 'w', encoding='utf-8') as f:
-        f.write("=== Model Sağlık Kontrolü Raporu ===\n")
-        f.write(f"Test Tarihi: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        f.write("Model Sağlık Bilgileri:\n\n")
+    # Health klasörünü oluştur
+    health_dir = os.path.join(run_dir, "health")
+    os.makedirs(health_dir, exist_ok=True)
+    
+    # Health klasörüne rapor yaz
+    report_path = os.path.join(health_dir, f"health_test_report_{timestamp}.txt")
+    
+    try:
+        logger.info("Checking recommendation model health...")
+        start_time = time.time()
         
-        # Sağlık kontrolü yap
-        health_info = check_model_health()
+        result = safe_api_call('get', HEALTH_URL)
         
-        if health_info:
-            f.write(f"Model Durumu: {health_info['status']}\n")
-            f.write(f"Model Versiyonu: {health_info['model_version']}\n")
-            f.write(f"Son Güncelleme: {health_info['last_trained']}\n\n")
+        duration = time.time() - start_time
+        
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write("=== Model Sağlık Kontrolü Raporu ===\n")
+            f.write(f"Test Tarihi: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
-            f.write("Model Metrikleri:\n")
-            for metric, value in health_info['metrics'].items():
-                f.write(f"- {metric}: {value}\n")
-            
-            f.write("\nModel Bilgileri:\n")
-            model_info = health_info['model_info']
-            if 'user_item_matrix_shape' in model_info:
-                f.write(f"- User-Item Matrix Shape: {model_info['user_item_matrix_shape']}\n")
-            if 'item_similarity_matrix_shape' in model_info:
-                f.write(f"- Item Similarity Matrix Shape: {model_info['item_similarity_matrix_shape']}\n")
-            if 'num_items' in model_info:
-                f.write(f"- Toplam Ürün Sayısı: {model_info['num_items']}\n")
-            if 'version' in model_info:
-                f.write(f"- Model Versiyonu: {model_info['version']}\n")
-        else:
-            f.write("Model sağlık bilgileri alınamadı!\n")
-            f.write("API'den yanıt alınamadı veya bir hata oluştu.\n")
-        
-        f.write("\nTest Tamamlandı.\n")
-    
-    print(f"Sağlık test raporu oluşturuldu: {report_path}")
-    return health_info is not None
+            if result:
+                recommendation_model = result.get('recommendation_model', {})
+                
+                health_info = {
+                    "status": recommendation_model.get("status", "Bilinmiyor"),
+                    "model_version": recommendation_model.get("version", "Bilinmiyor"),
+                    "last_trained": recommendation_model.get("last_updated", "Bilinmiyor"),
+                    "metrics": recommendation_model.get("metrics", {
+                        "average_rating": 0.0,
+                        "rating_count": 0,
+                        "unique_users": 0,
+                        "unique_items": 0,
+                        "sparsity": 0.0
+                    }),
+                    "model_info": recommendation_model.get("model_info", {})
+                }
+                
+                # Model sağlık bilgilerini yaz
+                f.write("Model Sağlık Bilgileri:\n\n")
+                f.write(f"Model Durumu: {health_info['status']}\n")
+                f.write(f"Model Versiyonu: {health_info['model_version']}\n")
+                f.write(f"Son Güncelleme: {health_info['last_trained']}\n\n")
+                
+                # Model metriklerini yaz
+                f.write("Model Metrikleri:\n")
+                for metric_name, metric_value in health_info['metrics'].items():
+                    f.write(f"- {metric_name}: {metric_value}\n")
+                
+                # Model bilgilerini yaz
+                f.write("\nModel Bilgileri:\n")
+                for info_name, info_value in health_info['model_info'].items():
+                    f.write(f"- {info_name}: {info_value}\n")
+                
+                f.write("\nTest Tamamlandı.\n")
+                
+                logger.info(f"Model health status: {health_info['status']}")
+                logger.info(f"Model version: {health_info['model_version']}")
+                
+                # Metrikleri logla
+                log_performance_metrics(
+                    logger,
+                    health_info['metrics'],
+                    "Recommendation Model Health Check"
+                )
+                
+                return True
+            else:
+                error_msg = "Model sağlık bilgileri alınamadı!"
+                f.write(f"\n{error_msg}\n")
+                logger.error(error_msg)
+                return False
+                
+    except Exception as e:
+        error_msg = f"Health check error: {str(e)}"
+        logger.error(error_msg)
+        logger.error(traceback.format_exc())
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(f"Test Hatası: {error_msg}\n")
+        return False
 
 def test_versions():
-    """Model versiyonlarını listeler"""
-    print("\n=== Model Versiyonları ===")
+    """Model versiyonlarını test eder"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("versions")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Rapor dosyası oluştur
-    report_path = os.path.join(report_dir, f"versions_test_report_{timestamp}.txt")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
+    
+    # Versions klasörüne rapor yaz
+    report_path = os.path.join(run_dir, "versions", f"versions_test_report_{timestamp}.txt")
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=== Model Versiyonları Raporu ===\n")
@@ -605,8 +752,8 @@ def test_versions():
                             plt.title(f'{metric} Metriği - Versiyon Karşılaştırması')
                             plt.xticks(rotation=45)
                             plt.tight_layout()
-                            plt.savefig(os.path.join(report_dir, f"version_comparison_{metric}_{timestamp}.png"))
-                            plt.savefig(os.path.join(report_dir, f"version_comparison_{metric}_{timestamp}.pdf"))
+                            plt.savefig(os.path.join(run_dir, "versions", f"version_comparison_{metric}_{timestamp}.png"))
+                            plt.savefig(os.path.join(run_dir, "versions", f"version_comparison_{metric}_{timestamp}.pdf"))
                             plt.close()
                 else:
                     msg = "Henüz hiç model versiyonu bulunamadı."
@@ -625,131 +772,22 @@ def test_versions():
     
     print(f"\nVersiyon raporu kaydedildi: {report_path}")
 
-def test_model_comparison(version1, version2, num_tests=20):
-    """
-    İki farklı model versiyonunu karşılaştırır.
-    
-    Bu test, aynı kullanıcılar ve ürünler için iki farklı model versiyonunun
-    önerilerini karşılaştırarak, hangisinin daha iyi performans gösterdiğini belirler.
-    
-    Args:
-        version1: Birinci model versiyonu
-        version2: İkinci model versiyonu
-        num_tests: Yapılacak test sayısı
-    """
-    print(f"\n=== Model Karşılaştırma Testi: {version1} vs {version2} ===")
-    
-    # Test verilerini yükle
-    users_df, products_df = load_test_data()
-    if users_df is None or products_df is None:
-        return
-    
-    # Rastgele kullanıcı ve ürünler seç
-    test_users = random.sample(users_df['user_id'].tolist(), min(num_tests, len(users_df)))
-    
-    # Sonuçları saklama alanları
-    results = {
-        version1: {"times": [], "recommendations": []},
-        version2: {"times": [], "recommendations": []}
-    }
-    
-    for version in [version1, version2]:
-        # Modeli yükle
-        result = safe_api_call('post', f"{LOAD_VERSION_URL}/{version}")
-        if not result:
-            print(f"Model {version} yüklenemedi. Karşılaştırma yapılamıyor.")
-            return
-        
-        print(f"\nModel {version} yüklendi, test ediliyor...")
-        
-        # Her kullanıcı için öneri al
-        for user_id in test_users:
-            start_time = time.time()
-            result = safe_api_call(
-                'post',
-                RECOMMEND_URL,
-                {
-                    "user_id": user_id,
-                    "num_recommendations": 5
-                }
-            )
-            end_time = time.time()
-            
-            if result and 'recommendations' in result:
-                results[version]["times"].append(end_time - start_time)
-                results[version]["recommendations"].append({
-                    "user_id": user_id,
-                    "items": [r['item_id'] for r in result['recommendations']]
-                })
-    
-    # Metrikleri hesapla ve karşılaştır
-    print("\n=== Karşılaştırma Sonuçları ===")
-    
-    # Yanıt süresi karşılaştırması
-    print("\nYanıt Süresi Karşılaştırması:")
-    v1_avg_time = np.mean(results[version1]["times"]) if results[version1]["times"] else 0
-    v2_avg_time = np.mean(results[version2]["times"]) if results[version2]["times"] else 0
-    print(f"{version1}: {v1_avg_time:.4f} saniye (ortalama)")
-    print(f"{version2}: {v2_avg_time:.4f} saniye (ortalama)")
-    if v1_avg_time and v2_avg_time:
-        improvement = ((v1_avg_time - v2_avg_time) / v1_avg_time) * 100
-        faster = version2 if improvement > 0 else version1
-        print(f"Daha hızlı model: {faster} (%{abs(improvement):.2f} fark)")
-    
-    # Öneri kesişimi
-    print("\nÖneri Kesişim Analizi:")
-    overlap_counts = []
-    for i in range(len(results[version1]["recommendations"])):
-        if i < len(results[version2]["recommendations"]):
-            v1_items = set(results[version1]["recommendations"][i]["items"])
-            v2_items = set(results[version2]["recommendations"][i]["items"])
-            overlap = len(v1_items.intersection(v2_items))
-            user_id = results[version1]["recommendations"][i]["user_id"]
-            print(f"Kullanıcı {user_id}: {overlap}/5 ürün kesişimi (%{(overlap/5)*100:.0f})")
-            overlap_counts.append(overlap)
-    
-    avg_overlap = np.mean(overlap_counts) if overlap_counts else 0
-    print(f"Ortalama Kesişim: {avg_overlap:.2f}/5 ürün (%{(avg_overlap/5)*100:.0f})")
-    
-    # Model metriklerini al ve karşılaştır
-    print("\nModel Metrikleri Karşılaştırması:")
-    metrics1 = safe_api_call('get', f"{METRICS_URL}?version_name={version1}")
-    metrics2 = safe_api_call('get', f"{METRICS_URL}?version_name={version2}")
-    
-    if metrics1 and metrics2 and 'metrics' in metrics1 and 'metrics' in metrics2:
-        print(f"\n{version1} Metrikleri:")
-        for k, v in metrics1['metrics'].items():
-            print(f"- {k}: {float(v):.4f}")
-        
-        print(f"\n{version2} Metrikleri:")
-        for k, v in metrics2['metrics'].items():
-            print(f"- {k}: {float(v):.4f}")
-        
-        # Ortak metrikleri karşılaştır
-        common_metrics = set(metrics1['metrics'].keys()).intersection(set(metrics2['metrics'].keys()))
-        if common_metrics:
-            print("\nMetrik Farkları:")
-            for metric in common_metrics:
-                v1 = float(metrics1['metrics'][metric])
-                v2 = float(metrics2['metrics'][metric])
-                diff = v2 - v1
-                better = "iyileşme" if (metric.lower() in ['rmse', 'mae'] and diff < 0) or (metric.lower() not in ['rmse', 'mae'] and diff > 0) else "kötüleşme"
-                print(f"- {metric}: {abs(diff):.4f} {better}")
-
 def test_batch_inference_time():
-    """
-    Toplu çıkarsama performansını test eder.
+    """Toplu tahmin performans testi yapar"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    Bu test, sisteme farklı büyüklükteki toplu istekler göndererek
-    ölçeklenebilirliği ve performansı değerlendirir.
-    """
-    print("\n=== Toplu Çıkarsama Performans Testi ===")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("batch")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
     
-    # Rapor dosyası oluştur
-    report_path = os.path.join(report_dir, f"batch_test_report_{timestamp}.txt")
+    # Batch klasörüne rapor yaz
+    report_path = os.path.join(run_dir, "batch", f"batch_test_report_{timestamp}.txt")
+    os.makedirs(os.path.join(run_dir, "batch"), exist_ok=True)
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=== Toplu Çıkarsama Performans Testi Raporu ===\n")
@@ -810,8 +848,8 @@ def test_batch_inference_time():
             plt.grid(True)
             
             # Grafiği kaydet
-            plt.savefig(os.path.join(report_dir, f"batch_performance_{timestamp}.png"))
-            plt.savefig(os.path.join(report_dir, f"batch_performance_{timestamp}.pdf"))
+            plt.savefig(os.path.join(run_dir, "batch", f"batch_performance_{timestamp}.png"))
+            plt.savefig(os.path.join(run_dir, "batch", f"batch_performance_{timestamp}.pdf"))
             plt.close()
             
             for size, metrics in results.items():
@@ -828,16 +866,21 @@ def test_batch_inference_time():
             traceback.print_exc()
 
 def test_model_drift():
-    """
-    Model drift testini gerçekleştirir.
-    """
-    print("\n=== Model Drift Analizi ===")
+    """Model kayma testi yapar"""
+    # Ana rapor dizinini al
+    test_dir = os.path.join("test_reports", "recommendation_tests")
+    current_run_file = os.path.join(test_dir, ".current_run")
     
-    # Test raporu için klasör oluştur
-    report_dir, timestamp = create_report_dir("drift")
+    # Mevcut çalışma dizinini oku
+    with open(current_run_file, "r") as f:
+        run_dir = f.read().strip()
     
-    # Rapor dosyası oluştur
-    report_path = os.path.join(report_dir, f"model_drift_report_{timestamp}.txt")
+    # Timestamp'i run_dir'den çıkar
+    timestamp = os.path.basename(run_dir).replace("run_", "")
+    
+    # Drift klasörüne rapor yaz
+    report_path = os.path.join(run_dir, "drift", f"drift_test_report_{timestamp}.txt")
+    os.makedirs(os.path.join(run_dir, "drift"), exist_ok=True)
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=== Model Drift Analizi Raporu ===\n")
@@ -891,13 +934,10 @@ def test_model_drift():
             traceback.print_exc()
 
 def test_ab_comparison():
-    """
-    A/B test benzetimi yapar.
-    
-    Bu test, iki farklı model versiyonunun gerçek kullanıcı senaryolarında 
-    nasıl performans göstereceğini simüle eder.
-    """
-    print("\n=== A/B Test Benzetimi ===")
+    """A/B testi yapar"""
+    test_type = "ab_test"
+    report_dir, timestamp = create_report_dir()
+    report_path = os.path.join(report_dir, "ab_test_report.txt")
     
     # Mevcut versiyonları al
     versions_data = safe_api_call('get', VERSIONS_URL)
@@ -1027,13 +1067,10 @@ def test_ab_comparison():
     print(f"\nKazanan Model: {winner} (dönüşüm oranı temel alındı)")
 
 def test_robustness():
-    """
-    Modelin dayanıklılığını test eder.
-    
-    Bu test, modelin farklı koşullar altında (örneğin eksik veriler, 
-    beklenmeyen kullanıcı davranışları) nasıl performans gösterdiğini kontrol eder.
-    """
-    print("\n=== Model Dayanıklılık Testi ===")
+    """Dayanıklılık testi yapar"""
+    test_type = "robustness"
+    report_dir, timestamp = create_report_dir()
+    report_path = os.path.join(report_dir, "robustness_report.txt")
     
     # Geçersiz kullanıcı ID'si
     print("\n1. Geçersiz Kullanıcı ID'si Testi")
@@ -1159,105 +1196,157 @@ def parse_arguments():
 
 def main():
     """Ana test fonksiyonu"""
+    start_time = time.time()
+    
+    # Test başlangıcını logla
+    log_test_start(
+        logger, 
+        "Recommendation System Test", 
+        {"test_type": "full_system_test"}
+    )
+    
     args = parse_arguments()
     
-    print("=== Öneri Sistemi Test Programı ===")
+    logger.info("=== Öneri Sistemi Test Programı ===")
     
-    # Test raporları için ana klasör oluştur
-    base_dir = "test_reports"
-    test_dir = os.path.join(base_dir, "recommendation_tests")
-    
-    # Yeni timestamp oluştur ve kaydet
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    os.makedirs(test_dir, exist_ok=True)
-    with open(os.path.join(test_dir, ".current_run"), 'w') as f:
-        f.write(timestamp)
-    
-    run_dir = os.path.join(test_dir, f"run_{timestamp}")
-    os.makedirs(run_dir, exist_ok=True)
-    print(f"Test raporları klasörü: {run_dir}")
+    # Test dizinini oluştur ve timestamp al
+    run_dir, timestamp = create_report_dir()
     
     # Ana rapor dosyasını oluştur
     main_report_path = os.path.join(run_dir, f"test_summary_{timestamp}.txt")
-    with open(main_report_path, 'w', encoding='utf-8') as f:
-        f.write(f"=== Öneri Sistemi Test Raporu ===\n")
-        f.write(f"Test Tarihi: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        
-        # API bağlantı kontrolü
-        api_status = check_api_connection()
-        f.write(f"API Durumu: {'Çalışıyor' if api_status else 'Çalışmıyor'}\n\n")
-        
-        if not api_status:
-            f.write("⚠️ API servisi çalışmıyor veya erişilemiyor!\n")
-            print("\n⚠️ API servisi çalışmıyor veya erişilemiyor! Testler başarısız olabilir.")
-            try:
-                input("Testlere devam etmek için Enter'a basın...")
-            except KeyboardInterrupt:
-                print("\nTestler iptal edildi.")
-                return
-        
-        f.write("Çalıştırılan Testler:\n")
-        
-        # Testleri çalıştır ve sonuçları raporla
-        if args.all or (not any([args.health, args.versions, args.item, args.user, 
-                               args.compare, args.batch, args.drift, args.ab, args.robust])):
-            f.write("- Tüm temel testler\n")
-            test_model_health()
-            test_versions()
-            test_item_based_recommendation()
-            test_user_based_recommendation()
-        else:
-            if args.health:
-                f.write("- Model sağlık kontrolü\n")
-                test_model_health()
-            
-            if args.versions:
-                f.write("- Model versiyon listesi\n")
-                test_versions()
-            
-            if args.item:
-                f.write("- Ürün bazlı öneri testi\n")
-                test_item_based_recommendation()
-            
-            if args.user:
-                f.write("- Kullanıcı bazlı öneri testi\n")
-                test_user_based_recommendation()
-        
-        # Gelişmiş testler
-        if args.compare:
-            f.write(f"- Model karşılaştırma: {args.compare[0]} vs {args.compare[1]}\n")
-            test_model_comparison(args.compare[0], args.compare[1])
-        
-        if args.batch:
-            f.write("- Toplu çıkarsama performans testi\n")
-            test_batch_inference_time()
-        
-        if args.drift:
-            f.write("- Model drift analizi\n")
-            test_model_drift()
-        
-        if args.ab:
-            f.write("- A/B test benzetimi\n")
-            test_ab_comparison()
-        
-        if args.robust:
-            f.write("- Model dayanıklılık testi\n")
-            test_robustness()
-        
-        # Test raporlarını listele
-        f.write("\nOluşturulan Test Raporları:\n")
-        try:
-            report_files = os.listdir(run_dir)
-            for file in report_files:
-                file_path = os.path.join(run_dir, file)
-                file_size = os.path.getsize(file_path)
-                f.write(f"- {file} ({file_size} bytes)\n")
-        except Exception as e:
-            f.write(f"Rapor dizini listelenirken hata: {str(e)}\n")
-        
-        f.write(f"\nTest Bitiş Zamanı: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
-    print(f"\nTest özeti oluşturuldu: {main_report_path}")
+    try:
+        with open(main_report_path, 'w', encoding='utf-8') as f:
+            f.write(f"=== Öneri Sistemi Test Raporu ===\n")
+            f.write(f"Test Tarihi: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            
+            # API bağlantı kontrolü
+            api_status = check_api_connection()
+            f.write(f"API Durumu: {'Çalışıyor' if api_status else 'Çalışmıyor'}\n\n")
+            
+            if not api_status:
+                f.write("⚠️ API servisi çalışmıyor veya erişilemiyor!\n")
+                logger.warning("\n⚠️ API servisi çalışmıyor veya erişilemiyor! Testler başarısız olabilir.")
+                try:
+                    input("Testlere devam etmek için Enter'a basın...")
+                except KeyboardInterrupt:
+                    logger.info("\nTestler iptal edildi.")
+                    log_test_end(
+                        logger, 
+                        "Recommendation System Test", 
+                        success=False, 
+                        summary="Tests cancelled by user"
+                    )
+                    return
+            
+            f.write("Çalıştırılan Testler:\n")
+            
+            test_results = {
+                "health": False,
+                "versions": False,
+                "item_based": False,
+                "user_based": False,
+                "batch": False,
+                "drift": False
+            }
+            
+            # Testleri çalıştır ve sonuçları raporla
+            if args.all or (not any([args.health, args.versions, args.item, args.user, 
+                                  args.compare, args.batch, args.drift, args.ab, args.robust])):
+                f.write("- Tüm temel testler\n")
+                
+                # Her test için run_dir'i kullan
+                test_results["health"] = test_model_health()
+                test_results["versions"] = test_versions()
+                test_results["item_based"] = test_item_based_recommendation()
+                test_results["user_based"] = test_user_based_recommendation()
+            else:
+                if args.health:
+                    f.write("- Model sağlık kontrolü\n")
+                    test_results["health"] = test_model_health()
+                
+                if args.versions:
+                    f.write("- Model versiyon listesi\n")
+                    test_results["versions"] = test_versions()
+                
+                if args.item:
+                    f.write("- Ürün bazlı öneri testi\n")
+                    test_results["item_based"] = test_item_based_recommendation()
+                
+                if args.user:
+                    f.write("- Kullanıcı bazlı öneri testi\n")
+                    test_results["user_based"] = test_user_based_recommendation()
+            
+            # Gelişmiş testler
+            if args.compare:
+                f.write(f"- Model karşılaştırma: {args.compare[0]} vs {args.compare[1]}\n")
+                test_model_comparison(args.compare[0], args.compare[1])
+            
+            if args.batch:
+                f.write("- Toplu çıkarsama performans testi\n")
+                test_results["batch"] = test_batch_inference_time()
+            
+            if args.drift:
+                f.write("- Model drift analizi\n")
+                test_results["drift"] = test_model_drift()
+            
+            if args.ab:
+                f.write("- A/B test benzetimi\n")
+                test_ab_comparison()
+            
+            if args.robust:
+                f.write("- Model dayanıklılık testi\n")
+                test_robustness()
+            
+            # Test raporlarını listele
+            f.write("\nOluşturulan Test Raporları:\n")
+            try:
+                for root, dirs, files in os.walk(run_dir):
+                    for dir_name in dirs:
+                        dir_path = os.path.join(root, dir_name)
+                        dir_size = sum(os.path.getsize(os.path.join(dir_path, f)) for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f)))
+                        f.write(f"- {dir_name} ({dir_size} bytes)\n")
+                    for file_name in files:
+                        if file_name != os.path.basename(main_report_path):  # Ana rapor dosyasını listeleme
+                            file_path = os.path.join(root, file_name)
+                            file_size = os.path.getsize(file_path)
+                            f.write(f"- {file_name} ({file_size} bytes)\n")
+            except Exception as e:
+                error_msg = f"Error listing report directory: {str(e)}"
+                logger.error(error_msg)
+                logger.error(traceback.format_exc())
+                f.write(f"Rapor dizini listelenirken hata: {str(e)}\n")
+            
+            end_time = time.time()
+            duration = end_time - start_time
+            
+            f.write(f"\nTest Bitiş Zamanı: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Toplam Test Süresi: {duration:.2f} saniye")
+        
+        logger.info(f"Test summary created: {main_report_path}")
+        
+        # Test başarıyla tamamlandı
+        log_test_end(
+            logger,
+            "Recommendation System Test",
+            success=True,
+            duration=time.time() - start_time,
+            summary=f"All specified tests completed successfully"
+        )
+        
+    except Exception as e:
+        error_msg = f"Test execution failed: {str(e)}"
+        logger.critical(error_msg)
+        logger.critical(traceback.format_exc())
+        
+        # Test başarısızlığını logla
+        log_test_end(
+            logger,
+            "Recommendation System Test",
+            success=False,
+            duration=time.time() - start_time,
+            summary=f"Test failed with error: {str(e)}"
+        )
 
 if __name__ == "__main__":
     main() 

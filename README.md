@@ -8,7 +8,7 @@ Bu proje, MLflow kullanarak bir e-ticaret ürün öneri sistemi geliştirmeyi, d
 
 ### Gereksinimler
 
-```bash
+```bashF
 pip install -r requirements.txt
 ```
 
@@ -80,7 +80,7 @@ Her model eğitimi sonunda:
 - Versiyon adında kullanılan parametreler görünür (örn: v1_20240318_123456_euclidean_minrating3)
 - Model performans metrikleri karşılaştırılabilir
 
-### Öneri API Servisini Başlatma
+### API Servisini Başlatma
 
 ```bash
 python serve.py

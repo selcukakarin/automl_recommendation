@@ -365,7 +365,7 @@ test_reports/
 #### Rapor Türleri
 
 1. **Test Özet Raporu:**
-   - Test tarihi ve süresi
+   - Test tarihi
    - Başarı oranları
    - Oluşturulan raporların listesi
    - Dosya boyutları

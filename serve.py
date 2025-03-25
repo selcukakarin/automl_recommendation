@@ -139,7 +139,7 @@ item_metadata = None
 recommendation_model_version = "v1"
 
 # MLflow bağlantı ayarları
-MLFLOW_TRACKING_URI = "http://localhost:5000"
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
 EXPERIMENT_NAME = "recommendation-system"
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
@@ -1792,4 +1792,198 @@ async def get_metrics(version_name: Optional[str] = Query(None, description="Mod
 
 # Uygulama başlatma
 if __name__ == "__main__":
-    uvicorn.run("serve:app", host="0.0.0.0", port=8000, reload=True) 
+    try:
+        api_logger.info(f"Uygulama başlatılıyor... MLflow URI: {MLFLOW_TRACKING_URI}")
+        uvicorn.run("serve:app", host="0.0.0.0", port=8000, reload=True)
+    except Exception as e:
+        api_logger.error(f"Uygulama başlatma hatası: {str(e)}")
+        raise
+
+class TrainPredictionRequest(BaseModel):
+    """Tahmin modeli eğitimi için gerekli parametreler"""
+    version_name: str
+    model_type: Optional[str] = None  # Örn: "rf" for Random Forest
+    params: Optional[Dict] = None
+    force: bool = False  # Eğer aynı isimde model varsa üzerine yazılsın mı?
+
+class TrainRecommendationRequest(BaseModel):
+    """Öneri modeli eğitimi için gerekli parametreler"""
+    version_name: str
+    similarity_metric: str = "cosine"  # cosine, euclidean, manhattan
+    min_rating: float = 0
+    normalize: bool = True
+    force: bool = False  # Eğer aynı isimde model varsa üzerine yazılsın mı?
+
+@app.post("/train/prediction")
+async def train_prediction_model(request: TrainPredictionRequest):
+    """Yeni bir tahmin modeli eğitir"""
+    try:
+        # MLflow'da aynı isimde model var mı kontrol et
+        experiment = get_experiment()
+        if experiment:
+            runs = mlflow.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                filter_string=f"tags.version_name = '{request.version_name}'"
+            )
+            
+            if not runs.empty and not request.force:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Bu isimde bir model zaten var: {request.version_name}. Üzerine yazmak için force=true kullanın."
+                )
+        
+        # train_prediction.py'dan fonksiyonu import et
+        from train_prediction import train_model_version
+        
+        # Modeli eğit
+        success, message = train_model_version(
+            version_name=request.version_name,
+            model_type=request.model_type,
+            params=request.params
+        )
+        
+        if not success:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Model eğitimi başarısız: {message}"
+            )
+        
+        return {
+            "status": "success",
+            "message": message,
+            "version": request.version_name
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model eğitimi hatası: {str(e)}"
+        )
+
+@app.post("/train/recommendation")
+async def train_recommendation_model(request: TrainRecommendationRequest):
+    """Yeni bir öneri modeli eğitir"""
+    try:
+        # MLflow'da aynı isimde model var mı kontrol et
+        experiment = get_experiment()
+        if experiment:
+            runs = mlflow.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                filter_string=f"tags.version_name = '{request.version_name}'"
+            )
+            
+            if not runs.empty and not request.force:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Bu isimde bir model zaten var: {request.version_name}. Üzerine yazmak için force=true kullanın."
+                )
+        
+        # Argümanları hazırla
+        import sys
+        from train_recommendation import main as train_recommendation_main
+        sys.argv = [
+            "train_recommendation.py",
+            "--model_type", request.similarity_metric,
+            "--min_rating", str(request.min_rating),
+            "--normalize", str(request.normalize),
+            "--version_suffix", request.version_name
+        ]
+        
+        # Modeli eğit
+        train_recommendation_main()
+        
+        return {
+            "status": "success",
+            "message": "Model başarıyla eğitildi",
+            "version": request.version_name
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model eğitimi hatası: {str(e)}"
+        )
+
+class TrainAllRequest(BaseModel):
+    """Tüm modelleri eğitmek için gerekli parametreler"""
+    base_version: str
+    force: bool = False
+
+@app.post("/train/all")
+async def train_all_models(request: TrainAllRequest):
+    """Tüm model versiyonlarını eğitir"""
+    try:
+        results = []
+        
+        # Tahmin modellerini eğit
+        prediction_versions = [
+            ("v1_auto_select", None, None),
+            ("v2_random_forest", "rf", None),
+            ("v3_rf_tuned", "rf", {"n_estimators": 200, "max_depth": 10, "min_samples_split": 5}),
+            ("v4_lightgbm", "lightgbm", None)
+        ]
+        
+        for suffix, model_type, params in prediction_versions:
+            version_name = f"{request.base_version}_{suffix}"
+            train_request = TrainPredictionRequest(
+                version_name=version_name,
+                model_type=model_type,
+                params=params,
+                force=request.force
+            )
+            try:
+                result = await train_prediction_model(train_request)
+                results.append({
+                    "type": "prediction",
+                    "version": version_name,
+                    "status": "success"
+                })
+            except Exception as e:
+                results.append({
+                    "type": "prediction",
+                    "version": version_name,
+                    "status": "error",
+                    "error": str(e)
+                })
+        
+        # Öneri modellerini eğit
+        recommendation_versions = [
+            ("cosine", 0, True),
+            ("euclidean", 0, True),
+            ("manhattan", 0, True)
+        ]
+        
+        for metric, min_rating, normalize in recommendation_versions:
+            version_name = f"{request.base_version}_{metric}"
+            train_request = TrainRecommendationRequest(
+                version_name=version_name,
+                similarity_metric=metric,
+                min_rating=min_rating,
+                normalize=normalize,
+                force=request.force
+            )
+            try:
+                result = await train_recommendation_model(train_request)
+                results.append({
+                    "type": "recommendation",
+                    "version": version_name,
+                    "status": "success"
+                })
+            except Exception as e:
+                results.append({
+                    "type": "recommendation",
+                    "version": version_name,
+                    "status": "error",
+                    "error": str(e)
+                })
+        
+        return {
+            "status": "completed",
+            "results": results
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model eğitimi hatası: {str(e)}"
+        )

@@ -1,0 +1,500 @@
+2025-03-26 16:13:18,818:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:18,818:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:18,818:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:18,818:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:19,118:WARNING:C:\Users\selcuk\Desktop\mlflow_recommender\serve.py:442: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+
+2025-03-26 16:13:23,485:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:23,485:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:23,485:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:13:23,485:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-03-26 16:32:31,973:INFO:PyCaret RegressionExperiment
+2025-03-26 16:32:31,973:INFO:Logging name: reg-default-name
+2025-03-26 16:32:31,973:INFO:ML Usecase: MLUsecase.REGRESSION
+2025-03-26 16:32:31,973:INFO:version 3.3.2
+2025-03-26 16:32:31,974:INFO:Initializing setup()
+2025-03-26 16:32:31,974:INFO:self.USI: e69b
+2025-03-26 16:32:31,974:INFO:self._variable_keys: {'exp_name_log', '_ml_usecase', 'exp_id', 'log_plots_param', 'gpu_n_jobs_param', 'fold_shuffle_param', 'transform_target_param', 'gpu_param', 'n_jobs_param', 'target_param', 'html_param', 'logging_param', 'y', 'memory', 'fold_generator', 'USI', 'seed', '_available_plots', 'idx', 'fold_groups_param', 'X_train', 'pipeline', 'X_test', 'data', 'y_train', 'y_test', 'X'}
+2025-03-26 16:32:31,974:INFO:Checking environment
+2025-03-26 16:32:31,974:INFO:python_version: 3.11.2
+2025-03-26 16:32:31,974:INFO:python_build: ('tags/v3.11.2:878ead1', 'Feb  7 2023 16:38:35')
+2025-03-26 16:32:31,974:INFO:machine: AMD64
+2025-03-26 16:32:32,004:INFO:platform: Windows-10-10.0.19045-SP0
+2025-03-26 16:32:32,010:INFO:Memory: svmem(total=16948453376, available=3135062016, percent=81.5, used=13813391360, free=3135062016)
+2025-03-26 16:32:32,010:INFO:Physical Core: 6
+2025-03-26 16:32:32,010:INFO:Logical Core: 12
+2025-03-26 16:32:32,010:INFO:Checking libraries
+2025-03-26 16:32:32,010:INFO:System:
+2025-03-26 16:32:32,010:INFO:    python: 3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)]
+2025-03-26 16:32:32,010:INFO:executable: C:\Users\selcuk\Desktop\mlflow_recommender\venv\Scripts\python.exe
+2025-03-26 16:32:32,010:INFO:   machine: Windows-10-10.0.19045-SP0
+2025-03-26 16:32:32,011:INFO:PyCaret required dependencies:
+2025-03-26 16:32:32,011:INFO:                 pip: 22.3.1
+2025-03-26 16:32:32,011:INFO:          setuptools: 65.5.0
+2025-03-26 16:32:32,011:INFO:             pycaret: 3.3.2
+2025-03-26 16:32:32,011:INFO:             IPython: 9.0.2
+2025-03-26 16:32:32,011:INFO:          ipywidgets: 8.1.5
+2025-03-26 16:32:32,011:INFO:                tqdm: 4.67.1
+2025-03-26 16:32:32,011:INFO:               numpy: 1.26.4
+2025-03-26 16:32:32,011:INFO:              pandas: 2.1.4
+2025-03-26 16:32:32,011:INFO:              jinja2: 3.1.6
+2025-03-26 16:32:32,011:INFO:               scipy: 1.11.4
+2025-03-26 16:32:32,011:INFO:              joblib: 1.3.2
+2025-03-26 16:32:32,011:INFO:             sklearn: 1.4.2
+2025-03-26 16:32:32,011:INFO:                pyod: 2.0.3
+2025-03-26 16:32:32,011:INFO:            imblearn: 0.13.0
+2025-03-26 16:32:32,011:INFO:   category_encoders: 2.7.0
+2025-03-26 16:32:32,011:INFO:            lightgbm: 4.6.0
+2025-03-26 16:32:32,011:INFO:               numba: 0.61.0
+2025-03-26 16:32:32,011:INFO:            requests: 2.32.3
+2025-03-26 16:32:32,012:INFO:          matplotlib: 3.7.5
+2025-03-26 16:32:32,012:INFO:          scikitplot: 0.3.7
+2025-03-26 16:32:32,012:INFO:         yellowbrick: 1.5
+2025-03-26 16:32:32,012:INFO:              plotly: 5.24.1
+2025-03-26 16:32:32,012:INFO:    plotly-resampler: Not installed
+2025-03-26 16:32:32,012:INFO:             kaleido: 0.2.1
+2025-03-26 16:32:32,012:INFO:           schemdraw: 0.15
+2025-03-26 16:32:32,012:INFO:         statsmodels: 0.14.4
+2025-03-26 16:32:32,012:INFO:              sktime: 0.26.0
+2025-03-26 16:32:32,012:INFO:               tbats: 1.1.3
+2025-03-26 16:32:32,012:INFO:            pmdarima: 2.0.4
+2025-03-26 16:32:32,012:INFO:              psutil: 7.0.0
+2025-03-26 16:32:32,012:INFO:          markupsafe: 3.0.2
+2025-03-26 16:32:32,012:INFO:             pickle5: Not installed
+2025-03-26 16:32:32,012:INFO:         cloudpickle: 3.1.1
+2025-03-26 16:32:32,012:INFO:         deprecation: 2.1.0
+2025-03-26 16:32:32,012:INFO:              xxhash: 3.5.0
+2025-03-26 16:32:32,012:INFO:           wurlitzer: Not installed
+2025-03-26 16:32:32,013:INFO:PyCaret optional dependencies:
+2025-03-26 16:32:32,255:INFO:                shap: 0.41.0
+2025-03-26 16:32:32,255:INFO:           interpret: Not installed
+2025-03-26 16:32:32,255:INFO:                umap: Not installed
+2025-03-26 16:32:32,255:INFO:     ydata_profiling: Not installed
+2025-03-26 16:32:32,256:INFO:  explainerdashboard: Not installed
+2025-03-26 16:32:32,256:INFO:             autoviz: Not installed
+2025-03-26 16:32:32,256:INFO:           fairlearn: Not installed
+2025-03-26 16:32:32,256:INFO:          deepchecks: Not installed
+2025-03-26 16:32:32,256:INFO:             xgboost: 3.0.0
+2025-03-26 16:32:32,256:INFO:            catboost: Not installed
+2025-03-26 16:32:32,256:INFO:              kmodes: Not installed
+2025-03-26 16:32:32,256:INFO:             mlxtend: Not installed
+2025-03-26 16:32:32,256:INFO:       statsforecast: Not installed
+2025-03-26 16:32:32,256:INFO:        tune_sklearn: Not installed
+2025-03-26 16:32:32,256:INFO:                 ray: Not installed
+2025-03-26 16:32:32,256:INFO:            hyperopt: Not installed
+2025-03-26 16:32:32,256:INFO:              optuna: 3.1.0
+2025-03-26 16:32:32,256:INFO:               skopt: 0.9.0
+2025-03-26 16:32:32,256:INFO:              mlflow: 2.21.0
+2025-03-26 16:32:32,256:INFO:              gradio: Not installed
+2025-03-26 16:32:32,256:INFO:             fastapi: 0.115.11
+2025-03-26 16:32:32,256:INFO:             uvicorn: 0.34.0
+2025-03-26 16:32:32,256:INFO:              m2cgen: Not installed
+2025-03-26 16:32:32,256:INFO:           evidently: Not installed
+2025-03-26 16:32:32,256:INFO:               fugue: Not installed
+2025-03-26 16:32:32,256:INFO:           streamlit: Not installed
+2025-03-26 16:32:32,256:INFO:             prophet: Not installed
+2025-03-26 16:32:32,256:INFO:None
+2025-03-26 16:32:32,256:INFO:Set up data.
+2025-03-26 16:32:32,287:INFO:Set up folding strategy.
+2025-03-26 16:32:32,287:INFO:Set up train/test split.
+2025-03-26 16:32:32,333:INFO:Set up index.
+2025-03-26 16:32:32,339:INFO:Assigning column types.
+2025-03-26 16:32:32,345:INFO:Engine successfully changes for model 'lr' to 'sklearn'.
+2025-03-26 16:32:32,345:INFO:Engine for model 'lasso' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,350:INFO:Engine for model 'ridge' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,354:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,407:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,448:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,449:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,452:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,453:INFO:Engine for model 'lasso' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,457:INFO:Engine for model 'ridge' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,462:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,512:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,549:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,549:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,552:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,552:INFO:Engine successfully changes for model 'lasso' to 'sklearn'.
+2025-03-26 16:32:32,556:INFO:Engine for model 'ridge' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,560:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,615:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,662:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,662:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,665:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,669:INFO:Engine for model 'ridge' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,675:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,730:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,771:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,772:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,774:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,775:INFO:Engine successfully changes for model 'ridge' to 'sklearn'.
+2025-03-26 16:32:32,783:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,834:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,881:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,882:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,885:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,893:INFO:Engine for model 'en' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,944:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,983:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:32,983:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:32,985:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:32,985:INFO:Engine successfully changes for model 'en' to 'sklearn'.
+2025-03-26 16:32:33,057:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,098:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,098:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,100:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,163:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,206:INFO:Engine for model 'knn' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,207:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,209:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,209:INFO:Engine successfully changes for model 'knn' to 'sklearn'.
+2025-03-26 16:32:33,265:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,331:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,336:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,452:INFO:Engine for model 'svm' has not been set explicitly, hence returning None.
+2025-03-26 16:32:33,534:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,539:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,540:INFO:Engine successfully changes for model 'svm' to 'sklearn'.
+2025-03-26 16:32:33,680:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,683:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,847:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:33,852:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:33,876:INFO:Preparing preprocessing pipeline...
+2025-03-26 16:32:33,876:INFO:Set up simple imputation.
+2025-03-26 16:32:33,883:INFO:Set up encoding of ordinal features.
+2025-03-26 16:32:33,884:INFO:Set up encoding of categorical features.
+2025-03-26 16:32:34,000:INFO:Finished creating preprocessing pipeline.
+2025-03-26 16:32:34,023:INFO:Pipeline: Pipeline(memory=FastMemory(location=C:\Users\selcuk\AppData\Local\Temp\joblib),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('or...
+                 TransformerWrapper(include=['user_gender'],
+                                    transformer=OrdinalEncoder(cols=['user_gender'],
+                                                               handle_missing='return_nan',
+                                                               mapping=[{'col': 'user_gender',
+                                                                         'data_type': dtype('O'),
+                                                                         'mapping': F      0
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True)))])
+2025-03-26 16:32:34,023:INFO:Creating final display dataframe.
+2025-03-26 16:32:34,190:INFO:Setup _display_container:                     Description             Value
+0                    Session id                42
+1                        Target            rating
+2                   Target type        Regression
+3           Original data shape         (1000, 8)
+4        Transformed data shape         (1000, 9)
+5   Transformed train set shape          (750, 9)
+6    Transformed test set shape          (250, 9)
+7               Ignore features                 1
+8              Numeric features                 4
+9          Categorical features                 2
+10                   Preprocess              True
+11              Imputation type            simple
+12           Numeric imputation              mean
+13       Categorical imputation              mode
+14     Maximum one-hot encoding                25
+15              Encoding method              None
+16               Fold Generator   TimeSeriesSplit
+17                  Fold Number                 5
+18                     CPU Jobs                -1
+19                      Use GPU             False
+20               Log Experiment             False
+21              Experiment Name  reg-default-name
+22                          USI              e69b
+2025-03-26 16:32:34,288:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:34,290:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:34,401:INFO:Soft dependency imported: xgboost: 3.0.0
+2025-03-26 16:32:34,403:WARNING:
+'catboost' is a soft dependency and not included in the pycaret installation. Please run: `pip install catboost` to install.
+Alternately, you can install this by running `pip install pycaret[models]`
+2025-03-26 16:32:34,404:INFO:setup() successfully completed in 2.44s...............
+2025-03-26 16:32:34,404:INFO:Initializing create_model()
+2025-03-26 16:32:34,404:INFO:create_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=rf, fold=None, round=4, cross_validation=True, predict=True, fit_kwargs=None, groups=None, refit=True, probability_threshold=None, experiment_custom_tags=None, verbose=True, system=True, add_to_model_list=True, metrics=None, display=None, model_only=True, return_train_score=False, error_score=0.0, kwargs={})
+2025-03-26 16:32:34,404:INFO:Checking exceptions
+2025-03-26 16:32:34,406:INFO:Importing libraries
+2025-03-26 16:32:34,406:INFO:Copying training dataset
+2025-03-26 16:32:34,416:INFO:Defining folds
+2025-03-26 16:32:34,416:INFO:Declaring metric variables
+2025-03-26 16:32:34,417:INFO:Importing untrained model
+2025-03-26 16:32:34,417:INFO:Random Forest Regressor Imported successfully
+2025-03-26 16:32:34,418:INFO:Starting cross validation
+2025-03-26 16:32:34,427:INFO:Cross validating with TimeSeriesSplit(gap=0, max_train_size=None, n_splits=5, test_size=None), n_jobs=-1
+2025-03-26 16:32:39,938:INFO:Calculating mean and std
+2025-03-26 16:32:39,939:INFO:Creating metrics dataframe
+2025-03-26 16:32:39,943:INFO:Finalizing model
+2025-03-26 16:32:40,167:INFO:Uploading results into container
+2025-03-26 16:32:40,168:INFO:Uploading model into container now
+2025-03-26 16:32:40,182:INFO:_master_model_container: 1
+2025-03-26 16:32:40,182:INFO:_display_container: 2
+2025-03-26 16:32:40,183:INFO:RandomForestRegressor(n_jobs=-1, random_state=42)
+2025-03-26 16:32:40,183:INFO:create_model() successfully completed......................................
+2025-03-26 16:32:40,349:INFO:Initializing tune_model()
+2025-03-26 16:32:40,350:INFO:tune_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=RandomForestRegressor(n_jobs=-1, random_state=42), fold=None, round=4, n_iter=10, custom_grid=None, optimize=RMSE, custom_scorer=None, search_library=scikit-learn, search_algorithm=None, early_stopping=False, early_stopping_max_iters=10, choose_better=True, fit_kwargs=None, groups=None, return_tuner=False, verbose=True, tuner_verbose=True, return_train_score=False, kwargs={})
+2025-03-26 16:32:40,350:INFO:Checking exceptions
+2025-03-26 16:32:40,353:INFO:Copying training dataset
+2025-03-26 16:32:40,355:INFO:Checking base model
+2025-03-26 16:32:40,355:INFO:Base model : Random Forest Regressor
+2025-03-26 16:32:40,356:INFO:Declaring metric variables
+2025-03-26 16:32:40,356:INFO:Defining Hyperparameters
+2025-03-26 16:32:40,484:INFO:Tuning with n_jobs=-1
+2025-03-26 16:32:40,485:INFO:Initializing RandomizedSearchCV
+2025-03-26 16:32:47,399:INFO:best_params: {'actual_estimator__n_estimators': 90, 'actual_estimator__min_samples_split': 2, 'actual_estimator__min_samples_leaf': 5, 'actual_estimator__min_impurity_decrease': 0.3, 'actual_estimator__max_features': 'sqrt', 'actual_estimator__max_depth': 4, 'actual_estimator__criterion': 'squared_error', 'actual_estimator__bootstrap': True}
+2025-03-26 16:32:47,399:INFO:Hyperparameter search completed
+2025-03-26 16:32:47,399:INFO:SubProcess create_model() called ==================================
+2025-03-26 16:32:47,400:INFO:Initializing create_model()
+2025-03-26 16:32:47,400:INFO:create_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=RandomForestRegressor(n_jobs=-1, random_state=42), fold=TimeSeriesSplit(gap=0, max_train_size=None, n_splits=5, test_size=None), round=4, cross_validation=True, predict=True, fit_kwargs={}, groups=None, refit=True, probability_threshold=None, experiment_custom_tags=None, verbose=True, system=False, add_to_model_list=True, metrics=None, display=<pycaret.internal.display.display.CommonDisplay object at 0x000001F4E4F27D10>, model_only=True, return_train_score=False, error_score=0.0, kwargs={'n_estimators': 90, 'min_samples_split': 2, 'min_samples_leaf': 5, 'min_impurity_decrease': 0.3, 'max_features': 'sqrt', 'max_depth': 4, 'criterion': 'squared_error', 'bootstrap': True})
+2025-03-26 16:32:47,400:INFO:Checking exceptions
+2025-03-26 16:32:47,400:INFO:Importing libraries
+2025-03-26 16:32:47,401:INFO:Copying training dataset
+2025-03-26 16:32:47,406:INFO:Defining folds
+2025-03-26 16:32:47,407:INFO:Declaring metric variables
+2025-03-26 16:32:47,407:INFO:Importing untrained model
+2025-03-26 16:32:47,407:INFO:Declaring custom model
+2025-03-26 16:32:47,409:INFO:Random Forest Regressor Imported successfully
+2025-03-26 16:32:47,409:INFO:Starting cross validation
+2025-03-26 16:32:47,411:INFO:Cross validating with TimeSeriesSplit(gap=0, max_train_size=None, n_splits=5, test_size=None), n_jobs=-1
+2025-03-26 16:32:47,713:INFO:Calculating mean and std
+2025-03-26 16:32:47,713:INFO:Creating metrics dataframe
+2025-03-26 16:32:47,715:INFO:Finalizing model
+2025-03-26 16:32:47,870:INFO:Uploading results into container
+2025-03-26 16:32:47,871:INFO:Uploading model into container now
+2025-03-26 16:32:47,872:INFO:_master_model_container: 2
+2025-03-26 16:32:47,872:INFO:_display_container: 3
+2025-03-26 16:32:47,872:INFO:RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42)
+2025-03-26 16:32:47,872:INFO:create_model() successfully completed......................................
+2025-03-26 16:32:48,007:INFO:SubProcess create_model() end ==================================
+2025-03-26 16:32:48,008:INFO:choose_better activated
+2025-03-26 16:32:48,008:INFO:SubProcess create_model() called ==================================
+2025-03-26 16:32:48,008:INFO:Initializing create_model()
+2025-03-26 16:32:48,008:INFO:create_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=RandomForestRegressor(n_jobs=-1, random_state=42), fold=TimeSeriesSplit(gap=0, max_train_size=None, n_splits=5, test_size=None), round=4, cross_validation=True, predict=True, fit_kwargs={}, groups=None, refit=True, probability_threshold=None, experiment_custom_tags=None, verbose=False, system=False, add_to_model_list=True, metrics=None, display=None, model_only=True, return_train_score=False, error_score=0.0, kwargs={})
+2025-03-26 16:32:48,008:INFO:Checking exceptions
+2025-03-26 16:32:48,009:INFO:Importing libraries
+2025-03-26 16:32:48,009:INFO:Copying training dataset
+2025-03-26 16:32:48,013:INFO:Defining folds
+2025-03-26 16:32:48,013:INFO:Declaring metric variables
+2025-03-26 16:32:48,013:INFO:Importing untrained model
+2025-03-26 16:32:48,013:INFO:Declaring custom model
+2025-03-26 16:32:48,014:INFO:Random Forest Regressor Imported successfully
+2025-03-26 16:32:48,014:INFO:Starting cross validation
+2025-03-26 16:32:48,015:INFO:Cross validating with TimeSeriesSplit(gap=0, max_train_size=None, n_splits=5, test_size=None), n_jobs=-1
+2025-03-26 16:32:48,426:INFO:Calculating mean and std
+2025-03-26 16:32:48,426:INFO:Creating metrics dataframe
+2025-03-26 16:32:48,428:INFO:Finalizing model
+2025-03-26 16:32:48,633:INFO:Uploading results into container
+2025-03-26 16:32:48,634:INFO:Uploading model into container now
+2025-03-26 16:32:48,634:INFO:_master_model_container: 3
+2025-03-26 16:32:48,634:INFO:_display_container: 4
+2025-03-26 16:32:48,635:INFO:RandomForestRegressor(n_jobs=-1, random_state=42)
+2025-03-26 16:32:48,635:INFO:create_model() successfully completed......................................
+2025-03-26 16:32:48,768:INFO:SubProcess create_model() end ==================================
+2025-03-26 16:32:48,768:INFO:RandomForestRegressor(n_jobs=-1, random_state=42) result for RMSE is 1.2687
+2025-03-26 16:32:48,769:INFO:RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42) result for RMSE is 1.1539
+2025-03-26 16:32:48,769:INFO:RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42) is best model
+2025-03-26 16:32:48,769:INFO:choose_better completed
+2025-03-26 16:32:48,776:INFO:_master_model_container: 3
+2025-03-26 16:32:48,776:INFO:_display_container: 3
+2025-03-26 16:32:48,776:INFO:RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42)
+2025-03-26 16:32:48,777:INFO:tune_model() successfully completed......................................
+2025-03-26 16:32:48,900:INFO:Initializing finalize_model()
+2025-03-26 16:32:48,900:INFO:finalize_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42), fit_kwargs=None, groups=None, model_only=False, experiment_custom_tags=None)
+2025-03-26 16:32:48,900:INFO:Finalizing RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42)
+2025-03-26 16:32:48,904:INFO:Initializing create_model()
+2025-03-26 16:32:48,904:INFO:create_model(self=<pycaret.regression.oop.RegressionExperiment object at 0x000001F4E5D6E110>, estimator=RandomForestRegressor(max_depth=4, max_features='sqrt',
+                      min_impurity_decrease=0.3, min_samples_leaf=5,
+                      n_estimators=90, n_jobs=-1, random_state=42), fold=None, round=4, cross_validation=False, predict=False, fit_kwargs={}, groups=None, refit=True, probability_threshold=None, experiment_custom_tags=None, verbose=False, system=False, add_to_model_list=False, metrics=None, display=None, model_only=False, return_train_score=False, error_score=0.0, kwargs={})
+2025-03-26 16:32:48,904:INFO:Checking exceptions
+2025-03-26 16:32:48,905:INFO:Importing libraries
+2025-03-26 16:32:48,905:INFO:Copying training dataset
+2025-03-26 16:32:48,906:INFO:Defining folds
+2025-03-26 16:32:48,906:INFO:Declaring metric variables
+2025-03-26 16:32:48,906:INFO:Importing untrained model
+2025-03-26 16:32:48,907:INFO:Declaring custom model
+2025-03-26 16:32:48,907:INFO:Random Forest Regressor Imported successfully
+2025-03-26 16:32:48,909:INFO:Cross validation set to False
+2025-03-26 16:32:48,909:INFO:Fitting Model
+2025-03-26 16:32:49,114:INFO:Pipeline(memory=Memory(location=None),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('ordinal_encoding',
+                 TransformerWrapper(includ...
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True))),
+                ('actual_estimator',
+                 RandomForestRegressor(max_depth=4, max_features='sqrt',
+                                       min_impurity_decrease=0.3,
+                                       min_samples_leaf=5, n_estimators=90,
+                                       n_jobs=-1, random_state=42))])
+2025-03-26 16:32:49,115:INFO:create_model() successfully completed......................................
+2025-03-26 16:32:49,236:INFO:_master_model_container: 3
+2025-03-26 16:32:49,236:INFO:_display_container: 3
+2025-03-26 16:32:49,253:INFO:Pipeline(memory=Memory(location=None),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('ordinal_encoding',
+                 TransformerWrapper(includ...
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True))),
+                ('actual_estimator',
+                 RandomForestRegressor(max_depth=4, max_features='sqrt',
+                                       min_impurity_decrease=0.3,
+                                       min_samples_leaf=5, n_estimators=90,
+                                       n_jobs=-1, random_state=42))])
+2025-03-26 16:32:49,253:INFO:finalize_model() successfully completed......................................
+2025-03-26 16:32:49,415:INFO:Initializing save_model()
+2025-03-26 16:32:49,415:INFO:save_model(model=Pipeline(memory=Memory(location=None),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('ordinal_encoding',
+                 TransformerWrapper(includ...
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True))),
+                ('actual_estimator',
+                 RandomForestRegressor(max_depth=4, max_features='sqrt',
+                                       min_impurity_decrease=0.3,
+                                       min_samples_leaf=5, n_estimators=90,
+                                       n_jobs=-1, random_state=42))]), model_name=artifacts\model.pkl, prep_pipe_=Pipeline(memory=FastMemory(location=C:\Users\selcuk\AppData\Local\Temp\joblib),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('or...
+                 TransformerWrapper(include=['user_gender'],
+                                    transformer=OrdinalEncoder(cols=['user_gender'],
+                                                               handle_missing='return_nan',
+                                                               mapping=[{'col': 'user_gender',
+                                                                         'data_type': dtype('O'),
+                                                                         'mapping': F      0
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True)))]), verbose=True, use_case=MLUsecase.REGRESSION, kwargs={})
+2025-03-26 16:32:49,415:INFO:Adding model into prep_pipe
+2025-03-26 16:32:49,415:WARNING:Only Model saved as it was a pipeline.
+2025-03-26 16:32:49,438:INFO:artifacts\model.pkl.pkl saved in current working directory
+2025-03-26 16:32:49,462:INFO:Pipeline(memory=Memory(location=None),
+         steps=[('numerical_imputer',
+                 TransformerWrapper(include=['user_id', 'item_id', 'user_age',
+                                             'item_price'],
+                                    transformer=SimpleImputer())),
+                ('categorical_imputer',
+                 TransformerWrapper(include=['user_gender', 'item_category'],
+                                    transformer=SimpleImputer(strategy='most_frequent'))),
+                ('ordinal_encoding',
+                 TransformerWrapper(includ...
+M      1
+NaN   -1
+dtype: int64}]))),
+                ('onehot_encoding',
+                 TransformerWrapper(include=['item_category'],
+                                    transformer=OneHotEncoder(cols=['item_category'],
+                                                              handle_missing='return_nan',
+                                                              use_cat_names=True))),
+                ('actual_estimator',
+                 RandomForestRegressor(max_depth=4, max_features='sqrt',
+                                       min_impurity_decrease=0.3,
+                                       min_samples_leaf=5, n_estimators=90,
+                                       n_jobs=-1, random_state=42))])
+2025-03-26 16:32:49,462:INFO:save_model() successfully completed......................................

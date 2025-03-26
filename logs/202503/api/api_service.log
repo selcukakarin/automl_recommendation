@@ -1,0 +1,1160 @@
+2025-03-21 16:16:23,994 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:16:24,063 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:16:29,041 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:16:29,112 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:16:29,180 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:16:29,244 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:16:29,256 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 16:16:29,257 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 16:16:31,506 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 16:16:31,683 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 16:16:31,684 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 16:16:31,686 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 16:16:34,729 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 16:16:36,894 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpa0hzujzx\item_metadata.pkl
+2025-03-21 16:16:39,411 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpewww5ib1\user_item_matrix.pkl
+2025-03-21 16:16:41,792 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpjtw4uj87\item_similarity.pkl
+2025-03-21 16:16:41,794 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 16:16:41,802 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 16:16:41,803 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 16:16:43,984 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 16:16:43,991 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 16:16:43,993 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 16:16:47,955 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 16:16:49,992 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 16:16:50,001 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 16:16:50,002 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 16:17:03,113 - api_service - INFO - Request: POST http://localhost:8000/load_rating_version/v4_lightgbm from 127.0.0.1
+2025-03-21 16:17:03,309 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 16:17:05,603 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 16:17:07,666 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 16:17:07,676 - api_service - INFO - Response: POST http://localhost:8000/load_rating_version/v4_lightgbm - Status: 200 - Duration: 4.5628s
+2025-03-21 16:17:40,347 - api_service - INFO - Request: POST http://localhost:8000/load_rating_version/v4_lightgbm from 127.0.0.1
+2025-03-21 16:17:40,573 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 16:17:42,748 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 16:17:44,799 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 16:17:44,810 - api_service - INFO - Response: POST http://localhost:8000/load_rating_version/v4_lightgbm - Status: 200 - Duration: 4.4631s
+2025-03-21 16:18:16,262 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 16:18:16,265 - api_service - INFO - Öneri isteği alındı - User ID: 123, Item ID: None
+2025-03-21 16:18:16,266 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 123
+2025-03-21 16:18:16,268 - api_service - INFO - Kullanıcının 7 adet derecelendirmesi bulundu
+2025-03-21 16:18:16,274 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.008s)
+2025-03-21 16:18:16,277 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0151s
+2025-03-21 16:18:31,180 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 16:18:31,181 - api_service - INFO - Öneri isteği alındı - User ID: 123, Item ID: 456
+2025-03-21 16:18:31,182 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 456
+2025-03-21 16:18:31,186 - api_service - INFO - Öneri tamamlandı - 10 öneri, item_based yöntemi (yanıt süresi: 0.004s)
+2025-03-21 16:18:31,187 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0070s
+2025-03-21 16:21:19,714 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 16:21:19,715 - api_service - INFO - Öneri isteği alındı - User ID: 123, Item ID: 456
+2025-03-21 16:21:19,716 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 456
+2025-03-21 16:21:19,718 - api_service - INFO - Öneri tamamlandı - 10 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 16:21:19,719 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0049s
+2025-03-21 16:21:34,082 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 16:21:34,084 - api_service - INFO - Öneri isteği alındı - User ID: 123, Item ID: None
+2025-03-21 16:21:34,085 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 123
+2025-03-21 16:21:34,087 - api_service - INFO - Kullanıcının 7 adet derecelendirmesi bulundu
+2025-03-21 16:21:34,094 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.008s)
+2025-03-21 16:21:34,096 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0137s
+2025-03-21 16:21:44,660 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 16:21:46,942 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 2.2820s
+2025-03-21 16:54:02,142 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:54:02,220 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:54:02,284 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:54:02,346 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:54:02,358 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 16:54:02,358 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 16:54:04,636 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 16:54:04,807 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-21 16:54:04,808 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 082edd277d42409390289b00dc1933f6)
+2025-03-21 16:54:04,809 - api_service - INFO - Öneri modeli yükleniyor: 082edd277d42409390289b00dc1933f6
+2025-03-21 16:54:08,322 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/082edd277d42409390289b00dc1933f6/model
+2025-03-21 16:54:10,469 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpgyqm2ac5\item_metadata.pkl
+2025-03-21 16:54:12,951 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpxjtmor36\user_item_matrix.pkl
+2025-03-21 16:54:15,336 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp5pjtkgfs\item_similarity.pkl
+2025-03-21 16:54:15,338 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 16:54:15,346 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_162401_cosine
+2025-03-21 16:54:15,346 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 16:54:17,587 - api_service - INFO - 15 adet derecelendirme modeli bulundu.
+2025-03-21 16:54:17,594 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 9573dac7c7424c39b1a072feedc90f50)
+2025-03-21 16:54:17,596 - api_service - INFO - Derecelendirme modeli yükleniyor: 9573dac7c7424c39b1a072feedc90f50
+2025-03-21 16:54:20,597 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/9573dac7c7424c39b1a072feedc90f50/model
+2025-03-21 16:54:22,654 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 16:54:22,663 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 16:54:22,664 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 16:59:02,751 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:59:02,815 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:59:02,870 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 16:59:02,936 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 16:59:02,948 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 16:59:02,948 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 16:59:05,256 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 16:59:05,448 - api_service - INFO - 10 adet öneri modeli bulundu.
+2025-03-21 16:59:05,449 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: f5e1d715961a4166811faa884652bf51)
+2025-03-21 16:59:05,450 - api_service - INFO - Öneri modeli yükleniyor: f5e1d715961a4166811faa884652bf51
+2025-03-21 16:59:08,397 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/f5e1d715961a4166811faa884652bf51/model
+2025-03-21 16:59:10,551 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpuyspu99w\item_metadata.pkl
+2025-03-21 16:59:13,109 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp2zblob3k\user_item_matrix.pkl
+2025-03-21 16:59:15,508 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp6rzrr2fd\item_similarity.pkl
+2025-03-21 16:59:15,509 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 16:59:15,518 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_165445_cosine
+2025-03-21 16:59:15,518 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 16:59:17,872 - api_service - INFO - 19 adet derecelendirme modeli bulundu.
+2025-03-21 16:59:17,879 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: dfa1ad399eb44a3681bba72d36818f2d)
+2025-03-21 16:59:17,881 - api_service - INFO - Derecelendirme modeli yükleniyor: dfa1ad399eb44a3681bba72d36818f2d
+2025-03-21 16:59:20,941 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/dfa1ad399eb44a3681bba72d36818f2d/model
+2025-03-21 16:59:23,032 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 16:59:23,039 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 16:59:23,040 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 17:11:16,566 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:11:16,625 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:11:16,672 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:11:16,729 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:11:16,741 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 17:11:16,742 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 17:11:19,009 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 17:11:19,208 - api_service - INFO - 10 adet öneri modeli bulundu.
+2025-03-21 17:11:19,209 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: f5e1d715961a4166811faa884652bf51)
+2025-03-21 17:11:19,210 - api_service - INFO - Öneri modeli yükleniyor: f5e1d715961a4166811faa884652bf51
+2025-03-21 17:11:22,175 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/f5e1d715961a4166811faa884652bf51/model
+2025-03-21 17:11:24,327 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpwbi_nswv\item_metadata.pkl
+2025-03-21 17:11:26,770 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpts0vg658\user_item_matrix.pkl
+2025-03-21 17:11:29,151 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpto5g6jmd\item_similarity.pkl
+2025-03-21 17:11:29,152 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 17:11:29,161 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_165445_cosine
+2025-03-21 17:11:29,161 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 17:11:31,405 - api_service - INFO - 19 adet derecelendirme modeli bulundu.
+2025-03-21 17:11:31,409 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: dfa1ad399eb44a3681bba72d36818f2d)
+2025-03-21 17:11:31,410 - api_service - INFO - Derecelendirme modeli yükleniyor: dfa1ad399eb44a3681bba72d36818f2d
+2025-03-21 17:11:34,467 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/dfa1ad399eb44a3681bba72d36818f2d/model
+2025-03-21 17:11:36,528 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 17:11:36,535 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 17:11:36,536 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 17:26:43,098 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:26:43,196 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:26:43,309 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:26:43,408 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:26:43,428 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 17:26:43,429 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 17:26:45,958 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 17:26:46,287 - api_service - INFO - 11 adet öneri modeli bulundu.
+2025-03-21 17:26:46,289 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: c4dfacab86624a9480846d7e97e23091)
+2025-03-21 17:26:46,290 - api_service - INFO - Öneri modeli yükleniyor: c4dfacab86624a9480846d7e97e23091
+2025-03-21 17:26:49,230 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/c4dfacab86624a9480846d7e97e23091/model
+2025-03-21 17:26:51,385 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpt567inb1\item_metadata.pkl
+2025-03-21 17:26:53,963 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpmwaxhfje\user_item_matrix.pkl
+2025-03-21 17:26:56,344 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp23oar726\item_similarity.pkl
+2025-03-21 17:26:56,345 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 17:26:56,354 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_171341_cosine
+2025-03-21 17:26:56,354 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 17:26:58,745 - api_service - INFO - 27 adet derecelendirme modeli bulundu.
+2025-03-21 17:26:58,756 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 06a986115a0f4e99b83ae8db2a3f30a0)
+2025-03-21 17:26:58,758 - api_service - INFO - Derecelendirme modeli yükleniyor: 06a986115a0f4e99b83ae8db2a3f30a0
+2025-03-21 17:27:02,013 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/06a986115a0f4e99b83ae8db2a3f30a0/model
+2025-03-21 17:27:04,094 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 17:27:04,104 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 17:27:04,105 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 17:27:04,111 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:27:04,374 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2622s
+2025-03-21 17:40:26,052 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:40:26,115 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:40:31,276 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:40:31,352 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:40:31,405 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 17:40:31,469 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 17:40:31,483 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 17:40:31,483 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 17:40:33,819 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 17:40:34,059 - api_service - INFO - 11 adet öneri modeli bulundu.
+2025-03-21 17:40:34,060 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: c4dfacab86624a9480846d7e97e23091)
+2025-03-21 17:40:34,062 - api_service - INFO - Öneri modeli yükleniyor: c4dfacab86624a9480846d7e97e23091
+2025-03-21 17:40:37,051 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/c4dfacab86624a9480846d7e97e23091/model
+2025-03-21 17:40:39,224 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpt0c9838j\item_metadata.pkl
+2025-03-21 17:40:41,753 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpgdx3xl7_\user_item_matrix.pkl
+2025-03-21 17:40:44,254 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpjod9vqak\item_similarity.pkl
+2025-03-21 17:40:44,256 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 17:40:44,265 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_171341_cosine
+2025-03-21 17:40:44,265 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 17:40:46,579 - api_service - INFO - 27 adet derecelendirme modeli bulundu.
+2025-03-21 17:40:46,589 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 06a986115a0f4e99b83ae8db2a3f30a0)
+2025-03-21 17:40:46,591 - api_service - INFO - Derecelendirme modeli yükleniyor: 06a986115a0f4e99b83ae8db2a3f30a0
+2025-03-21 17:40:49,629 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/06a986115a0f4e99b83ae8db2a3f30a0/model
+2025-03-21 17:40:51,685 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 17:40:51,695 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 17:40:51,696 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 17:40:53,720 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:40:53,723 - api_service - INFO - Tahmin isteği alındı - User ID: 501, Item ID: 452
+2025-03-21 17:40:53,752 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.020s)
+2025-03-21 17:40:53,757 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0371s
+2025-03-21 17:40:55,813 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:40:55,814 - api_service - INFO - Tahmin isteği alındı - User ID: 831, Item ID: 244
+2025-03-21 17:40:55,834 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.015s)
+2025-03-21 17:40:55,835 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0217s
+2025-03-21 17:41:22,256 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 17:41:22,257 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-21 17:41:24,297 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 17:41:24,631 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 17:41:24,633 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.3355s
+2025-03-21 17:41:26,685 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:41:27,026 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3410s
+2025-03-21 17:41:31,549 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:41:31,552 - api_service - INFO - Öneri isteği alındı - User ID: 6077, Item ID: 132
+2025-03-21 17:41:31,553 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 132
+2025-03-21 17:41:31,555 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 17:41:31,557 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0080s
+2025-03-21 17:41:33,911 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:41:33,912 - api_service - INFO - Öneri isteği alındı - User ID: 2624, Item ID: None
+2025-03-21 17:41:33,913 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 2624
+2025-03-21 17:41:33,914 - api_service - INFO - Kullanıcının 6 adet derecelendirmesi bulundu
+2025-03-21 17:41:33,919 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.008s)
+2025-03-21 17:41:33,920 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0106s
+2025-03-21 17:43:36,631 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 17:43:36,633 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0022s
+2025-03-21 17:43:38,666 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 17:43:38,937 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 17:43:38,938 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.2719s
+2025-03-21 17:43:41,002 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:43:41,351 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3500s
+2025-03-21 17:43:46,029 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:43:46,030 - api_service - INFO - Öneri isteği alındı - User ID: 3042, Item ID: 493
+2025-03-21 17:43:46,031 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 493
+2025-03-21 17:43:46,032 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 17:43:46,033 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0056s
+2025-03-21 17:43:48,451 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:43:48,452 - api_service - INFO - Öneri isteği alındı - User ID: 1371, Item ID: None
+2025-03-21 17:43:48,452 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 1371
+2025-03-21 17:43:48,453 - api_service - INFO - Kullanıcının 15 adet derecelendirmesi bulundu
+2025-03-21 17:43:48,475 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.023s)
+2025-03-21 17:43:48,477 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0267s
+2025-03-21 17:44:48,923 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:44:49,448 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.5232s
+2025-03-21 17:45:22,251 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:45:22,727 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.4752s
+2025-03-21 17:45:32,615 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:45:33,010 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3952s
+2025-03-21 17:51:44,726 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 17:51:44,729 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0026s
+2025-03-21 17:51:46,793 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 17:51:49,150 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 17:51:49,150 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 2.3570s
+2025-03-21 17:51:51,224 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:51:51,525 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3009s
+2025-03-21 17:51:55,963 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:51:55,964 - api_service - INFO - Öneri isteği alındı - User ID: 7333, Item ID: 418
+2025-03-21 17:51:55,965 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 418
+2025-03-21 17:51:55,966 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.001s)
+2025-03-21 17:51:55,967 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0042s
+2025-03-21 17:51:58,290 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:51:58,291 - api_service - INFO - Öneri isteği alındı - User ID: 11, Item ID: None
+2025-03-21 17:51:58,292 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 11
+2025-03-21 17:51:58,293 - api_service - INFO - Kullanıcının 9 adet derecelendirmesi bulundu
+2025-03-21 17:51:58,299 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.007s)
+2025-03-21 17:51:58,300 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0102s
+2025-03-21 17:54:56,367 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:54:56,368 - api_service - INFO - Tahmin isteği alındı - User ID: 427, Item ID: 200
+2025-03-21 17:54:56,391 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.017s)
+2025-03-21 17:54:56,391 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0244s
+2025-03-21 17:54:58,456 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:54:58,458 - api_service - INFO - Tahmin isteği alındı - User ID: 737, Item ID: 305
+2025-03-21 17:54:58,479 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.016s)
+2025-03-21 17:54:58,480 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0244s
+2025-03-21 17:55:00,533 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:00,534 - api_service - INFO - Tahmin isteği alındı - User ID: 734, Item ID: 135
+2025-03-21 17:55:00,556 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.016s)
+2025-03-21 17:55:00,557 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0242s
+2025-03-21 17:55:02,607 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:02,608 - api_service - INFO - Tahmin isteği alındı - User ID: 354, Item ID: 375
+2025-03-21 17:55:02,628 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.015s)
+2025-03-21 17:55:02,629 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0222s
+2025-03-21 17:55:04,700 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:04,701 - api_service - INFO - Tahmin isteği alındı - User ID: 706, Item ID: 25
+2025-03-21 17:55:04,721 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.015s)
+2025-03-21 17:55:04,722 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0220s
+2025-03-21 17:55:06,752 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:06,753 - api_service - INFO - Tahmin isteği alındı - User ID: 227, Item ID: 433
+2025-03-21 17:55:06,776 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.017s)
+2025-03-21 17:55:06,777 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0251s
+2025-03-21 17:55:08,836 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:08,837 - api_service - INFO - Tahmin isteği alındı - User ID: 622, Item ID: 413
+2025-03-21 17:55:08,857 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.014s)
+2025-03-21 17:55:08,858 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0212s
+2025-03-21 17:55:10,888 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:10,889 - api_service - INFO - Tahmin isteği alındı - User ID: 954, Item ID: 350
+2025-03-21 17:55:10,907 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.013s)
+2025-03-21 17:55:10,908 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0215s
+2025-03-21 17:55:12,959 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:12,960 - api_service - INFO - Tahmin isteği alındı - User ID: 326, Item ID: 424
+2025-03-21 17:55:12,978 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.013s)
+2025-03-21 17:55:12,979 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0203s
+2025-03-21 17:55:15,015 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-21 17:55:15,016 - api_service - INFO - Tahmin isteği alındı - User ID: 842, Item ID: 202
+2025-03-21 17:55:15,045 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.022s)
+2025-03-21 17:55:15,046 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0316s
+2025-03-21 17:56:45,391 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 17:56:45,392 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0011s
+2025-03-21 17:56:47,430 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 17:56:49,798 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 17:56:49,799 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 2.3693s
+2025-03-21 17:56:51,872 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 17:56:52,234 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3618s
+2025-03-21 17:56:56,761 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:56:56,763 - api_service - INFO - Öneri isteği alındı - User ID: 4489, Item ID: 268
+2025-03-21 17:56:56,763 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 268
+2025-03-21 17:56:56,765 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 17:56:56,766 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0050s
+2025-03-21 17:56:59,123 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 17:56:59,124 - api_service - INFO - Öneri isteği alındı - User ID: 9797, Item ID: None
+2025-03-21 17:56:59,125 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 9797
+2025-03-21 17:56:59,126 - api_service - INFO - Kullanıcının 15 adet derecelendirmesi bulundu
+2025-03-21 17:56:59,141 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.015s)
+2025-03-21 17:56:59,142 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0186s
+2025-03-21 18:04:38,874 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:04:38,932 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:04:44,568 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:04:44,645 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:04:44,766 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:04:44,837 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:04:44,849 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:04:44,850 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:04:47,273 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:04:47,697 - api_service - INFO - 12 adet öneri modeli bulundu.
+2025-03-21 18:04:47,698 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: c88a3c2e68574d7db94c5f4fa1d30733)
+2025-03-21 18:04:47,700 - api_service - INFO - Öneri modeli yükleniyor: c88a3c2e68574d7db94c5f4fa1d30733
+2025-03-21 18:04:50,718 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/c88a3c2e68574d7db94c5f4fa1d30733/model
+2025-03-21 18:04:52,879 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp9bx30ck0\item_metadata.pkl
+2025-03-21 18:04:55,528 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp2e12kzu1\user_item_matrix.pkl
+2025-03-21 18:04:57,909 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpusfbmjmc\item_similarity.pkl
+2025-03-21 18:04:57,911 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:04:57,922 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250321_175552_cosine
+2025-03-21 18:04:57,923 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:05:00,330 - api_service - INFO - 46 adet derecelendirme modeli bulundu.
+2025-03-21 18:05:00,342 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 39fcdb5c1d274c529cb450191f9d1865)
+2025-03-21 18:05:00,343 - api_service - INFO - Derecelendirme modeli yükleniyor: 39fcdb5c1d274c529cb450191f9d1865
+2025-03-21 18:06:52,693 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:06:52,751 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:06:57,382 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:06:57,449 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:06:57,499 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:06:57,559 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:06:57,570 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:06:57,570 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:06:59,821 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:06:59,982 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:06:59,983 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:06:59,984 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:07:02,170 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:07:04,343 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp4fow9x9i\item_metadata.pkl
+2025-03-21 18:07:06,921 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp4lw40zao\user_item_matrix.pkl
+2025-03-21 18:07:09,290 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpdnir679l\item_similarity.pkl
+2025-03-21 18:07:09,291 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:07:09,302 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:07:09,302 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:07:11,519 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:07:11,527 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:07:11,528 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:07:14,605 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:07:16,677 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:07:16,684 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:07:16,684 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:07:23,625 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 18:07:23,626 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-21 18:07:25,678 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 18:07:25,858 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 18:07:25,860 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.1817s
+2025-03-21 18:07:27,920 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 18:07:28,105 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.1850s
+2025-03-21 18:07:32,987 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 18:07:32,990 - api_service - INFO - Öneri isteği alındı - User ID: 4637, Item ID: 830
+2025-03-21 18:07:32,991 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 830
+2025-03-21 18:07:32,993 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 18:07:32,994 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0069s
+2025-03-21 18:07:35,319 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 18:07:35,321 - api_service - INFO - Öneri isteği alındı - User ID: 2549, Item ID: None
+2025-03-21 18:07:35,322 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 2549
+2025-03-21 18:07:35,323 - api_service - INFO - Kullanıcının 10 adet derecelendirmesi bulundu
+2025-03-21 18:07:35,331 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.009s)
+2025-03-21 18:07:35,333 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0132s
+2025-03-21 18:12:51,172 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:12:51,247 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:12:51,299 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:12:51,366 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:12:51,379 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:12:51,380 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:12:53,688 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:12:53,880 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:12:53,882 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:12:53,883 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:12:56,713 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:12:58,902 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp3ibxkork\item_metadata.pkl
+2025-03-21 18:13:01,423 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp1c4ush6v\user_item_matrix.pkl
+2025-03-21 18:13:03,857 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp2_qsh2f7\item_similarity.pkl
+2025-03-21 18:13:03,858 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:13:03,867 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:13:03,868 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:13:06,083 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:13:06,094 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:13:06,095 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:13:09,270 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:13:11,351 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:13:11,358 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:13:11,359 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:31:27,070 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:31:27,126 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:31:27,172 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:31:27,229 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:31:27,240 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:31:27,241 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:31:29,492 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:31:29,663 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:31:29,664 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:31:29,666 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:31:32,489 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:31:34,651 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpi86unysy\item_metadata.pkl
+2025-03-21 18:31:37,169 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpfphwenl3\user_item_matrix.pkl
+2025-03-21 18:31:39,517 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpa7qt8f6_\item_similarity.pkl
+2025-03-21 18:31:39,519 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:31:39,527 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:31:39,528 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:31:41,741 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:31:41,749 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:31:41,751 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:31:44,743 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:31:46,805 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:31:46,812 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:31:46,813 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:32:22,048 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 18:32:22,049 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-21 18:32:24,113 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 18:32:24,305 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 18:32:24,306 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.1938s
+2025-03-21 18:32:26,345 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 18:32:26,546 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2007s
+2025-03-21 18:34:35,490 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 18:34:35,493 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0044s
+2025-03-21 18:34:40,711 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:34:40,771 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:34:40,818 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:34:40,898 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:34:40,909 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:34:40,910 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:34:43,140 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:34:43,299 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:34:43,301 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:34:43,302 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:34:46,159 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:34:48,318 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpbsni20e_\item_metadata.pkl
+2025-03-21 18:34:50,831 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpxfa2ogf5\user_item_matrix.pkl
+2025-03-21 18:34:53,192 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpr88hso90\item_similarity.pkl
+2025-03-21 18:34:53,194 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:34:53,203 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:34:53,203 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:34:55,514 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:34:55,525 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:34:55,527 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:34:58,468 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:35:00,542 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:35:00,551 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:35:00,551 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:35:00,558 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 18:35:00,559 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 18:35:00,764 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 18:35:00,950 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.3910s
+2025-03-21 18:35:00,950 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3910s
+2025-03-21 18:35:35,512 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 18:35:35,513 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-21 18:35:37,584 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 18:35:37,755 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 18:35:37,756 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.1717s
+2025-03-21 18:35:39,844 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 18:35:40,055 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2115s
+2025-03-21 18:35:44,755 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 18:35:44,757 - api_service - INFO - Öneri isteği alındı - User ID: 4616, Item ID: 7
+2025-03-21 18:35:44,758 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 7
+2025-03-21 18:35:44,760 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 18:35:44,760 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0053s
+2025-03-21 18:37:47,097 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:37:47,167 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:37:47,220 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:37:47,282 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:37:47,295 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:37:47,296 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:37:49,564 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:37:49,758 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:37:49,759 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:37:49,762 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:37:52,676 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:37:54,834 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpycm0a0nb\item_metadata.pkl
+2025-03-21 18:37:57,343 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmprotjh7y9\user_item_matrix.pkl
+2025-03-21 18:37:59,717 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpysdfpbpk\item_similarity.pkl
+2025-03-21 18:37:59,719 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:37:59,729 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:37:59,729 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:38:01,931 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:38:01,940 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:38:01,942 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:38:05,037 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:38:07,097 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:38:07,104 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:38:07,105 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:38:13,491 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-21 18:38:13,493 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0020s
+2025-03-21 18:38:15,582 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-21 18:38:15,763 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-21 18:38:15,764 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.1822s
+2025-03-21 18:38:17,847 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-21 18:38:18,019 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.1720s
+2025-03-21 18:38:22,772 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 18:38:22,775 - api_service - INFO - Öneri isteği alındı - User ID: 1725, Item ID: 48
+2025-03-21 18:38:22,775 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 48
+2025-03-21 18:38:22,777 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-21 18:38:22,778 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0060s
+2025-03-21 18:38:25,145 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-21 18:38:25,146 - api_service - INFO - Öneri isteği alındı - User ID: 2884, Item ID: None
+2025-03-21 18:38:25,147 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 2884
+2025-03-21 18:38:25,148 - api_service - INFO - Kullanıcının 12 adet derecelendirmesi bulundu
+2025-03-21 18:38:25,156 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.009s)
+2025-03-21 18:38:25,157 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0120s
+2025-03-21 18:41:49,689 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:41:49,768 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:41:49,821 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:41:49,881 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:41:49,894 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:41:49,895 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:41:52,163 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:41:52,330 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:41:52,331 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:41:52,332 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:41:55,256 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:41:57,419 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpve48hhon\item_metadata.pkl
+2025-03-21 18:41:59,977 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpei7y1acx\user_item_matrix.pkl
+2025-03-21 18:42:02,346 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp8thu450x\item_similarity.pkl
+2025-03-21 18:42:02,348 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:42:02,357 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:42:02,357 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:42:04,562 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:42:04,572 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:42:04,574 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:42:07,682 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:42:09,744 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:42:09,753 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:42:09,753 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-21 18:46:50,182 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:46:50,245 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:46:50,291 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-21 18:46:50,351 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-21 18:46:50,362 - api_service - INFO - Servis başlatılıyor...
+2025-03-21 18:46:50,362 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-21 18:46:52,615 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-21 18:46:52,771 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-21 18:46:52,772 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-21 18:46:52,773 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-21 18:46:55,612 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-21 18:46:57,756 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmplj3ern3k\item_metadata.pkl
+2025-03-21 18:47:00,238 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpjfnrc50x\user_item_matrix.pkl
+2025-03-21 18:47:02,586 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmptedynhux\item_similarity.pkl
+2025-03-21 18:47:02,588 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-21 18:47:02,596 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-21 18:47:02,596 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-21 18:47:04,785 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-21 18:47:04,793 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-21 18:47:04,795 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-21 18:47:07,814 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-21 18:47:09,881 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-21 18:47:09,891 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-21 18:47:09,892 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:04:43,680 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:04:43,765 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:04:48,874 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:04:48,944 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:04:49,007 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:04:49,081 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:04:49,095 - api_service - INFO - Servis başlatılıyor...
+2025-03-22 22:04:49,096 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-22 22:04:54,526 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-22 22:04:54,750 - api_service - INFO - 8 adet öneri modeli bulundu.
+2025-03-22 22:04:54,750 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 059bfc51e9c240468cbfc3a263f34db6)
+2025-03-22 22:04:54,767 - api_service - INFO - Öneri modeli yükleniyor: 059bfc51e9c240468cbfc3a263f34db6
+2025-03-22 22:04:57,742 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/059bfc51e9c240468cbfc3a263f34db6/model
+2025-03-22 22:04:59,920 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpd1nqtbx0\item_metadata.pkl
+2025-03-22 22:05:02,656 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpabum6834\user_item_matrix.pkl
+2025-03-22 22:05:05,247 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmplj57s9je\item_similarity.pkl
+2025-03-22 22:05:05,249 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-22 22:05:05,263 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250320_100319_euclidean_selcukakarin_1
+2025-03-22 22:05:05,264 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-22 22:05:07,529 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-22 22:05:07,536 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-22 22:05:07,538 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-22 22:05:12,881 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-22 22:05:14,916 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-22 22:05:14,926 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-22 22:05:14,927 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:12:52,559 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-22 22:12:52,559 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0005s
+2025-03-22 22:12:59,308 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:12:59,380 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:12:59,444 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:12:59,518 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:12:59,534 - api_service - INFO - Servis başlatılıyor...
+2025-03-22 22:12:59,535 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-22 22:13:01,831 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-22 22:13:02,044 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-22 22:13:02,044 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 8b0a92191dd44f03b5fc8848f90000f4)
+2025-03-22 22:13:02,044 - api_service - INFO - Öneri modeli yükleniyor: 8b0a92191dd44f03b5fc8848f90000f4
+2025-03-22 22:13:04,934 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/8b0a92191dd44f03b5fc8848f90000f4/model
+2025-03-22 22:13:07,113 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp98s6wsa9\item_metadata.pkl
+2025-03-22 22:13:09,603 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpiawhr3xn\user_item_matrix.pkl
+2025-03-22 22:13:12,011 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpqvfvxcv_\item_similarity.pkl
+2025-03-22 22:13:12,015 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-22 22:13:12,023 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250322_221004_cosine
+2025-03-22 22:13:12,024 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-22 22:13:14,223 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-22 22:13:14,223 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-22 22:13:14,223 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-22 22:13:17,365 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-22 22:13:19,442 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-22 22:13:19,450 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-22 22:13:19,450 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:13:19,457 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:13:19,457 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-22 22:13:19,458 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-22 22:13:19,829 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-22 22:13:19,834 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3766s
+2025-03-22 22:13:19,835 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.3766s
+2025-03-22 22:13:19,837 - api_service - INFO - Öneri isteği alındı - User ID: 770, Item ID: 518
+2025-03-22 22:13:19,837 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 518
+2025-03-22 22:13:19,840 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.003s)
+2025-03-22 22:13:19,842 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.3854s
+2025-03-22 22:13:23,184 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:13:23,184 - api_service - INFO - Öneri isteği alındı - User ID: 5503, Item ID: None
+2025-03-22 22:13:23,184 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 5503
+2025-03-22 22:13:23,184 - api_service - INFO - Kullanıcının 11 adet derecelendirmesi bulundu
+2025-03-22 22:13:23,184 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.000s)
+2025-03-22 22:13:23,184 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0000s
+2025-03-22 22:14:00,559 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:14:00,616 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:14:00,679 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:14:00,733 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:14:00,748 - api_service - INFO - Servis başlatılıyor...
+2025-03-22 22:14:00,748 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-22 22:14:03,003 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-22 22:14:03,155 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-22 22:14:03,155 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 8b0a92191dd44f03b5fc8848f90000f4)
+2025-03-22 22:14:03,155 - api_service - INFO - Öneri modeli yükleniyor: 8b0a92191dd44f03b5fc8848f90000f4
+2025-03-22 22:14:05,955 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/8b0a92191dd44f03b5fc8848f90000f4/model
+2025-03-22 22:14:08,104 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpmhvcmtjg\item_metadata.pkl
+2025-03-22 22:14:10,606 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpgbcl28sg\user_item_matrix.pkl
+2025-03-22 22:14:13,108 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp1q87vuaz\item_similarity.pkl
+2025-03-22 22:14:13,108 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-22 22:14:13,123 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250322_221004_cosine
+2025-03-22 22:14:13,123 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-22 22:14:15,344 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-22 22:14:15,349 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-22 22:14:15,349 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-22 22:14:18,442 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-22 22:14:20,518 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-22 22:14:20,518 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-22 22:14:20,518 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:16:20,556 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-22 22:16:20,556 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0000s
+2025-03-22 22:16:22,628 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-22 22:16:22,822 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-22 22:16:22,829 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.2015s
+2025-03-22 22:16:24,860 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-22 22:16:25,083 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2230s
+2025-03-22 22:16:29,844 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:16:29,844 - api_service - INFO - Öneri isteği alındı - User ID: 220, Item ID: 28
+2025-03-22 22:16:29,844 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 28
+2025-03-22 22:16:29,850 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.006s)
+2025-03-22 22:16:29,852 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0079s
+2025-03-22 22:16:32,168 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:16:32,168 - api_service - INFO - Öneri isteği alındı - User ID: 1429, Item ID: None
+2025-03-22 22:16:32,168 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 1429
+2025-03-22 22:16:32,168 - api_service - INFO - Kullanıcının 8 adet derecelendirmesi bulundu
+2025-03-22 22:16:32,168 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.000s)
+2025-03-22 22:16:32,168 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0000s
+2025-03-22 22:23:28,221 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:23:28,339 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:23:28,429 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:23:28,556 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:23:28,577 - api_service - INFO - Servis başlatılıyor...
+2025-03-22 22:23:28,578 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-22 22:23:30,925 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-22 22:23:31,189 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-22 22:23:31,191 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 8b0a92191dd44f03b5fc8848f90000f4)
+2025-03-22 22:23:31,193 - api_service - INFO - Öneri modeli yükleniyor: 8b0a92191dd44f03b5fc8848f90000f4
+2025-03-22 22:23:34,937 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/8b0a92191dd44f03b5fc8848f90000f4/model
+2025-03-22 22:23:37,133 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpi69io0f_\item_metadata.pkl
+2025-03-22 22:23:39,943 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpsm8ok1wg\user_item_matrix.pkl
+2025-03-22 22:23:42,419 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpcmy_7iq9\item_similarity.pkl
+2025-03-22 22:23:42,420 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-22 22:23:42,432 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250322_221004_cosine
+2025-03-22 22:23:42,433 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-22 22:23:44,750 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-22 22:23:44,759 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-22 22:23:44,762 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-22 22:23:48,288 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-22 22:23:50,343 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-22 22:23:50,355 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-22 22:23:50,355 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:23:59,949 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-22 22:23:59,950 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-22 22:24:02,001 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-22 22:24:02,250 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-22 22:24:02,251 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.2500s
+2025-03-22 22:24:04,316 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-22 22:24:04,558 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2418s
+2025-03-22 22:24:10,166 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:24:10,168 - api_service - INFO - Öneri isteği alındı - User ID: 243, Item ID: 947
+2025-03-22 22:24:10,169 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 947
+2025-03-22 22:24:10,170 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.001s)
+2025-03-22 22:24:10,171 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0050s
+2025-03-22 22:24:12,500 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:24:12,501 - api_service - INFO - Öneri isteği alındı - User ID: 9068, Item ID: None
+2025-03-22 22:24:12,502 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 9068
+2025-03-22 22:24:12,503 - api_service - INFO - Kullanıcının 16 adet derecelendirmesi bulundu
+2025-03-22 22:24:12,514 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.012s)
+2025-03-22 22:24:12,515 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0159s
+2025-03-22 22:26:23,909 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:23,913 - api_service - INFO - Tahmin isteği alındı - User ID: 807, Item ID: 9
+2025-03-22 22:26:23,965 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.034s)
+2025-03-22 22:26:23,968 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0588s
+2025-03-22 22:26:25,997 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:25,998 - api_service - INFO - Tahmin isteği alındı - User ID: 761, Item ID: 310
+2025-03-22 22:26:26,019 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.015s)
+2025-03-22 22:26:26,020 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0230s
+2025-03-22 22:26:28,057 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:28,058 - api_service - INFO - Tahmin isteği alındı - User ID: 941, Item ID: 89
+2025-03-22 22:26:28,080 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.017s)
+2025-03-22 22:26:28,081 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0258s
+2025-03-22 22:26:30,109 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:30,110 - api_service - INFO - Tahmin isteği alındı - User ID: 871, Item ID: 27
+2025-03-22 22:26:30,137 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.021s)
+2025-03-22 22:26:30,138 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0285s
+2025-03-22 22:26:32,181 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:32,182 - api_service - INFO - Tahmin isteği alındı - User ID: 190, Item ID: 345
+2025-03-22 22:26:32,201 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.013s)
+2025-03-22 22:26:32,201 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0203s
+2025-03-22 22:26:34,247 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:34,248 - api_service - INFO - Tahmin isteği alındı - User ID: 104, Item ID: 207
+2025-03-22 22:26:34,269 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.016s)
+2025-03-22 22:26:34,270 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0237s
+2025-03-22 22:26:36,315 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:36,316 - api_service - INFO - Tahmin isteği alındı - User ID: 523, Item ID: 333
+2025-03-22 22:26:36,337 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.015s)
+2025-03-22 22:26:36,337 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0218s
+2025-03-22 22:26:38,370 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:38,370 - api_service - INFO - Tahmin isteği alındı - User ID: 109, Item ID: 435
+2025-03-22 22:26:38,396 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.026s)
+2025-03-22 22:26:38,397 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0269s
+2025-03-22 22:26:40,424 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:40,425 - api_service - INFO - Tahmin isteği alındı - User ID: 9, Item ID: 126
+2025-03-22 22:26:40,451 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.019s)
+2025-03-22 22:26:40,452 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0283s
+2025-03-22 22:26:42,476 - api_service - INFO - Request: POST http://localhost:8000/predict from 127.0.0.1
+2025-03-22 22:26:42,478 - api_service - INFO - Tahmin isteği alındı - User ID: 218, Item ID: 300
+2025-03-22 22:26:42,500 - api_service - INFO - Tahmin sonucu: 3.02 (yanıt süresi: 0.017s)
+2025-03-22 22:26:42,500 - api_service - INFO - Response: POST http://localhost:8000/predict - Status: 200 - Duration: 0.0243s
+2025-03-22 22:41:59,252 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:41:59,314 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:42:04,053 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:42:04,119 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:42:04,173 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-22 22:42:04,241 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-22 22:42:04,257 - api_service - INFO - Servis başlatılıyor...
+2025-03-22 22:42:04,258 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-22 22:42:06,549 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-22 22:42:06,804 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-22 22:42:06,805 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 8b0a92191dd44f03b5fc8848f90000f4)
+2025-03-22 22:42:06,806 - api_service - INFO - Öneri modeli yükleniyor: 8b0a92191dd44f03b5fc8848f90000f4
+2025-03-22 22:42:10,004 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/8b0a92191dd44f03b5fc8848f90000f4/model
+2025-03-22 22:42:12,174 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp9jh_8s67\item_metadata.pkl
+2025-03-22 22:42:14,756 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpbe5wx_tr\user_item_matrix.pkl
+2025-03-22 22:42:17,297 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpzucljch3\item_similarity.pkl
+2025-03-22 22:42:17,299 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-22 22:42:17,310 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250322_221004_cosine
+2025-03-22 22:42:17,311 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-22 22:42:19,576 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-22 22:42:19,580 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-22 22:42:19,582 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-22 22:42:22,952 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-22 22:42:25,002 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-22 22:42:25,010 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-22 22:42:25,011 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-22 22:43:35,810 - api_service - INFO - Request: GET http://localhost:8000/ from 127.0.0.1
+2025-03-22 22:43:35,811 - api_service - INFO - Response: GET http://localhost:8000/ - Status: 200 - Duration: 0.0010s
+2025-03-22 22:43:37,851 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-22 22:43:38,112 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-22 22:43:38,113 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.2624s
+2025-03-22 22:43:40,152 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-22 22:43:40,377 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.2252s
+2025-03-22 22:43:45,787 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:43:45,790 - api_service - INFO - Öneri isteği alındı - User ID: 4410, Item ID: 791
+2025-03-22 22:43:45,790 - api_service - INFO - Ürün bazlı öneri yapılıyor - Item ID: 791
+2025-03-22 22:43:45,792 - api_service - INFO - Öneri tamamlandı - 5 öneri, item_based yöntemi (yanıt süresi: 0.002s)
+2025-03-22 22:43:45,793 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0060s
+2025-03-22 22:43:48,084 - api_service - INFO - Request: POST http://localhost:8000/recommend from 127.0.0.1
+2025-03-22 22:43:48,085 - api_service - INFO - Öneri isteği alındı - User ID: 4151, Item ID: None
+2025-03-22 22:43:48,087 - api_service - INFO - Kullanıcı bazlı öneri yapılıyor - User ID: 4151
+2025-03-22 22:43:48,088 - api_service - INFO - Kullanıcının 4 adet derecelendirmesi bulundu
+2025-03-22 22:43:48,094 - api_service - INFO - Öneri tamamlandı - 5 öneri, user_based yöntemi (yanıt süresi: 0.007s)
+2025-03-22 22:43:48,095 - api_service - INFO - Response: POST http://localhost:8000/recommend - Status: 200 - Duration: 0.0110s
+2025-03-24 23:09:05,333 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:09:05,406 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:09:05,422 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-24 23:09:11,584 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:09:11,662 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:09:11,746 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:09:11,836 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:09:11,852 - api_service - INFO - Servis başlatılıyor...
+2025-03-24 23:09:11,852 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-24 23:09:18,736 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-24 23:09:19,070 - api_service - INFO - 9 adet öneri modeli bulundu.
+2025-03-24 23:09:19,075 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 8b0a92191dd44f03b5fc8848f90000f4)
+2025-03-24 23:09:19,077 - api_service - INFO - Öneri modeli yükleniyor: 8b0a92191dd44f03b5fc8848f90000f4
+2025-03-24 23:09:22,819 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/8b0a92191dd44f03b5fc8848f90000f4/model
+2025-03-24 23:09:25,060 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmptamomar9\item_metadata.pkl
+2025-03-24 23:09:27,859 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpgw5yv7mm\user_item_matrix.pkl
+2025-03-24 23:09:30,340 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp932ssxrc\item_similarity.pkl
+2025-03-24 23:09:30,343 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-24 23:09:30,355 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250322_221004_cosine
+2025-03-24 23:09:30,356 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-24 23:09:32,681 - api_service - INFO - 7 adet derecelendirme modeli bulundu.
+2025-03-24 23:09:32,689 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 783c93bc38c7427b9607be7a3c5cb615)
+2025-03-24 23:09:32,691 - api_service - INFO - Derecelendirme modeli yükleniyor: 783c93bc38c7427b9607be7a3c5cb615
+2025-03-24 23:09:38,346 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/783c93bc38c7427b9607be7a3c5cb615/model
+2025-03-24 23:09:40,384 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-24 23:09:40,393 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: v4_lightgbm
+2025-03-24 23:09:40,394 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-24 23:09:44,771 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-24 23:09:45,136 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.3642s
+2025-03-24 23:10:07,436 - api_service - INFO - Request: POST http://localhost:8000/train/recommendation from 127.0.0.1
+2025-03-24 23:10:40,261 - api_service - INFO - Response: POST http://localhost:8000/train/recommendation - Status: 200 - Duration: 32.8254s
+2025-03-24 23:10:45,698 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-24 23:11:22,532 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 200 - Duration: 36.8340s
+2025-03-24 23:13:16,643 - api_service - INFO - Request: POST http://localhost:8000/train/all from 127.0.0.1
+2025-03-24 23:13:16,651 - api_service - INFO - Response: POST http://localhost:8000/train/all - Status: 422 - Duration: 0.0079s
+2025-03-24 23:13:25,927 - api_service - INFO - Request: POST http://localhost:8000/train/all from 127.0.0.1
+2025-03-24 23:13:25,929 - api_service - INFO - Response: POST http://localhost:8000/train/all - Status: 422 - Duration: 0.0020s
+2025-03-24 23:16:44,722 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:16:44,804 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:16:44,826 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-24 23:16:51,295 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:16:51,382 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:16:51,465 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-24 23:16:51,542 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-24 23:16:51,559 - api_service - INFO - Servis başlatılıyor...
+2025-03-24 23:16:51,559 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-24 23:16:53,900 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-24 23:16:54,143 - api_service - INFO - 10 adet öneri modeli bulundu.
+2025-03-24 23:16:54,145 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 539efea9708d4d32b4c7b30c4af05ab8)
+2025-03-24 23:16:54,147 - api_service - INFO - Öneri modeli yükleniyor: 539efea9708d4d32b4c7b30c4af05ab8
+2025-03-24 23:16:59,386 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/539efea9708d4d32b4c7b30c4af05ab8/model
+2025-03-24 23:16:59,523 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp1ljdzql0\item_metadata.pkl
+2025-03-24 23:17:02,149 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpyb8xwapt\user_item_matrix.pkl
+2025-03-24 23:17:04,621 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpy3jses0f\item_similarity.pkl
+2025-03-24 23:17:04,624 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-24 23:17:04,637 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250324_231007_cosine_my_recommender_v1
+2025-03-24 23:17:04,639 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-24 23:17:06,882 - api_service - INFO - 8 adet derecelendirme modeli bulundu.
+2025-03-24 23:17:06,892 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 9126d381aad840bc93bd2c7aa0541f9f)
+2025-03-24 23:17:06,894 - api_service - INFO - Derecelendirme modeli yükleniyor: 9126d381aad840bc93bd2c7aa0541f9f
+2025-03-24 23:17:10,213 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/9126d381aad840bc93bd2c7aa0541f9f/model
+2025-03-24 23:17:12,281 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-24 23:17:12,290 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: my_model_v1
+2025-03-24 23:17:12,291 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-24 23:18:40,553 - api_service - INFO - Request: POST http://localhost:8000/train/all from 127.0.0.1
+2025-03-24 23:22:52,726 - api_service - INFO - Response: POST http://localhost:8000/train/all - Status: 200 - Duration: 252.1733s
+2025-03-25 01:17:42,215 - api_service - INFO - MLflow Tracking URI: http://mlflow:5000
+2025-03-25 01:17:42,216 - api_service - INFO - Uygulama başlatılıyor...
+2025-03-25 01:17:42,216 - api_service - INFO - MLflow URI: http://mlflow:5000
+2025-03-25 01:17:42,217 - api_service - INFO - MLflow bağlantısı kontrol ediliyor: http://mlflow:5000
+2025-03-25 01:22:23,298 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:22:23,366 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:22:23,385 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 01:22:29,058 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:22:29,134 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:22:29,230 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:22:29,302 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:22:29,319 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 01:22:29,320 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 01:22:32,266 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 01:22:32,561 - api_service - INFO - 13 adet öneri modeli bulundu.
+2025-03-25 01:22:32,573 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 2e1df06cd3cc40b4a782b5bf8766cf49)
+2025-03-25 01:22:32,575 - api_service - INFO - Öneri modeli yükleniyor: 2e1df06cd3cc40b4a782b5bf8766cf49
+2025-03-25 01:22:37,606 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/2e1df06cd3cc40b4a782b5bf8766cf49/model
+2025-03-25 01:22:37,767 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpepd11ava\item_metadata.pkl
+2025-03-25 01:22:40,434 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp_94qk4vp\user_item_matrix.pkl
+2025-03-25 01:22:42,880 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpx5dah98f\item_similarity.pkl
+2025-03-25 01:22:42,882 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 01:22:42,894 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250324_232214_manhattan_release_2024_03_manhattan
+2025-03-25 01:22:42,894 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 01:22:45,255 - api_service - INFO - 12 adet derecelendirme modeli bulundu.
+2025-03-25 01:22:45,263 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 4833bcb2a1714fbfb60a2aa0fa617b26)
+2025-03-25 01:22:45,265 - api_service - INFO - Derecelendirme modeli yükleniyor: 4833bcb2a1714fbfb60a2aa0fa617b26
+2025-03-25 01:22:48,794 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/4833bcb2a1714fbfb60a2aa0fa617b26/model
+2025-03-25 01:22:50,858 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 01:22:50,867 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: release_2024_03_v4_lightgbm
+2025-03-25 01:22:50,868 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 01:23:58,227 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:23:58,293 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:23:58,311 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 01:24:03,531 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:24:03,605 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:24:03,692 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:24:03,763 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:24:03,777 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 01:24:03,777 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 01:24:06,105 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 01:24:06,329 - api_service - INFO - 13 adet öneri modeli bulundu.
+2025-03-25 01:24:06,330 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 2e1df06cd3cc40b4a782b5bf8766cf49)
+2025-03-25 01:24:06,331 - api_service - INFO - Öneri modeli yükleniyor: 2e1df06cd3cc40b4a782b5bf8766cf49
+2025-03-25 01:24:11,325 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/2e1df06cd3cc40b4a782b5bf8766cf49/model
+2025-03-25 01:24:11,446 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpo8o1w8jf\item_metadata.pkl
+2025-03-25 01:24:13,950 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp58lhsec0\user_item_matrix.pkl
+2025-03-25 01:24:16,335 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp4iwl2lau\item_similarity.pkl
+2025-03-25 01:24:16,336 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 01:24:16,346 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250324_232214_manhattan_release_2024_03_manhattan
+2025-03-25 01:24:16,347 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 01:24:18,570 - api_service - INFO - 12 adet derecelendirme modeli bulundu.
+2025-03-25 01:24:18,577 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 4833bcb2a1714fbfb60a2aa0fa617b26)
+2025-03-25 01:24:18,579 - api_service - INFO - Derecelendirme modeli yükleniyor: 4833bcb2a1714fbfb60a2aa0fa617b26
+2025-03-25 01:24:21,620 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/4833bcb2a1714fbfb60a2aa0fa617b26/model
+2025-03-25 01:24:23,673 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 01:24:23,681 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: release_2024_03_v4_lightgbm
+2025-03-25 01:24:23,681 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 01:24:27,214 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-25 01:24:27,537 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-25 01:24:27,544 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.3300s
+2025-03-25 01:24:30,073 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:24:30,408 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 0.3344s
+2025-03-25 01:24:39,510 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:24:39,926 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 0.4161s
+2025-03-25 01:24:43,711 - api_service - INFO - Request: POST http://localhost:8000/train/recommendation from 127.0.0.1
+2025-03-25 01:25:16,933 - api_service - INFO - Response: POST http://localhost:8000/train/recommendation - Status: 200 - Duration: 33.2223s
+2025-03-25 01:27:21,739 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:27:21,799 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:27:21,815 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 01:27:27,178 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:27:27,248 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:27:27,317 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:27:27,405 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:27:27,418 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 01:27:27,418 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 01:27:29,735 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 01:27:29,992 - api_service - INFO - 14 adet öneri modeli bulundu.
+2025-03-25 01:27:29,994 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 851718ce4c084466b291824fda1958a8)
+2025-03-25 01:27:29,995 - api_service - INFO - Öneri modeli yükleniyor: 851718ce4c084466b291824fda1958a8
+2025-03-25 01:27:35,019 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/851718ce4c084466b291824fda1958a8/model
+2025-03-25 01:27:35,139 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmppgy5nsrm\item_metadata.pkl
+2025-03-25 01:27:37,718 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp52vkzap_\user_item_matrix.pkl
+2025-03-25 01:27:40,287 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp14y8osa2\item_similarity.pkl
+2025-03-25 01:27:40,289 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 01:27:40,301 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250325_012443_cosine_my_recommender_v1
+2025-03-25 01:27:40,302 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 01:27:42,760 - api_service - INFO - 12 adet derecelendirme modeli bulundu.
+2025-03-25 01:27:42,773 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 4833bcb2a1714fbfb60a2aa0fa617b26)
+2025-03-25 01:27:42,774 - api_service - INFO - Derecelendirme modeli yükleniyor: 4833bcb2a1714fbfb60a2aa0fa617b26
+2025-03-25 01:27:46,104 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/4833bcb2a1714fbfb60a2aa0fa617b26/model
+2025-03-25 01:27:48,138 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 01:27:48,145 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: release_2024_03_v4_lightgbm
+2025-03-25 01:27:48,146 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 01:28:09,673 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-25 01:28:10,498 - api_service - ERROR - Model RMSE (1.15) çok yüksek!
+2025-03-25 01:28:10,500 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.8266s
+2025-03-25 01:28:13,785 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:28:13,787 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 404 - Duration: 0.0024s
+2025-03-25 01:29:33,122 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:29:33,195 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:29:33,212 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 01:29:39,374 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:29:39,459 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:29:39,540 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:29:39,622 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:29:39,638 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 01:29:39,639 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 01:29:42,051 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 01:29:42,380 - api_service - INFO - 14 adet öneri modeli bulundu.
+2025-03-25 01:29:42,382 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 851718ce4c084466b291824fda1958a8)
+2025-03-25 01:29:42,384 - api_service - INFO - Öneri modeli yükleniyor: 851718ce4c084466b291824fda1958a8
+2025-03-25 01:29:47,741 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/851718ce4c084466b291824fda1958a8/model
+2025-03-25 01:29:47,890 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpreigxyu1\item_metadata.pkl
+2025-03-25 01:29:50,624 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpknng_gub\user_item_matrix.pkl
+2025-03-25 01:29:53,160 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp06emo4of\item_similarity.pkl
+2025-03-25 01:29:53,161 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 01:29:53,174 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250325_012443_cosine_my_recommender_v1
+2025-03-25 01:29:53,175 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 01:29:55,571 - api_service - INFO - 12 adet derecelendirme modeli bulundu.
+2025-03-25 01:29:55,578 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 4833bcb2a1714fbfb60a2aa0fa617b26)
+2025-03-25 01:29:55,579 - api_service - INFO - Derecelendirme modeli yükleniyor: 4833bcb2a1714fbfb60a2aa0fa617b26
+2025-03-25 01:29:59,042 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/4833bcb2a1714fbfb60a2aa0fa617b26/model
+2025-03-25 01:30:01,097 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 01:30:01,106 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: release_2024_03_v4_lightgbm
+2025-03-25 01:30:01,107 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 01:30:06,579 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:30:06,935 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 0.3556s
+2025-03-25 01:30:14,020 - api_service - INFO - Request: POST http://localhost:8000/train/recommendation from 127.0.0.1
+2025-03-25 01:30:38,232 - api_service - INFO - Response: POST http://localhost:8000/train/recommendation - Status: 200 - Duration: 24.2118s
+2025-03-25 01:34:18,435 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:34:18,543 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:34:18,564 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 01:34:24,798 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:34:24,880 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:34:24,940 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 01:34:25,023 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 01:34:25,042 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 01:34:25,043 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 01:34:27,460 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 01:34:27,810 - api_service - INFO - 15 adet öneri modeli bulundu.
+2025-03-25 01:34:27,812 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 9da450e7c7fc44b7bdc41993d21e979c)
+2025-03-25 01:34:27,813 - api_service - INFO - Öneri modeli yükleniyor: 9da450e7c7fc44b7bdc41993d21e979c
+2025-03-25 01:34:33,172 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/9da450e7c7fc44b7bdc41993d21e979c/model
+2025-03-25 01:34:33,323 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp4lir7r8y\item_metadata.pkl
+2025-03-25 01:34:35,947 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpxwa95on2\user_item_matrix.pkl
+2025-03-25 01:34:38,427 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpm5n9qcp_\item_similarity.pkl
+2025-03-25 01:34:38,428 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 01:34:38,440 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250325_013014_cosine_my_recommender_v1
+2025-03-25 01:34:38,440 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 01:34:40,859 - api_service - INFO - 12 adet derecelendirme modeli bulundu.
+2025-03-25 01:34:40,868 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 4833bcb2a1714fbfb60a2aa0fa617b26)
+2025-03-25 01:34:40,870 - api_service - INFO - Derecelendirme modeli yükleniyor: 4833bcb2a1714fbfb60a2aa0fa617b26
+2025-03-25 01:34:44,330 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/4833bcb2a1714fbfb60a2aa0fa617b26/model
+2025-03-25 01:34:46,372 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 01:34:46,380 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: release_2024_03_v4_lightgbm
+2025-03-25 01:34:46,380 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 01:34:48,795 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:35:13,005 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 200 - Duration: 24.2109s
+2025-03-25 01:35:56,789 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 01:35:56,795 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 422 - Duration: 0.0060s
+2025-03-25 01:36:18,250 - api_service - INFO - Request: POST http://localhost:8000/train/all from 127.0.0.1
+2025-03-25 01:42:22,279 - api_service - INFO - Response: POST http://localhost:8000/train/all - Status: 200 - Duration: 364.0287s
+2025-03-25 10:47:54,512 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:47:54,576 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:47:54,593 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://mlflow:5000
+2025-03-25 10:47:59,178 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:47:59,239 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:47:59,310 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:47:59,367 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:47:59,381 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 10:47:59,381 - api_service - INFO - MLflow servisinin hazır olması bekleniyor: http://mlflow:5000
+2025-03-25 10:48:01,662 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 1/30
+2025-03-25 10:48:05,937 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 2/30
+2025-03-25 10:48:10,226 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 3/30
+2025-03-25 10:48:14,494 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 4/30
+2025-03-25 10:48:18,771 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 5/30
+2025-03-25 10:48:23,049 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 6/30
+2025-03-25 10:48:27,332 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 7/30
+2025-03-25 10:48:31,599 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 8/30
+2025-03-25 10:48:35,880 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 9/30
+2025-03-25 10:48:40,158 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 10/30
+2025-03-25 10:48:44,441 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 11/30
+2025-03-25 10:48:48,717 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 12/30
+2025-03-25 10:48:52,988 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 13/30
+2025-03-25 10:48:57,257 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 14/30
+2025-03-25 10:49:01,538 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 15/30
+2025-03-25 10:49:05,818 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 16/30
+2025-03-25 10:49:10,085 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 17/30
+2025-03-25 10:49:14,359 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 18/30
+2025-03-25 10:49:18,636 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 19/30
+2025-03-25 10:49:22,900 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 20/30
+2025-03-25 10:49:27,185 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 21/30
+2025-03-25 10:49:31,461 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 22/30
+2025-03-25 10:49:35,740 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 23/30
+2025-03-25 10:49:40,023 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 24/30
+2025-03-25 10:49:44,292 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 25/30
+2025-03-25 10:49:48,568 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 26/30
+2025-03-25 10:49:52,847 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 27/30
+2025-03-25 10:49:57,134 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 28/30
+2025-03-25 10:50:01,414 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 29/30
+2025-03-25 10:50:05,679 - api_service - WARNING - MLflow servisi henüz hazır değil. Deneme 30/30
+2025-03-25 10:50:07,681 - api_service - ERROR - MLflow servisi hazır olmadı!
+2025-03-25 10:50:07,682 - api_service - WARNING - MLflow servisi hazır olmadığı için bazı işlemler yapılamayabilir!
+2025-03-25 10:50:13,282 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-25 10:50:13,289 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.0066s
+2025-03-25 10:50:16,224 - api_service - INFO - Request: GET http://localhost:8000/recommendation_model_health from 127.0.0.1
+2025-03-25 10:50:16,226 - api_service - INFO - Response: GET http://localhost:8000/recommendation_model_health - Status: 200 - Duration: 0.0020s
+2025-03-25 10:50:21,897 - api_service - INFO - Request: POST http://localhost:8000/train/recommendation from 127.0.0.1
+2025-03-25 10:54:47,008 - api_service - INFO - Response: POST http://localhost:8000/train/recommendation - Status: 500 - Duration: 265.1119s
+2025-03-25 10:57:04,584 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:57:04,640 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:57:04,654 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 10:57:09,357 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:57:09,417 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:57:09,488 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 10:57:09,556 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 10:57:09,571 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 10:57:09,571 - api_service - INFO - MLflow servisinin hazır olması bekleniyor: http://localhost:5000
+2025-03-25 10:57:11,626 - api_service - INFO - MLflow servisi hazır!
+2025-03-25 10:57:11,627 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 10:57:16,767 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-25 10:57:17,002 - api_service - INFO - 17 adet öneri modeli bulundu.
+2025-03-25 10:57:17,013 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 0b5ec7aaae6445189573f973b4dc4d81)
+2025-03-25 10:57:17,015 - api_service - INFO - Öneri modeli yükleniyor: 0b5ec7aaae6445189573f973b4dc4d81
+2025-03-25 10:57:22,182 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/0b5ec7aaae6445189573f973b4dc4d81/model
+2025-03-25 10:57:22,294 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpgl_jbwqu\item_metadata.pkl
+2025-03-25 10:57:25,015 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpo3188al5\user_item_matrix.pkl
+2025-03-25 10:57:27,473 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpghdkq0ah\item_similarity.pkl
+2025-03-25 10:57:27,476 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-25 10:57:27,485 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250325_013648_euclidean_release_2024_03_euclidean
+2025-03-25 10:57:27,486 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-25 10:57:29,842 - api_service - INFO - 13 adet derecelendirme modeli bulundu.
+2025-03-25 10:57:29,852 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 1c6bd88ed83345db89a23f8f40d7a02b)
+2025-03-25 10:57:29,854 - api_service - INFO - Derecelendirme modeli yükleniyor: 1c6bd88ed83345db89a23f8f40d7a02b
+2025-03-25 10:57:34,903 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/1c6bd88ed83345db89a23f8f40d7a02b/model
+2025-03-25 10:57:36,977 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-25 10:57:36,985 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: my_model_v2
+2025-03-25 10:57:36,986 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-25 10:57:56,684 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-25 10:57:57,085 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.4009s
+2025-03-25 10:57:59,576 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 10:57:59,916 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 0.3395s
+2025-03-25 10:58:04,650 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 10:58:30,324 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 200 - Duration: 25.6747s
+2025-03-25 18:00:50,126 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 18:00:50,195 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 18:00:50,211 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-25 18:00:54,905 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 18:00:54,969 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 18:00:55,036 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-25 18:00:55,096 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-25 18:00:55,109 - api_service - INFO - Servis başlatılıyor...
+2025-03-25 18:00:55,110 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-25 18:00:55,180 - api_service - WARNING - Experiment bulunamadı! Yeni bir experiment oluşturuluyor.
+2025-03-25 18:00:55,209 - api_service - INFO - Yeni experiment oluşturuldu. ID: 699544528066386257
+2025-03-25 18:00:55,229 - api_service - WARNING - Hiç model çalışması bulunamadı! Servis yine de başlatılıyor...
+2025-03-25 18:04:45,126 - api_service - INFO - Request: GET http://localhost:8000/versions from 127.0.0.1
+2025-03-25 18:04:45,172 - api_service - INFO - Response: GET http://localhost:8000/versions - Status: 200 - Duration: 0.0466s
+2025-03-25 18:04:50,357 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 18:04:59,544 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 9.1871s
+2025-03-25 18:05:08,655 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-25 18:05:53,086 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 200 - Duration: 44.4311s
+2025-03-26 16:13:19,033 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-26 16:13:19,103 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-26 16:13:19,118 - api_service - INFO - Uygulama başlatılıyor... MLflow URI: http://localhost:5000
+2025-03-26 16:13:23,623 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-26 16:13:23,695 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-26 16:13:23,745 - api_service - INFO - Ürün verileri yüklendi: 1000 ürün
+2025-03-26 16:13:23,828 - api_service - INFO - Etkileşim verileri yüklendi: 104659 etkileşim
+2025-03-26 16:13:23,847 - api_service - INFO - Servis başlatılıyor...
+2025-03-26 16:13:23,848 - api_service - INFO - MLflow bağlantısı kuruldu: http://localhost:5000
+2025-03-26 16:13:29,809 - api_service - INFO - Öneri modeli aranıyor...
+2025-03-26 16:13:30,031 - api_service - INFO - 17 adet öneri modeli bulundu.
+2025-03-26 16:13:30,047 - api_service - INFO - Öneri modeli yüklemeyi deniyorum (Run ID: 0b5ec7aaae6445189573f973b4dc4d81)
+2025-03-26 16:13:30,047 - api_service - INFO - Öneri modeli yükleniyor: 0b5ec7aaae6445189573f973b4dc4d81
+2025-03-26 16:13:35,110 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/0b5ec7aaae6445189573f973b4dc4d81/model
+2025-03-26 16:13:35,222 - api_service - INFO - Ürün metadataları yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmp0i4agcz6\item_metadata.pkl
+2025-03-26 16:13:37,790 - api_service - INFO - Kullanıcı-ürün matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmpi_on9h06\user_item_matrix.pkl
+2025-03-26 16:13:40,179 - api_service - INFO - Ürün benzerlik matrisi yüklendi: C:\Users\selcuk\AppData\Local\Temp\tmprddznzo0\item_similarity.pkl
+2025-03-26 16:13:40,180 - api_service - INFO - Son çalışan öneri modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_recommendation_model.json
+2025-03-26 16:13:40,187 - api_service - INFO - Öneri modeli başarıyla yüklendi: v1_20250325_013648_euclidean_release_2024_03_euclidean
+2025-03-26 16:13:40,187 - api_service - INFO - Derecelendirme modeli aranıyor...
+2025-03-26 16:13:42,446 - api_service - INFO - 15 adet derecelendirme modeli bulundu.
+2025-03-26 16:13:42,462 - api_service - INFO - Derecelendirme modeli yüklemeyi deniyorum (Run ID: 9eabb6d147f546208f544cd46326f032)
+2025-03-26 16:13:42,462 - api_service - INFO - Derecelendirme modeli yükleniyor: 9eabb6d147f546208f544cd46326f032
+2025-03-26 16:13:46,503 - api_service - INFO - Model MLflow'dan başarıyla yüklendi: runs:/9eabb6d147f546208f544cd46326f032/model
+2025-03-26 16:13:48,586 - api_service - INFO - Son çalışan tahmin modeli bilgileri başarıyla kaydedildi: C:\Users\selcuk\Desktop\mlflow_recommender\last_working_prediction_model.json
+2025-03-26 16:13:48,586 - api_service - INFO - Derecelendirme modeli başarıyla yüklendi: my_model_v4
+2025-03-26 16:13:48,586 - api_service - INFO - Servis başlatma işlemi tamamlandı.
+2025-03-26 16:32:12,324 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-26 16:32:14,610 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 500 - Duration: 2.2867s
+2025-03-26 16:32:31,214 - api_service - INFO - Request: POST http://localhost:8000/train/prediction from 127.0.0.1
+2025-03-26 16:32:55,877 - api_service - INFO - Response: POST http://localhost:8000/train/prediction - Status: 200 - Duration: 24.6625s

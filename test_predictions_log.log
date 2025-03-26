@@ -1,0 +1,178 @@
+2025-03-21 17:54:54,317 - prediction_test - INFO - ===== STARTING TEST: Prediction System Test =====
+2025-03-21 17:54:54,318 - prediction_test - INFO - Test parameters: {"test_type": "automated", "prediction_count": 10}
+2025-03-21 17:54:54,318 - prediction_test - INFO - Starting automated prediction test...
+2025-03-21 17:54:54,319 - prediction_test - INFO - Created report directory: test_reports\prediction_tests\202503\run_20250321_175454
+2025-03-21 17:54:54,320 - prediction_test - INFO - Test report will be saved to: test_reports\prediction_tests\202503\run_20250321_175454\prediction_test_report.txt
+2025-03-21 17:54:54,321 - prediction_test - INFO - Running prediction 1/10
+2025-03-21 17:54:54,322 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 427, 'item_id': 200, 'user_age': 30, 'user_gender': 'E', 'item_category': 'Felsefe', 'item_price': 54.99}
+2025-03-21 17:54:56,394 - prediction_test - DEBUG - Received response in 2.0717 seconds
+2025-03-21 17:54:56,394 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0717s)
+2025-03-21 17:54:56,394 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 427, "item_id": 200, "user_age": 30, "user_gender": "E", "item_category": "Felsefe", "item_price": 54.99}, "response": {"predicted_rating": 3.0187608744564307, "confidence_interval": [2.5187608744564307, 3.5187608744564307], "model_version": "v4_lightgbm"}, "duration": "2.0717s"}
+2025-03-21 17:54:56,395 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:54:56,396 - prediction_test - INFO - Running prediction 2/10
+2025-03-21 17:54:56,397 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 737, 'item_id': 305, 'user_age': 35, 'user_gender': 'E', 'item_category': 'Roman', 'item_price': 29.99}
+2025-03-21 17:54:58,482 - prediction_test - DEBUG - Received response in 2.0845 seconds
+2025-03-21 17:54:58,483 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0845s)
+2025-03-21 17:54:58,483 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 737, "item_id": 305, "user_age": 35, "user_gender": "E", "item_category": "Roman", "item_price": 29.99}, "response": {"predicted_rating": 3.0187606576800055, "confidence_interval": [2.5187606576800055, 3.5187606576800055], "model_version": "v4_lightgbm"}, "duration": "2.0845s"}
+2025-03-21 17:54:58,484 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:54:58,484 - prediction_test - INFO - Running prediction 3/10
+2025-03-21 17:54:58,486 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 734, 'item_id': 135, 'user_age': 50, 'user_gender': 'K', 'item_category': 'Çocuk', 'item_price': 24.99}
+2025-03-21 17:55:00,560 - prediction_test - DEBUG - Received response in 2.0742 seconds
+2025-03-21 17:55:00,561 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0742s)
+2025-03-21 17:55:00,561 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 734, "item_id": 135, "user_age": 50, "user_gender": "K", "item_category": "Çocuk", "item_price": 24.99}, "response": {"predicted_rating": 3.018761595623925, "confidence_interval": [2.518761595623925, 3.518761595623925], "model_version": "v4_lightgbm"}, "duration": "2.0742s"}
+2025-03-21 17:55:00,562 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:00,562 - prediction_test - INFO - Running prediction 4/10
+2025-03-21 17:55:00,563 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 354, 'item_id': 375, 'user_age': 45, 'user_gender': 'E', 'item_category': 'Bilim', 'item_price': 39.99}
+2025-03-21 17:55:02,631 - prediction_test - DEBUG - Received response in 2.0671 seconds
+2025-03-21 17:55:02,631 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0671s)
+2025-03-21 17:55:02,632 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 354, "item_id": 375, "user_age": 45, "user_gender": "E", "item_category": "Bilim", "item_price": 39.99}, "response": {"predicted_rating": 3.0187612525745027, "confidence_interval": [2.5187612525745027, 3.5187612525745027], "model_version": "v4_lightgbm"}, "duration": "2.0671s"}
+2025-03-21 17:55:02,633 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:02,634 - prediction_test - INFO - Running prediction 5/10
+2025-03-21 17:55:02,634 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 706, 'item_id': 25, 'user_age': 50, 'user_gender': 'E', 'item_category': 'Bilim', 'item_price': 54.99}
+2025-03-21 17:55:04,723 - prediction_test - DEBUG - Received response in 2.0886 seconds
+2025-03-21 17:55:04,724 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0886s)
+2025-03-21 17:55:04,724 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 706, "item_id": 25, "user_age": 50, "user_gender": "E", "item_category": "Bilim", "item_price": 54.99}, "response": {"predicted_rating": 3.0187626734249204, "confidence_interval": [2.5187626734249204, 3.5187626734249204], "model_version": "v4_lightgbm"}, "duration": "2.0886s"}
+2025-03-21 17:55:04,725 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:04,726 - prediction_test - INFO - Running prediction 6/10
+2025-03-21 17:55:04,726 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 227, 'item_id': 433, 'user_age': 55, 'user_gender': 'K', 'item_category': 'Felsefe', 'item_price': 29.99}
+2025-03-21 17:55:06,778 - prediction_test - DEBUG - Received response in 2.0509 seconds
+2025-03-21 17:55:06,779 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0509s)
+2025-03-21 17:55:06,780 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 227, "item_id": 433, "user_age": 55, "user_gender": "K", "item_category": "Felsefe", "item_price": 29.99}, "response": {"predicted_rating": 3.018761415051588, "confidence_interval": [2.518761415051588, 3.518761415051588], "model_version": "v4_lightgbm"}, "duration": "2.0509s"}
+2025-03-21 17:55:06,781 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:06,782 - prediction_test - INFO - Running prediction 7/10
+2025-03-21 17:55:06,782 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 622, 'item_id': 413, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Roman', 'item_price': 29.99}
+2025-03-21 17:55:08,858 - prediction_test - DEBUG - Received response in 2.0756 seconds
+2025-03-21 17:55:08,860 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0756s)
+2025-03-21 17:55:08,860 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 622, "item_id": 413, "user_age": 30, "user_gender": "K", "item_category": "Roman", "item_price": 29.99}, "response": {"predicted_rating": 3.018760599524632, "confidence_interval": [2.518760599524632, 3.518760599524632], "model_version": "v4_lightgbm"}, "duration": "2.0756s"}
+2025-03-21 17:55:08,861 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:08,861 - prediction_test - INFO - Running prediction 8/10
+2025-03-21 17:55:08,862 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 954, 'item_id': 350, 'user_age': 25, 'user_gender': 'E', 'item_category': 'Bilim', 'item_price': 15.99}
+2025-03-21 17:55:10,909 - prediction_test - DEBUG - Received response in 2.0469 seconds
+2025-03-21 17:55:10,910 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0469s)
+2025-03-21 17:55:10,911 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 954, "item_id": 350, "user_age": 25, "user_gender": "E", "item_category": "Bilim", "item_price": 15.99}, "response": {"predicted_rating": 3.0187611173855897, "confidence_interval": [2.5187611173855897, 3.5187611173855897], "model_version": "v4_lightgbm"}, "duration": "2.0469s"}
+2025-03-21 17:55:10,912 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:10,912 - prediction_test - INFO - Running prediction 9/10
+2025-03-21 17:55:10,913 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 326, 'item_id': 424, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Sanat', 'item_price': 49.99}
+2025-03-21 17:55:12,981 - prediction_test - DEBUG - Received response in 2.0669 seconds
+2025-03-21 17:55:12,981 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0669s)
+2025-03-21 17:55:12,982 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 326, "item_id": 424, "user_age": 30, "user_gender": "K", "item_category": "Sanat", "item_price": 49.99}, "response": {"predicted_rating": 3.018760842700731, "confidence_interval": [2.518760842700731, 3.518760842700731], "model_version": "v4_lightgbm"}, "duration": "2.0669s"}
+2025-03-21 17:55:12,982 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:12,983 - prediction_test - INFO - Running prediction 10/10
+2025-03-21 17:55:12,984 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 842, 'item_id': 202, 'user_age': 40, 'user_gender': 'E', 'item_category': 'Tarih', 'item_price': 34.99}
+2025-03-21 17:55:15,048 - prediction_test - DEBUG - Received response in 2.0641 seconds
+2025-03-21 17:55:15,049 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0641s)
+2025-03-21 17:55:15,049 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 842, "item_id": 202, "user_age": 40, "user_gender": "E", "item_category": "Tarih", "item_price": 34.99}, "response": {"predicted_rating": 3.018760840678556, "confidence_interval": [2.518760840678556, 3.518760840678556], "model_version": "v4_lightgbm"}, "duration": "2.0641s"}
+2025-03-21 17:55:15,051 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-21 17:55:15,052 - prediction_test - INFO - Creating test result graphs...
+2025-03-21 17:55:15,053 - prediction_test - DEBUG - Creating prediction distribution graph
+2025-03-21 17:55:15,554 - prediction_test - DEBUG - Creating response times graph
+2025-03-21 17:55:15,735 - prediction_test - INFO - --- Performance Metrics: Prediction Test Summary (Run ID: 20250321_175454) ---
+2025-03-21 17:55:15,736 - prediction_test - INFO - total_predictions: 10
+2025-03-21 17:55:15,736 - prediction_test - INFO - successful_predictions: 10
+2025-03-21 17:55:15,737 - prediction_test - INFO - success_rate: 100.000000
+2025-03-21 17:55:15,737 - prediction_test - INFO - avg_response_time: 2.072390
+2025-03-21 17:55:15,737 - prediction_test - INFO - min_response_time: 2.050071
+2025-03-21 17:55:15,738 - prediction_test - INFO - max_response_time: 2.091929
+2025-03-21 17:55:15,738 - prediction_test - INFO - avg_prediction: 3.018761
+2025-03-21 17:55:15,738 - prediction_test - INFO - std_prediction: 0.000001
+2025-03-21 17:55:15,739 - prediction_test - INFO - min_prediction: 3.018761
+2025-03-21 17:55:15,739 - prediction_test - INFO - max_prediction: 3.018763
+2025-03-21 17:55:15,739 - prediction_test - INFO - --------------------------------------------------
+2025-03-21 17:55:15,740 - prediction_test - INFO - ===== TEST SUCCEEDED: Prediction System Test ===== (Duration: 2.76s)
+2025-03-21 17:55:15,740 - prediction_test - INFO - Test summary: Completed 10/10 predictions successfully
+2025-03-21 17:55:15,740 - prediction_test - INFO - 
+Test tamamlandı!
+2025-03-21 17:55:15,741 - prediction_test - INFO - Toplam tahmin: 10
+2025-03-21 17:55:15,742 - prediction_test - INFO - Başarılı tahmin: 10
+2025-03-21 17:55:15,742 - prediction_test - INFO - Başarı oranı: %100.0
+2025-03-21 17:55:15,742 - prediction_test - INFO - 
+Test raporu kaydedildi: test_reports\prediction_tests\202503\run_20250321_175454\prediction_test_report.txt
+2025-03-22 22:26:21,869 - prediction_test - INFO - ===== STARTING TEST: Prediction System Test =====
+2025-03-22 22:26:21,870 - prediction_test - INFO - Test parameters: {"test_type": "automated", "prediction_count": 10}
+2025-03-22 22:26:21,871 - prediction_test - INFO - Starting automated prediction test...
+2025-03-22 22:26:21,872 - prediction_test - INFO - Created report directory: test_reports\prediction_tests\run_20250322_222621
+2025-03-22 22:26:21,872 - prediction_test - INFO - Test report will be saved to: test_reports\prediction_tests\run_20250322_222621\prediction_test_report.txt
+2025-03-22 22:26:21,873 - prediction_test - INFO - Running prediction 1/10
+2025-03-22 22:26:21,874 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 807, 'item_id': 9, 'user_age': 25, 'user_gender': 'K', 'item_category': 'Roman', 'item_price': 44.99}
+2025-03-22 22:26:23,969 - prediction_test - DEBUG - Received response in 2.0957 seconds
+2025-03-22 22:26:23,971 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0957s)
+2025-03-22 22:26:23,971 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 807, "item_id": 9, "user_age": 25, "user_gender": "K", "item_category": "Roman", "item_price": 44.99}, "response": {"predicted_rating": 3.0187624018823582, "confidence_interval": [2.5187624018823582, 3.5187624018823582], "model_version": "v4_lightgbm"}, "duration": "2.0957s"}
+2025-03-22 22:26:23,972 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:23,972 - prediction_test - INFO - Running prediction 2/10
+2025-03-22 22:26:23,973 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 761, 'item_id': 310, 'user_age': 45, 'user_gender': 'E', 'item_category': 'Felsefe', 'item_price': 39.99}
+2025-03-22 22:26:26,022 - prediction_test - DEBUG - Received response in 2.0478 seconds
+2025-03-22 22:26:26,022 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0478s)
+2025-03-22 22:26:26,023 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 761, "item_id": 310, "user_age": 45, "user_gender": "E", "item_category": "Felsefe", "item_price": 39.99}, "response": {"predicted_rating": 3.0187612525745027, "confidence_interval": [2.5187612525745027, 3.5187612525745027], "model_version": "v4_lightgbm"}, "duration": "2.0478s"}
+2025-03-22 22:26:26,024 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:26,025 - prediction_test - INFO - Running prediction 3/10
+2025-03-22 22:26:26,025 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 941, 'item_id': 89, 'user_age': 55, 'user_gender': 'E', 'item_category': 'Roman', 'item_price': 24.99}
+2025-03-22 22:26:28,084 - prediction_test - DEBUG - Received response in 2.0578 seconds
+2025-03-22 22:26:28,084 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0578s)
+2025-03-22 22:26:28,085 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 941, "item_id": 89, "user_age": 55, "user_gender": "E", "item_category": "Roman", "item_price": 24.99}, "response": {"predicted_rating": 3.0187616532114694, "confidence_interval": [2.5187616532114694, 3.5187616532114694], "model_version": "v4_lightgbm"}, "duration": "2.0578s"}
+2025-03-22 22:26:28,086 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:28,087 - prediction_test - INFO - Running prediction 4/10
+2025-03-22 22:26:28,087 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 871, 'item_id': 27, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Kişisel Gelişim', 'item_price': 29.99}
+2025-03-22 22:26:30,140 - prediction_test - DEBUG - Received response in 2.0518 seconds
+2025-03-22 22:26:30,140 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0518s)
+2025-03-22 22:26:30,141 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 871, "item_id": 27, "user_age": 30, "user_gender": "K", "item_category": "Kişisel Gelişim", "item_price": 29.99}, "response": {"predicted_rating": 3.0187611516890125, "confidence_interval": [2.5187611516890125, 3.5187611516890125], "model_version": "v4_lightgbm"}, "duration": "2.0518s"}
+2025-03-22 22:26:30,142 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:30,143 - prediction_test - INFO - Running prediction 5/10
+2025-03-22 22:26:30,144 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 190, 'item_id': 345, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Tarih', 'item_price': 44.99}
+2025-03-22 22:26:32,203 - prediction_test - DEBUG - Received response in 2.0587 seconds
+2025-03-22 22:26:32,204 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0587s)
+2025-03-22 22:26:32,204 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 190, "item_id": 345, "user_age": 30, "user_gender": "K", "item_category": "Tarih", "item_price": 44.99}, "response": {"predicted_rating": 3.0187610226129538, "confidence_interval": [2.5187610226129538, 3.5187610226129538], "model_version": "v4_lightgbm"}, "duration": "2.0587s"}
+2025-03-22 22:26:32,205 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:32,206 - prediction_test - INFO - Running prediction 6/10
+2025-03-22 22:26:32,206 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 104, 'item_id': 207, 'user_age': 45, 'user_gender': 'E', 'item_category': 'Bilim', 'item_price': 24.99}
+2025-03-22 22:26:34,271 - prediction_test - DEBUG - Received response in 2.0641 seconds
+2025-03-22 22:26:34,272 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0641s)
+2025-03-22 22:26:34,273 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 104, "item_id": 207, "user_age": 45, "user_gender": "E", "item_category": "Bilim", "item_price": 24.99}, "response": {"predicted_rating": 3.018761488669636, "confidence_interval": [2.518761488669636, 3.518761488669636], "model_version": "v4_lightgbm"}, "duration": "2.0641s"}
+2025-03-22 22:26:34,274 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:34,275 - prediction_test - INFO - Running prediction 7/10
+2025-03-22 22:26:34,275 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 523, 'item_id': 333, 'user_age': 25, 'user_gender': 'K', 'item_category': 'Sanat', 'item_price': 29.99}
+2025-03-22 22:26:36,339 - prediction_test - DEBUG - Received response in 2.0628 seconds
+2025-03-22 22:26:36,340 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0628s)
+2025-03-22 22:26:36,341 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 523, "item_id": 333, "user_age": 25, "user_gender": "K", "item_category": "Sanat", "item_price": 29.99}, "response": {"predicted_rating": 3.0187608628180045, "confidence_interval": [2.5187608628180045, 3.5187608628180045], "model_version": "v4_lightgbm"}, "duration": "2.0628s"}
+2025-03-22 22:26:36,341 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:36,342 - prediction_test - INFO - Running prediction 8/10
+2025-03-22 22:26:36,343 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 109, 'item_id': 435, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Kişisel Gelişim', 'item_price': 34.99}
+2025-03-22 22:26:38,399 - prediction_test - DEBUG - Received response in 2.0553 seconds
+2025-03-22 22:26:38,399 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0553s)
+2025-03-22 22:26:38,400 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 109, "item_id": 435, "user_age": 30, "user_gender": "K", "item_category": "Kişisel Gelişim", "item_price": 34.99}, "response": {"predicted_rating": 3.0187603213612677, "confidence_interval": [2.5187603213612677, 3.5187603213612677], "model_version": "v4_lightgbm"}, "duration": "2.0553s"}
+2025-03-22 22:26:38,401 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:38,402 - prediction_test - INFO - Running prediction 9/10
+2025-03-22 22:26:38,403 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 9, 'item_id': 126, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Roman', 'item_price': 15.99}
+2025-03-22 22:26:40,454 - prediction_test - DEBUG - Received response in 2.0509 seconds
+2025-03-22 22:26:40,454 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0509s)
+2025-03-22 22:26:40,455 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 9, "item_id": 126, "user_age": 30, "user_gender": "K", "item_category": "Roman", "item_price": 15.99}, "response": {"predicted_rating": 3.0187601875229646, "confidence_interval": [2.5187601875229646, 3.5187601875229646], "model_version": "v4_lightgbm"}, "duration": "2.0509s"}
+2025-03-22 22:26:40,456 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:40,457 - prediction_test - INFO - Running prediction 10/10
+2025-03-22 22:26:40,458 - prediction_test - DEBUG - Sending prediction request with data: {'user_id': 218, 'item_id': 300, 'user_age': 30, 'user_gender': 'K', 'item_category': 'Çocuk', 'item_price': 54.99}
+2025-03-22 22:26:42,502 - prediction_test - DEBUG - Received response in 2.0438 seconds
+2025-03-22 22:26:42,503 - prediction_test - INFO - API Request: POST http://localhost:8000/predict (2.0438s)
+2025-03-22 22:26:42,504 - prediction_test - DEBUG - Request details: {"method": "POST", "url": "http://localhost:8000/predict", "request_data": {"user_id": 218, "item_id": 300, "user_age": 30, "user_gender": "K", "item_category": "Çocuk", "item_price": 54.99}, "response": {"predicted_rating": 3.0187608744564307, "confidence_interval": [2.5187608744564307, 3.5187608744564307], "model_version": "v4_lightgbm"}, "duration": "2.0438s"}
+2025-03-22 22:26:42,505 - prediction_test - INFO - Prediction: 3.01876 (Confidence: [2.51876, 3.51876])
+2025-03-22 22:26:42,506 - prediction_test - INFO - Creating test result graphs...
+2025-03-22 22:26:42,507 - prediction_test - DEBUG - Creating prediction distribution graph
+2025-03-22 22:26:43,178 - prediction_test - DEBUG - Creating response times graph
+2025-03-22 22:26:43,501 - prediction_test - INFO - --- Performance Metrics: Prediction Test Summary (Run ID: 20250322_222621) ---
+2025-03-22 22:26:43,502 - prediction_test - INFO - total_predictions: 10
+2025-03-22 22:26:43,502 - prediction_test - INFO - successful_predictions: 10
+2025-03-22 22:26:43,503 - prediction_test - INFO - success_rate: 100.000000
+2025-03-22 22:26:43,504 - prediction_test - INFO - avg_response_time: 2.062729
+2025-03-22 22:26:43,504 - prediction_test - INFO - min_response_time: 2.047477
+2025-03-22 22:26:43,505 - prediction_test - INFO - max_response_time: 2.099580
+2025-03-22 22:26:43,506 - prediction_test - INFO - avg_prediction: 3.018761
+2025-03-22 22:26:43,508 - prediction_test - INFO - std_prediction: 0.000001
+2025-03-22 22:26:43,510 - prediction_test - INFO - min_prediction: 3.018760
+2025-03-22 22:26:43,511 - prediction_test - INFO - max_prediction: 3.018762
+2025-03-22 22:26:43,515 - prediction_test - INFO - --------------------------------------------------
+2025-03-22 22:26:43,516 - prediction_test - INFO - ===== TEST SUCCEEDED: Prediction System Test ===== (Duration: 3.06s)
+2025-03-22 22:26:43,517 - prediction_test - INFO - Test summary: Completed 10/10 predictions successfully
+2025-03-22 22:26:43,518 - prediction_test - INFO - 
+Test tamamlandı!
+2025-03-22 22:26:43,518 - prediction_test - INFO - Toplam tahmin: 10
+2025-03-22 22:26:43,519 - prediction_test - INFO - Başarılı tahmin: 10
+2025-03-22 22:26:43,520 - prediction_test - INFO - Başarı oranı: %100.0
+2025-03-22 22:26:43,520 - prediction_test - INFO - 
+Test raporu kaydedildi: test_reports\prediction_tests\run_20250322_222621\prediction_test_report.txt

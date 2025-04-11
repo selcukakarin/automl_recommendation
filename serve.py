@@ -1264,8 +1264,8 @@ async def delete_model_version(
             )
 
         # Eğer model aktif kullanımdaysa ve force=False ise silmeyi reddet
-        global recommendation_model_version
-        was_active = recommendation_model_version == version_name
+        global recommendation_model_version, rating_model_version
+        was_active = (recommendation_model_version == version_name or rating_model_version == version_name)
         
         if was_active and not force:
             raise HTTPException(
@@ -1274,70 +1274,176 @@ async def delete_model_version(
             )
 
         deleted_runs = []
+        deleted_artifacts = []
+        client = mlflow.tracking.MlflowClient(MLFLOW_TRACKING_URI)
+        
         for _, run in runs.iterrows():
             run_id = run["run_id"]
             
             try:
+                # Artifact yolunu al
+                run_info = client.get_run(run_id)
+                artifact_uri = run_info.info.artifact_uri
+                api_logger.info(f"Artifact URI: {artifact_uri}")
+                
+                # MLflow artifact'larını temizle
+                try:
+                    # Artifact URI'deki dosyaları temizle (eğer yerel dosya sistemindeyse)
+                    if artifact_uri.startswith("file:///"):
+                        local_path = artifact_uri.replace("file:///", "/")
+                        if os.path.exists(local_path):
+                            api_logger.info(f"Siliniyor: {local_path}")
+                            if os.path.isdir(local_path):
+                                shutil.rmtree(local_path)
+                            else:
+                                os.remove(local_path)
+                    elif artifact_uri.startswith("file:"):
+                        local_path = artifact_uri.replace("file:", "")
+                        if os.path.exists(local_path):
+                            api_logger.info(f"Siliniyor: {local_path}")
+                            if os.path.isdir(local_path):
+                                shutil.rmtree(local_path)
+                            else:
+                                os.remove(local_path)
+                    
+                    # Bu run'a özel mlartifacts klasörünü temizle
+                    mlflow_artifacts_path = os.path.join("mlartifacts", experiment.experiment_id, run_id)
+                    if os.path.exists(mlflow_artifacts_path):
+                        api_logger.info(f"MLflow artifacts siliniyor: {mlflow_artifacts_path}")
+                        shutil.rmtree(mlflow_artifacts_path)
+                    
+                    # MLflow sunucusunun storage dizini (container içinde varsa)
+                    mlflow_server_path = "/mlflow/mlartifacts"
+                    mlflow_run_path = os.path.join(mlflow_server_path, experiment.experiment_id, run_id)
+                    if os.path.exists(mlflow_run_path):
+                        api_logger.info(f"MLflow server artifacts siliniyor: {mlflow_run_path}")
+                        shutil.rmtree(mlflow_run_path)
+                        
+                    deleted_artifacts.append(artifact_uri)
+                    
+                except Exception as artifact_error:
+                    api_logger.error(f"Artifact silme hatası: {str(artifact_error)}")
+                
                 # MLflow'dan run'ı sil
-                mlflow.delete_run(run_id)
+                client.delete_run(run_id)
                 
-                # Model dosyalarını sil
-                model_path = os.path.join("models", version_name)
-                if os.path.exists(model_path):
-                    shutil.rmtree(model_path)
+                # MLruns dosyalarını temizle (bu run'a özel)
+                mlruns_path = os.path.join("mlruns", experiment.experiment_id, run_id)
+                if os.path.exists(mlruns_path):
+                    api_logger.info(f"MLruns klasörü siliniyor: {mlruns_path}")
+                    shutil.rmtree(mlruns_path)
                 
-                # Artifact dosyalarını sil
-                artifact_path = os.path.join("mlruns", experiment.experiment_id, run_id, "artifacts")
-                if os.path.exists(artifact_path):
-                    shutil.rmtree(artifact_path)
+                # Model dosyalarını sil (eğer local'de varsa)
+                # Sadece silinen version_name'e özel model dosyalarını sil
+                model_paths = [
+                    os.path.join("models", version_name),
+                    os.path.join("model_artifacts", version_name),
+                    os.path.join("artifacts", version_name)
+                ]
+                
+                for model_path in model_paths:
+                    if os.path.exists(model_path):
+                        api_logger.info(f"Model dosyaları siliniyor: {model_path}")
+                        shutil.rmtree(model_path)
                 
                 deleted_runs.append(run_id)
                 
             except Exception as e:
-                print(f"Run {run_id} silme hatası: {str(e)}")
+                api_logger.error(f"Run {run_id} silme hatası: {str(e)}")
                 continue
 
         # Eğer silinen model aktif kullanımdaysa, model verilerini sıfırla
         if was_active:
-            global user_item_matrix, item_similarity_matrix, item_metadata
-            user_item_matrix = None
-            item_similarity_matrix = None
-            item_metadata = None
-            recommendation_model_version = None
+            if recommendation_model_version == version_name:
+                global user_item_matrix, item_similarity_matrix, item_metadata
+                user_item_matrix = None
+                item_similarity_matrix = None
+                item_metadata = None
+                recommendation_model_version = None
+            
+            if rating_model_version == version_name:
+                global rating_model
+                rating_model = None
+                rating_model_version = None
             
             # Eğer aktif kullanımdaki model silindi ve başka modeller varsa, 
             # en son eklenen modeli otomatik olarak yükle
             try:
-                print("Silinen model aktif kullanımdaydı. Yeni bir model yükleniyor...")
-                recommendation_runs = mlflow.search_runs(
-                    experiment_ids=[experiment.experiment_id],
-                    filter_string="tags.model_type = 'collaborative_filtering'",
-                    order_by=["start_time DESC"]
-                )
+                api_logger.info("Silinen model aktif kullanımdaydı. Yeni bir model yükleniyor...")
                 
-                if len(recommendation_runs) > 0:
-                    latest_run = recommendation_runs.iloc[0]
-                    latest_run_id = latest_run["run_id"]
+                # Eğer bu bir öneri modeliyse
+                if recommendation_model_version is None:
+                    recommendation_runs = mlflow.search_runs(
+                        experiment_ids=[experiment.experiment_id],
+                        filter_string="tags.model_type = 'collaborative_filtering'",
+                        order_by=["start_time DESC"]
+                    )
                     
-                    # Yeni versiyonu yükle
-                    try:
-                        _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(latest_run_id)
-                        print(f"Yeni model otomatik olarak yüklendi: {recommendation_model_version}")
-                    except Exception as load_err:
-                        print(f"Yeni model yüklenemedi: {str(load_err)}")
+                    if len(recommendation_runs) > 0:
+                        latest_run = recommendation_runs.iloc[0]
+                        latest_run_id = latest_run["run_id"]
+                        
+                        # Yeni versiyonu yükle
+                        try:
+                            _, user_item_matrix, item_similarity_matrix, item_metadata, recommendation_model_version = load_recommendation_model(latest_run_id)
+                            api_logger.info(f"Yeni öneri modeli otomatik olarak yüklendi: {recommendation_model_version}")
+                        except Exception as load_err:
+                            api_logger.error(f"Yeni öneri modeli yüklenemedi: {str(load_err)}")
+                
+                # Eğer bu bir tahmin modeliyse
+                if rating_model_version is None:
+                    rating_runs = mlflow.search_runs(
+                        experiment_ids=[experiment.experiment_id],
+                        filter_string="tags.model_type = 'rating'",
+                        order_by=["start_time DESC"]
+                    )
+                    
+                    if len(rating_runs) > 0:
+                        latest_run = rating_runs.iloc[0]
+                        latest_run_id = latest_run["run_id"]
+                        
+                        # Yeni versiyonu yükle
+                        try:
+                            rating_model, rating_model_version = load_rating_model(latest_run_id)
+                            api_logger.info(f"Yeni tahmin modeli otomatik olarak yüklendi: {rating_model_version}")
+                        except Exception as load_err:
+                            api_logger.error(f"Yeni tahmin modeli yüklenemedi: {str(load_err)}")
+                
             except Exception as e:
-                print(f"Alternatif model yükleme hatası: {str(e)}")
+                api_logger.error(f"Alternatif model yükleme hatası: {str(e)}")
+
+        # Yerel çalışan modellerle ilgili JSON dosyalarını temizle
+        # Bu kısım sadece silinen modele özel
+        try:
+            json_files = [
+                "last_working_prediction_model.json",
+                "last_working_recommendation_model.json"
+            ]
+            
+            for json_file in json_files:
+                if os.path.exists(json_file):
+                    with open(json_file, "r") as f:
+                        model_info = json.load(f)
+                        if model_info.get("version_name") == version_name:
+                            api_logger.info(f"Model bilgi dosyası siliniyor: {json_file}")
+                            os.remove(json_file)
+        except Exception as json_error:
+            api_logger.warning(f"JSON dosyası temizleme hatası: {str(json_error)}")
 
         return {
             "status": "success",
             "message": f"Model versiyonu başarıyla silindi: {version_name}",
             "deleted_runs": deleted_runs,
+            "deleted_artifacts": deleted_artifacts,
             "force_used": force
         }
 
     except HTTPException as he:
         raise he
     except Exception as e:
+        api_logger.error(f"Model silme hatası: {str(e)}")
+        import traceback
+        api_logger.error(traceback.format_exc())
         raise HTTPException(
             status_code=500,
             detail=f"Model silme hatası: {str(e)}"
